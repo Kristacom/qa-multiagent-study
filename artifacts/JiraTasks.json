@@ -1,0 +1,49 @@
+{
+  "task": {
+    "key": "BOOK-101",
+    "project_key": "BOOK",
+    "issue_type": "Story",
+    "summary": "Реализация сервиса управления бронированиями номеров (Restful-Booker API)",
+    "status": "Ready for Testing",
+    "priority": "High",
+    "assignee": "qa.engineer",
+    "reporter": "tech.lead",
+    "description": "Как клиент гостиничной системы, я хочу создавать, просматривать и управлять бронированиями номеров через публичный REST API Restful-Booker.\n\nАрхитектурная спецификация Confluence: CONF-SPEC-BOOK-01 v4.0 (FR-01, FR-02, FR-03, FR-04, BR-01..BR-03, NFR-01..NFR-03).",
+    "acceptance_criteria": [
+      "AC-01: Создание бронирования POST /booking с валидными данными возвращает HTTP 200 OK с уникальным bookingid.",
+      "AC-02: При отсутствии обязательных полей или невалидном формате даты POST /booking возвращает HTTP 400 Bad Request.",
+      "AC-03: При попытке передать checkout <= checkin или totalprice <= 0 возвращается HTTP 400 Bad Request (BR-01, BR-02).",
+      "AC-04: Получение бронирования GET /booking/{id} возвращает 200 OK при наличии и 404 Not Found при отсутствии.",
+      "AC-05: Авторизация администратора POST /auth выдает токен со сроком жизни 10 мин (200 OK), неверные данные возвращают 401 Unauthorized, при > 5 попыток/мин — 429 Too Many Requests.",
+      "AC-06: Модификация PUT /booking/{id} и частичное обновление PATCH /booking/{id} без токена отклоняются с кодом HTTP 403 Forbidden.",
+      "AC-07: Удаление DELETE /booking/{id} с валидным токеном возвращает HTTP 201/200, повторное удаление возвращает 405/404.",
+      "AC-08: Время отклика API на 95-м перцентиле не превышает 600 мс (NFR-01 SLA)."
+    ],
+    "definition_of_done": [
+      "Все критерии приемки AC-01..AC-08 формализованы и согласованы",
+      "Проверены статус-коды 200, 201, 400, 401, 403, 404, 415, 429",
+      "Тест-кейсы согласованы и экспортированы для Test IT TMS",
+      "Создана подзадача тестирования в Jira и привязан отчет верификации"
+    ],
+    "linked_confluence_pages": [
+      "CONF-SPEC-BOOK-01"
+    ]
+  },
+  "verification": {
+    "task_key": "BOOK-101",
+    "is_ready_for_testing": true,
+    "matched_requirements": [
+      "FR-01",
+      "FR-02",
+      "FR-03",
+      "FR-04"
+    ],
+    "missing_requirements": [],
+    "dod_passed": true,
+    "discrepancies": [],
+    "recommendations": [
+      "Все 8 AC полностью соответствуют Confluence v4.0",
+      "Контракт ошибок валидирован"
+    ]
+  }
+}

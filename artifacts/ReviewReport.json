@@ -1,0 +1,102 @@
+{
+  "spec_id": "CONF-SPEC-BOOK-01",
+  "spec_title": "Сервис бронирования номеров (Restful-Booker API)",
+  "version": "4.0",
+  "author": "Travel & Hospitality Booking Systems Team",
+  "confluence_source": {
+    "space_key": "MFS",
+    "page_id": "393217",
+    "page_title": "CONF-SPEC-BOOK-01: Сервис бронирования номеров (Restful-Booker API)",
+    "url": "https://kristapro.atlassian.net/wiki/spaces/MFS/pages/393217/CONF-SPEC-BOOK-01+Restful-Booker+API",
+    "status": "synchronized"
+  },
+  "functional_requirements": [
+    {
+      "id": "FR-01",
+      "title": "Создание бронирования (Create Booking)",
+      "description": "Эндпоинт POST /booking. Валидация обязательных полей (firstname, lastname, totalprice, depositpaid, bookingdates: checkin, checkout). Успех: 200 OK. Ошибки: 400 Bad Request при отсутствии обязательных полей или невалидной дате; 415 при неверном Content-Type.",
+      "category": "Functional",
+      "acceptance_criteria": [
+        "Тело запроса содержит обязательные поля firstname, lastname, totalprice, depositpaid, bookingdates",
+        "HTTP 200 OK с bookingid при успехе",
+        "HTTP 400 Bad Request при невалидных входных данных",
+        "HTTP 415 при отсутствии application/json"
+      ],
+      "tags": [
+        "booking",
+        "create",
+        "smoke"
+      ]
+    },
+    {
+      "id": "FR-02",
+      "title": "Получение деталей брони (Get Booking by ID)",
+      "description": "Эндпоинт GET /booking/{id}. Существующий ID: HTTP 200 OK. Несуществующий или удаленный: HTTP 404 Not Found.",
+      "category": "Functional",
+      "acceptance_criteria": [
+        "HTTP 200 OK и JSON с деталями гостя при валидном ID",
+        "HTTP 404 Not Found при отсутствующем ID"
+      ],
+      "tags": [
+        "get",
+        "read",
+        "lookup"
+      ]
+    },
+    {
+      "id": "FR-03",
+      "title": "Аутентификация администратора (Admin Auth)",
+      "description": "Эндпоинт POST /auth (admin/password123). Успех: HTTP 200 OK с токеном (TTL 600с). Неверные данные: HTTP 401 Unauthorized. Перебор > 5 попыток/мин: HTTP 429 Too Many Requests.",
+      "category": "Security",
+      "acceptance_criteria": [
+        "HTTP 200 OK с токеном при admin/password123",
+        "HTTP 401 Unauthorized при неверных учетных данных",
+        "HTTP 429 при превышении rate limit (5 попыток в минуту)"
+      ],
+      "tags": [
+        "auth",
+        "security",
+        "token"
+      ]
+    },
+    {
+      "id": "FR-04",
+      "title": "Модификация и удаление брони (Update/Partial Update/Delete)",
+      "description": "Эндпоинты PUT /booking/{id}, PATCH /booking/{id}, DELETE /booking/{id}. Требуют заголовок Cookie: token={token}. Успех: 200 OK (PUT/PATCH), 201 Created (DELETE). Без токена: HTTP 403 Forbidden. Повторный DELETE: 405/404.",
+      "category": "Security",
+      "acceptance_criteria": [
+        "PUT и PATCH с токеном возвращают HTTP 200 OK",
+        "DELETE с токеном возвращает HTTP 201 Created",
+        "Без токена или с истёкшим токеном: HTTP 403 Forbidden",
+        "Повторный DELETE возвращает HTTP 405/404 (идемпотентность)"
+      ],
+      "tags": [
+        "update",
+        "delete",
+        "security"
+      ]
+    }
+  ],
+  "business_rules": [
+    "BR-01 (Валидация дат): checkout строго позже checkin (YYYY-MM-DD); иначе HTTP 400 Bad Request.",
+    "BR-02 (Стоимость): totalprice > 0 целое число; иначе HTTP 400 Bad Request.",
+    "BR-03 (Авторизация модификаций): PUT, PATCH и DELETE требуют активного токена с проверкой TTL 600с."
+  ],
+  "constraints": [
+    "Content-Type: application/json (NFR-02)",
+    "Максимальное время ответа (SLA): < 600 мс (NFR-01)",
+    "Идемпотентность методов GET и DELETE",
+    "Защита от brute-force: лимит 5 попыток/мин на POST /auth (NFR-03)"
+  ],
+  "ambiguities": [],
+  "risks": [],
+  "quality_gate": {
+    "passed": true,
+    "score": 98,
+    "critical_issues": [],
+    "warnings": [],
+    "recommendations": [
+      "Все расхождения DISC-01..DISC-10 успешно устранены в спецификации v4.0"
+    ]
+  }
+}

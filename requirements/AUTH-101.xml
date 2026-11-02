@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="0.92">
+  <channel>
+    <title>Jira OpenCode Instance</title>
+    <link>https://jira.company.internal</link>
+    <item>
+      <title>[AUTH-101] Реализация верификации OTP-кода и выдачи JWT токенов</title>
+      <key id="10101">AUTH-101</key>
+      <project key="AUTH">Authentication Service</project>
+      <summary>Реализация верификации OTP-кода и выдачи JWT токенов</summary>
+      <type id="10001">Story</type>
+      <priority id="2">High</priority>
+      <status id="3">Ready for Testing</status>
+      <assignee>i.ivanov</assignee>
+      <reporter>p.petrov</reporter>
+      <description>Как пользователь, я хочу подтверждать вход по СМС-коду, чтобы безопасно входить в личный кабинет без пароля.
+Архитектурная спецификация: CONF-SPEC-AUTH-01 (FR-01, FR-02, FR-03, FR-04).</description>
+      <customfields>
+        <customfield id="customfield_10100" key="acceptance_criteria">
+          <customfieldname>Acceptance Criteria</customfieldname>
+          <customfieldvalues>
+            <customfieldvalue>AC-01: При верном коде в течение 180с выдаются access_token и refresh_token, HTTP 200.</customfieldvalue>
+            <customfieldvalue>AC-02: Повторное использование ранее принятого кода запрещено (код одноразовый).</customfieldvalue>
+            <customfieldvalue>AC-03: При неверном вводе возвращается HTTP 401 и количество оставшихся попыток.</customfieldvalue>
+            <customfieldvalue>AC-04: При 3-х неверных вводах возвращается HTTP 403, код аннулируется, аккаунт блокируется на 10 минут.</customfieldvalue>
+            <customfieldvalue>AC-05: Если код отправлен позже 180 сек, возвращается HTTP 400 с ошибкой OTP_EXPIRED.</customfieldvalue>
+          </customfieldvalues>
+        </customfield>
+      </customfields>
+    </item>
+  </channel>
+</rss>

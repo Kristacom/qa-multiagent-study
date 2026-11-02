@@ -1,0 +1,894 @@
+{
+  "suite_id": "SUITE-BOOK-01",
+  "title": "Тестирование REST API сервиса бронирования отелей (Restful-Booker)",
+  "description": "Исчерпывающая тестовая модель сценариев Restful-Booker API v4.0 для Test IT TMS",
+  "jira_task_key": "KAN-14",
+  "test_cases": [
+    {
+      "id": "TC-BOOK-001",
+      "title": "Успешное создание бронирования отеля (Happy Path, POST /booking)",
+      "description": "Проверка создания бронирования с валидными данными гостя и получение уникального bookingid.",
+      "type": "Functional",
+      "priority": "Critical",
+      "severity": "Blocker",
+      "preconditions": [
+        "Сервер Restful-Booker доступен",
+        "Content-Type: application/json"
+      ],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Клиент сформировал корректный JSON с данными гостя (Jim Brown, $150, 2026-12-01..2026-12-05)",
+          "expected_result": "Тело запроса валидно"
+        },
+        {
+          "keyword": "When",
+          "action": "Отправляет запрос POST /booking",
+          "expected_result": "Запрос принят"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сервер возвращает статус HTTP 200 OK",
+          "expected_result": "Код 200 OK"
+        },
+        {
+          "keyword": "And",
+          "action": "В теле ответа сгенерирован bookingid и сохранены поля бронирования",
+          "expected_result": "Поле bookingid > 0"
+        }
+      ],
+      "postconditions": [
+        "Бронирование сохранено в базе"
+      ],
+      "test_data": {
+        "firstname": "Jim",
+        "lastname": "Brown",
+        "totalprice": 150,
+        "depositpaid": true,
+        "bookingdates": {
+          "checkin": "2026-12-01",
+          "checkout": "2026-12-05"
+        }
+      },
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-01",
+      "tags": [
+        "smoke",
+        "positive",
+        "booking",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    },
+    {
+      "id": "TC-BOOK-002",
+      "title": "Получение существующего бронирования по ID (Happy Path, GET /booking/{id})",
+      "description": "Проверка возврата деталей бронирования по валидному идентификатору.",
+      "type": "Functional",
+      "priority": "Critical",
+      "severity": "Blocker",
+      "preconditions": [
+        "Бронирование с ID 1 создано"
+      ],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Существует активное бронирование с ID 1",
+          "expected_result": "Бронь существует"
+        },
+        {
+          "keyword": "When",
+          "action": "Отправляется GET /booking/1",
+          "expected_result": "Запрос принят"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сервер возвращает HTTP 200 OK с полями firstname, lastname, totalprice, bookingdates",
+          "expected_result": "Код 200 OK и JSON"
+        }
+      ],
+      "postconditions": [],
+      "test_data": {
+        "booking_id": 1
+      },
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-02",
+      "tags": [
+        "positive",
+        "read",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    },
+    {
+      "id": "TC-BOOK-003",
+      "title": "Успешная авторизация администратора (Happy Path, POST /auth)",
+      "description": "Проверка выпуска токена администратора по корректным учетным данным.",
+      "type": "Functional",
+      "priority": "Critical",
+      "severity": "Blocker",
+      "preconditions": [
+        "Сервис авторизации активен"
+      ],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Учетные данные admin / password123",
+          "expected_result": "Валидные креды"
+        },
+        {
+          "keyword": "When",
+          "action": "Отправляется POST /auth с телом JSON",
+          "expected_result": "Запрос принят"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сервер возвращает HTTP 200 OK с непустым полем token (16 символов)",
+          "expected_result": "Токен выдан со сроком TTL 600c"
+        }
+      ],
+      "postconditions": [
+        "Токен активен в течение 600 секунд"
+      ],
+      "test_data": {
+        "username": "admin",
+        "password": "password123"
+      },
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-03",
+      "tags": [
+        "smoke",
+        "auth",
+        "positive",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    },
+    {
+      "id": "TC-BOOK-004",
+      "title": "Полное обновление бронирования с токеном (Happy Path, PUT /booking/{id})",
+      "description": "Проверка успешной модификации бронирования авторизованным администратором.",
+      "type": "Functional",
+      "priority": "High",
+      "severity": "Critical",
+      "preconditions": [
+        "Бронь с ID 1 существует",
+        "Токен администратора получен"
+      ],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Заголовок Cookie: token={token} сформирован",
+          "expected_result": "Запрос авторизован"
+        },
+        {
+          "keyword": "When",
+          "action": "Отправляется PUT /booking/1 с новыми данными (James Brown, $200)",
+          "expected_result": "Запрос принят"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сервер возвращает HTTP 200 OK с обновленными полями",
+          "expected_result": "Код 200 OK"
+        }
+      ],
+      "postconditions": [
+        "Данные брони обновлены"
+      ],
+      "test_data": {
+        "booking_id": 1,
+        "firstname": "James",
+        "lastname": "Brown",
+        "totalprice": 200
+      },
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-04",
+      "tags": [
+        "positive",
+        "update",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    },
+    {
+      "id": "TC-BOOK-005",
+      "title": "Удаление бронирования с токеном (Happy Path, DELETE /booking/{id})",
+      "description": "Проверка успешного аннулирования бронирования администратором.",
+      "type": "Functional",
+      "priority": "High",
+      "severity": "Critical",
+      "preconditions": [
+        "Бронирование создано",
+        "Токен администратора активен"
+      ],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Бронирование создано",
+          "expected_result": "Запись есть в БД"
+        },
+        {
+          "keyword": "When",
+          "action": "Отправляется DELETE /booking/{id} с Cookie: token={token}",
+          "expected_result": "Запрос обработан"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сервер возвращает HTTP 201 Created (успешное удаление)",
+          "expected_result": "Код 201 Created"
+        }
+      ],
+      "postconditions": [
+        "Бронирование удалено из базы"
+      ],
+      "test_data": {
+        "booking_id": 1
+      },
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-04",
+      "tags": [
+        "positive",
+        "delete",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    },
+    {
+      "id": "TC-BOOK-006",
+      "title": "Создание бронирования с отсутствующим обязательным полем (Negative, POST /booking)",
+      "description": "Проверка возврата HTTP 400 Bad Request при отсутствии обязательного поля firstname.",
+      "type": "Negative",
+      "priority": "Critical",
+      "severity": "Blocker",
+      "preconditions": [
+        "Сервер доступен"
+      ],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Тело запроса без обязательного поля firstname",
+          "expected_result": "Нарушена схема контракта"
+        },
+        {
+          "keyword": "When",
+          "action": "Отправляется POST /booking",
+          "expected_result": "Запрос отклонен"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сервер возвращает HTTP 400 Bad Request с описанием ошибки",
+          "expected_result": "Код 400"
+        }
+      ],
+      "postconditions": [
+        "Запись не создана"
+      ],
+      "test_data": {
+        "lastname": "Brown",
+        "totalprice": 100,
+        "bookingdates": {
+          "checkin": "2026-12-01",
+          "checkout": "2026-12-05"
+        }
+      },
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-01",
+      "tags": [
+        "negative",
+        "validation",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    },
+    {
+      "id": "TC-BOOK-007",
+      "title": "Отправка запроса с некорректным Content-Type (Negative, POST /booking)",
+      "description": "Проверка возврата HTTP 415 Unsupported Media Type при Content-Type: text/plain.",
+      "type": "Negative",
+      "priority": "Medium",
+      "severity": "Major",
+      "preconditions": [],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Заголовок Content-Type: text/plain",
+          "expected_result": "Неподдерживаемый формат"
+        },
+        {
+          "keyword": "When",
+          "action": "Отправляется POST /booking с сырым текстом",
+          "expected_result": "Запрос отправлен"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сервер возвращает HTTP 415 Unsupported Media Type",
+          "expected_result": "Код 415"
+        }
+      ],
+      "postconditions": [],
+      "test_data": {},
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-01",
+      "tags": [
+        "negative",
+        "headers",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    },
+    {
+      "id": "TC-BOOK-008",
+      "title": "Получение несуществующего бронирования (Negative, GET /booking/{id})",
+      "description": "Проверка возврата HTTP 404 Not Found при запросе несуществующего ID.",
+      "type": "Negative",
+      "priority": "High",
+      "severity": "Critical",
+      "preconditions": [
+        "ID 99999999 отсутствует в базе"
+      ],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "ID 99999999 не существует",
+          "expected_result": "Записи нет"
+        },
+        {
+          "keyword": "When",
+          "action": "Отправляется GET /booking/99999999",
+          "expected_result": "Запрос отправлен"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сервер возвращает HTTP 404 Not Found",
+          "expected_result": "Код 404"
+        }
+      ],
+      "postconditions": [],
+      "test_data": {
+        "booking_id": 99999999
+      },
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-02",
+      "tags": [
+        "negative",
+        "notfound",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    },
+    {
+      "id": "TC-BOOK-009",
+      "title": "Попытка PUT /booking/{id} без токена (Security / Negative)",
+      "description": "Проверка защиты от неавторизованного изменения данных без токена (403 Forbidden).",
+      "type": "Security",
+      "priority": "Critical",
+      "severity": "Blocker",
+      "preconditions": [
+        "Бронь существует",
+        "Токен не передан"
+      ],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Токен авторизации отсутствует в запросе",
+          "expected_result": "Неавторизованный запрос"
+        },
+        {
+          "keyword": "When",
+          "action": "Отправляется PUT /booking/1 с новыми данными",
+          "expected_result": "Запрос отклонен"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сервер возвращает HTTP 403 Forbidden",
+          "expected_result": "Код 403 Forbidden"
+        },
+        {
+          "keyword": "And",
+          "action": "Исходные данные бронирования не изменяются",
+          "expected_result": "Целостность данных сохранена"
+        }
+      ],
+      "postconditions": [
+        "Данные защищены"
+      ],
+      "test_data": {
+        "booking_id": 1
+      },
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-04",
+      "tags": [
+        "security",
+        "auth",
+        "negative",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    },
+    {
+      "id": "TC-BOOK-010",
+      "title": "Попытка DELETE /booking/{id} без токена (Security / Negative)",
+      "description": "Проверка запрета удаления бронирования без авторизации (HTTP 403 Forbidden).",
+      "type": "Security",
+      "priority": "Critical",
+      "severity": "Blocker",
+      "preconditions": [
+        "Бронь существует",
+        "Токен отсутствует"
+      ],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Заголовок Cookie token не передан",
+          "expected_result": "Запрос не авторизован"
+        },
+        {
+          "keyword": "When",
+          "action": "Отправляется DELETE /booking/1",
+          "expected_result": "Запрос отклонен"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сервер возвращает HTTP 403 Forbidden",
+          "expected_result": "Код 403"
+        }
+      ],
+      "postconditions": [
+        "Бронь не удалена"
+      ],
+      "test_data": {
+        "booking_id": 1
+      },
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-04",
+      "tags": [
+        "security",
+        "delete",
+        "negative",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    },
+    {
+      "id": "TC-BOOK-011",
+      "title": "Аутентификация с неверным паролем (Negative, POST /auth)",
+      "description": "Проверка отклонения неверных учетных данных и возврат HTTP 401 Unauthorized.",
+      "type": "Negative",
+      "priority": "High",
+      "severity": "Critical",
+      "preconditions": [],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Неверный пароль 'wrong_pass' для пользователя admin",
+          "expected_result": "Невалидные креды"
+        },
+        {
+          "keyword": "When",
+          "action": "Отправляется POST /auth",
+          "expected_result": "Запрос отклонен"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сервер возвращает HTTP 401 Unauthorized с ошибкой Bad credentials",
+          "expected_result": "Код 401"
+        }
+      ],
+      "postconditions": [
+        "Токен не выдан"
+      ],
+      "test_data": {
+        "username": "admin",
+        "password": "wrong_password"
+      },
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-03",
+      "tags": [
+        "negative",
+        "auth",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    },
+    {
+      "id": "TC-BOOK-012",
+      "title": "Валидация дат: checkout раньше checkin (Boundary / Negative, BR-01)",
+      "description": "Проверка отклонения создания брони при checkout < checkin (HTTP 400 Bad Request).",
+      "type": "Boundary",
+      "priority": "High",
+      "severity": "Critical",
+      "preconditions": [],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Даты: checkin '2026-12-10', checkout '2026-12-01'",
+          "expected_result": "Нарушено правило BR-01"
+        },
+        {
+          "keyword": "When",
+          "action": "Отправляется POST /booking",
+          "expected_result": "Запрос отклонен"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сервер возвращает HTTP 400 Bad Request с описанием ошибки валидации дат",
+          "expected_result": "Код 400"
+        }
+      ],
+      "postconditions": [
+        "Запись не создана"
+      ],
+      "test_data": {
+        "checkin": "2026-12-10",
+        "checkout": "2026-12-01"
+      },
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-01",
+      "tags": [
+        "boundary",
+        "dates",
+        "negative",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    },
+    {
+      "id": "TC-BOOK-013",
+      "title": "Граничные даты: checkout равен checkin (Boundary / Negative, BR-01)",
+      "description": "Проверка возврата HTTP 400 Bad Request при нулевой длительности пребывания (checkout == checkin).",
+      "type": "Boundary",
+      "priority": "High",
+      "severity": "Critical",
+      "preconditions": [],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Даты: checkin '2026-12-05', checkout '2026-12-05'",
+          "expected_result": "checkout не позже checkin"
+        },
+        {
+          "keyword": "When",
+          "action": "Отправляется POST /booking",
+          "expected_result": "Запрос отклонен"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сервер возвращает HTTP 400 Bad Request",
+          "expected_result": "Код 400"
+        }
+      ],
+      "postconditions": [],
+      "test_data": {
+        "checkin": "2026-12-05",
+        "checkout": "2026-12-05"
+      },
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-01",
+      "tags": [
+        "boundary",
+        "dates",
+        "negative",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    },
+    {
+      "id": "TC-BOOK-014",
+      "title": "Граничное значение стоимости: totalprice = 0 (Boundary / Negative, BR-02)",
+      "description": "Проверка запрета создания бронирования с нулевой стоимостью (HTTP 400 Bad Request).",
+      "type": "Boundary",
+      "priority": "Medium",
+      "severity": "Major",
+      "preconditions": [],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Поле totalprice = 0",
+          "expected_result": "Нарушено правило BR-02 (> 0)"
+        },
+        {
+          "keyword": "When",
+          "action": "Отправляется POST /booking",
+          "expected_result": "Запрос отклонен"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сервер возвращает HTTP 400 Bad Request",
+          "expected_result": "Код 400"
+        }
+      ],
+      "postconditions": [],
+      "test_data": {
+        "totalprice": 0
+      },
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-01",
+      "tags": [
+        "boundary",
+        "price",
+        "negative",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    },
+    {
+      "id": "TC-BOOK-015",
+      "title": "Отрицательная стоимость бронирования: totalprice < 0 (Boundary / Negative, BR-02)",
+      "description": "Проверка отклонения отрицательной стоимости проживания (HTTP 400 Bad Request).",
+      "type": "Boundary",
+      "priority": "Medium",
+      "severity": "Major",
+      "preconditions": [],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Поле totalprice = -50",
+          "expected_result": "Отрицательное число"
+        },
+        {
+          "keyword": "When",
+          "action": "Отправляется POST /booking",
+          "expected_result": "Запрос отклонен"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сервер возвращает HTTP 400 Bad Request",
+          "expected_result": "Код 400"
+        }
+      ],
+      "postconditions": [],
+      "test_data": {
+        "totalprice": -50
+      },
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-01",
+      "tags": [
+        "boundary",
+        "price",
+        "negative",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    },
+    {
+      "id": "TC-BOOK-016",
+      "title": "Невалидный формат даты (Boundary / Negative, ISO 8601)",
+      "description": "Проверка отклонения невалидного формата дат (DD-MM-YYYY вместо YYYY-MM-DD).",
+      "type": "Boundary",
+      "priority": "Medium",
+      "severity": "Major",
+      "preconditions": [],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Даты в формате '01/12/2026'",
+          "expected_result": "Не соответствует ISO 8601"
+        },
+        {
+          "keyword": "When",
+          "action": "Отправляется POST /booking",
+          "expected_result": "Запрос отклонен"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сервер возвращает HTTP 400 Bad Request",
+          "expected_result": "Код 400"
+        }
+      ],
+      "postconditions": [],
+      "test_data": {
+        "checkin": "01/12/2026",
+        "checkout": "05/12/2026"
+      },
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-01",
+      "tags": [
+        "boundary",
+        "dates",
+        "format",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    },
+    {
+      "id": "TC-BOOK-017",
+      "title": "Проверка соблюдения SLA времени отклика (NFR-01)",
+      "description": "Проверка, что время отклика сервиса на POST /booking на 95-м перцентиле < 600 мс.",
+      "type": "Non-Functional",
+      "priority": "Medium",
+      "severity": "Major",
+      "preconditions": [
+        "Сервер работает в штатном режиме"
+      ],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Серия из 10 тестовых запросов POST /booking",
+          "expected_result": "Тестовая нагрузка"
+        },
+        {
+          "keyword": "When",
+          "action": "Замеряется время ответа сервера (latency)",
+          "expected_result": "Тайминги получены"
+        },
+        {
+          "keyword": "Then",
+          "action": "Время ответа p95 не превышает 600 мс (согласно NFR-01)",
+          "expected_result": "SLA соблюден"
+        }
+      ],
+      "postconditions": [],
+      "test_data": {},
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-01",
+      "tags": [
+        "nfr",
+        "sla",
+        "performance",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    },
+    {
+      "id": "TC-BOOK-018",
+      "title": "Защита от перебора паролей rate limit на POST /auth (Security, NFR-03)",
+      "description": "Проверка блокировки с кодом HTTP 429 Too Many Requests при более чем 5 попытках авторизации в минуту.",
+      "type": "Security",
+      "priority": "High",
+      "severity": "Critical",
+      "preconditions": [
+        "Лимит 5 попыток/мин активен"
+      ],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Отправлено 5 неверных попыток авторизации подряд",
+          "expected_result": "Лимит исчерпан"
+        },
+        {
+          "keyword": "When",
+          "action": "Отправляется 6-я попытка POST /auth в течение 60 секунд",
+          "expected_result": "Запрос перехвачен rate limiter"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сервер возвращает HTTP 429 Too Many Requests",
+          "expected_result": "Код 429"
+        }
+      ],
+      "postconditions": [
+        "Брутфорс предотвращен"
+      ],
+      "test_data": {},
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-03",
+      "tags": [
+        "security",
+        "ratelimit",
+        "bruteforce",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    },
+    {
+      "id": "TC-BOOK-019",
+      "title": "Идемпотентность повторного удаления брони (Security / Idempotency, FR-04)",
+      "description": "Проверка поведения при повторном DELETE уже удаленного бронирования (HTTP 405 / 404).",
+      "type": "Security",
+      "priority": "Medium",
+      "severity": "Major",
+      "preconditions": [
+        "Бронь с ID 1 уже была успешно удалена в TC-BOOK-005"
+      ],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Бронь с ID 1 уже удалена",
+          "expected_result": "Запись отсутствует"
+        },
+        {
+          "keyword": "When",
+          "action": "Отправляется повторный DELETE /booking/1 с токеном",
+          "expected_result": "Запрос обработан"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сервер возвращает HTTP 405 Method Not Allowed или 404 Not Found",
+          "expected_result": "Код 405/404"
+        }
+      ],
+      "postconditions": [],
+      "test_data": {
+        "booking_id": 1
+      },
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-04",
+      "tags": [
+        "security",
+        "delete",
+        "idempotency",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    },
+    {
+      "id": "TC-BOOK-020",
+      "title": "Проверка срока жизни токена авторизации TTL 600с (Security, FR-03/FR-04)",
+      "description": "Проверка отклонения защищенной операции с истекшим токеном (HTTP 403 Forbidden).",
+      "type": "Security",
+      "priority": "High",
+      "severity": "Critical",
+      "preconditions": [
+        "Токен был получен более 600 секунд назад и истек"
+      ],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Срок жизни токена (TTL 600с) истек",
+          "expected_result": "Токен недействителен"
+        },
+        {
+          "keyword": "When",
+          "action": "Отправляется PUT /booking/1 с истекшим токеном",
+          "expected_result": "Запрос отклонен"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сервер возвращает HTTP 403 Forbidden",
+          "expected_result": "Код 403"
+        }
+      ],
+      "postconditions": [],
+      "test_data": {},
+      "linked_jira_key": "KAN-14",
+      "linked_requirement_id": "FR-04",
+      "tags": [
+        "security",
+        "ttl",
+        "auth",
+        "testit"
+      ],
+      "status": "Ready",
+      "assumption": false,
+      "blocked": false
+    }
+  ]
+}
