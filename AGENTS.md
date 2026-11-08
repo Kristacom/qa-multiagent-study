@@ -31,7 +31,7 @@
    - Оценка `quality_gate.passed` и списка критических замечаний.
    - ⚠️ При `passed == false`: остановка флоу, создание тикета эскалации в Jira (`jira:create_issue`).
    - При `passed == true`: переход к Фазе 2.
-3. **Фаза 2:** Запуск `task-designer` со скиллом `.opencode/skills/task-design/SKILL.md` для парсинга тикета Jira, сопоставления с архитектурой, проверки DoD и **загрузки подзадачи тестирования в Jira через MCP**.
+3. **Фаза 2:** Запуск `task-designer` со скиллом `.opencode/skills/task-design/SKILL.md` для парсинга тикета Jira, сопоставления с архитектурой, проверки DoD, **автоматического создания задач в Jira типа Task/Question на уточнение белых пятен ТЗ (warnings)** и **загрузки подзадачи тестирования в Jira через MCP**.
 4. **Фаза 3:** Запуск `test-designer` со скиллом `.opencode/skills/test-design/SKILL.md` для генерации BDD тест-кейсов (`artifacts/TestModel.json`) и экспорта для Test IT TMS (`artifacts/testit_export.json`).
 5. **Фаза 4:** Верификация полноты покрытия, аудит артефактов по контракту из Раздела 5 и сборка финального отчета `artifacts/FinalReport.md`.
 
@@ -86,7 +86,8 @@
 - Выявление расхождений (Discrepancies) между задачей Jira и архитектурой.
 - **Загрузка данных в Jira (Jira Upload & Sync via MCP):**
   - Создание связанной QA-подзадачи `[QA] Test Execution: {summary}` через `jira:create_issue`.
-  - Публикация отчета верификации в комментарии к Story через `jira:add_comment`.
+  - **Автоматическое создание задач на уточнение требований (Clarification Tasks / Questions):** при наличии `warnings` или `ambiguities` в `ReviewReport.json` агент создает в Jira отдельные задачи типа `Задача` (Task) с префиксом `[QUESTION]` на Product Owner / Business Analyst и связывает их с родительской Story связью `Relates`.
+  - Публикация отчета верификации в комментарии к Story через `jira:add_comment` со ссылками на созданные вопросы.
 - Сохранение артефактов `artifacts/JiraTasks.json` и `artifacts/JiraUploadResult.json`.
 
 ### Out of Scope:

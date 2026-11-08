@@ -24,12 +24,20 @@ description: Парсинг задач Jira, проверка DoD, сопост�
 3. **Загрузка данных в Jira (Jira Upload & Sync via MCP):**
    - **Создание подзадачи тестирования (QA Sub-Task):**
      - Вызов инструмента MCP: `jira:create_issue`.
-     - Параметры: `parent_key = "AUTH-101"`, `issue_type = "Sub-task"`, `summary = "[QA] Test Execution: {summary}"`.
+     - Параметры: `parent_key = "KAN-17"`, `issue_type = "Subtask"`, `summary = "[QA] Test Execution: {summary}"`.
+   - **Создание задач на уточнение требований (Clarification Tasks / Questions for Warnings):**
+     - При обнаружении неоднозначностей или предупреждений (`warnings` / `ambiguities` в `ReviewReport.json`) агент **автоматически создает в Jira задачи типа Task / Задача** (направленные к Product Owner / Business Analyst):
+       - `project`: `KAN`
+       - `issue_type`: `Задача` (Task)
+       - `summary`: `[QUESTION][{REQ_ID}] {Краткое описание вопроса / белого пятна}`
+       - `description`: Описание неоднозначности в требованиях, потенциальные риски для тестирования и конкретный вопрос к PO/BA.
+       - `labels`: `["qa-question", "req-clarification", "conf-page-2031617"]`
+       - `link`: Связывание с родительской задачей/Story через связь `Relates` (`relates to`).
    - **Публикация отчета верификации в комментарии:**
-     - Вызов `jira:add_comment` для публикации чек-листа DoD и статуса Quality Gate.
+     - Вызов `jira:add_comment` для публикации чек-листа DoD, статуса Quality Gate и ссылок на созданные вопросы.
 4. **Сохранение артефактов:**
    - Сохранить результат парсинга в `artifacts/JiraTasks.json`.
-   - Сохранить статус выгрузки в Jira в `artifacts/JiraUploadResult.json`.
+   - Сохранить статус выгрузки и ключи всех созданных задач в `artifacts/JiraUploadResult.json`.
 
 ---
 

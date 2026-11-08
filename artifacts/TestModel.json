@@ -1,894 +1,518 @@
 {
-  "suite_id": "SUITE-BOOK-01",
-  "title": "Тестирование REST API сервиса бронирования отелей (Restful-Booker)",
-  "description": "Исчерпывающая тестовая модель сценариев Restful-Booker API v4.0 для Test IT TMS",
-  "jira_task_key": "KAN-14",
+  "suite_id": "SUITE-SHOP-CHECKOUT-24",
+  "title": "Тестирование модуля оформления заказа (Checkout), релиз 2.4",
+  "description": "BDD Gherkin тест-модель для модуля оформления заказа интернет-магазина (release 2.4). Покрывает требования REQ-AUTH-001 (кнопка «Войти»), REQ-REG-002 (валидация email при регистрации) и REQ-CHECKOUT-003 (оформление заказа с выбором способа доставки). Классы проверок: Happy Path, Negative, Boundary, Security/UI-state. Целевая TMS: проект SHOP-QA, тип Manual, язык ru. Источник требований: CONF-SHOP-CHECKOUT-24 (Confluence page 2031617).",
+  "jira_task_key": "KAN-17",
+  "qa_subtask_key": "KAN-18",
+  "tms": {
+    "project_key": "SHOP-QA",
+    "entityTypeName": "TestCases",
+    "test_case_type": "Manual",
+    "language": "ru"
+  },
+  "source_requirements": ["REQ-AUTH-001", "REQ-REG-002", "REQ-CHECKOUT-003"],
+  "confluence_source": "https://kristapro.atlassian.net/wiki/spaces/MFS/pages/2031617",
   "test_cases": [
     {
-      "id": "TC-BOOK-001",
-      "title": "Успешное создание бронирования отеля (Happy Path, POST /booking)",
-      "description": "Проверка создания бронирования с валидными данными гостя и получение уникального bookingid.",
+      "id": "TC-SHOP-001",
+      "title": "Отображение кнопки «Войти» для неавторизованного пользователя (Happy Path)",
+      "description": "Проверка видимости и кликабельности кнопки «Войти» в шапке главной страницы для неавторизованного пользователя (AC1 REQ-AUTH-001).",
       "type": "Functional",
-      "priority": "Critical",
-      "severity": "Blocker",
-      "preconditions": [
-        "Сервер Restful-Booker доступен",
-        "Content-Type: application/json"
-      ],
-      "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Клиент сформировал корректный JSON с данными гостя (Jim Brown, $150, 2026-12-01..2026-12-05)",
-          "expected_result": "Тело запроса валидно"
-        },
-        {
-          "keyword": "When",
-          "action": "Отправляет запрос POST /booking",
-          "expected_result": "Запрос принят"
-        },
-        {
-          "keyword": "Then",
-          "action": "Сервер возвращает статус HTTP 200 OK",
-          "expected_result": "Код 200 OK"
-        },
-        {
-          "keyword": "And",
-          "action": "В теле ответа сгенерирован bookingid и сохранены поля бронирования",
-          "expected_result": "Поле bookingid > 0"
-        }
-      ],
-      "postconditions": [
-        "Бронирование сохранено в базе"
-      ],
-      "test_data": {
-        "firstname": "Jim",
-        "lastname": "Brown",
-        "totalprice": 150,
-        "depositpaid": true,
-        "bookingdates": {
-          "checkin": "2026-12-01",
-          "checkout": "2026-12-05"
-        }
-      },
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-01",
-      "tags": [
-        "smoke",
-        "positive",
-        "booking",
-        "testit"
-      ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
-    },
-    {
-      "id": "TC-BOOK-002",
-      "title": "Получение существующего бронирования по ID (Happy Path, GET /booking/{id})",
-      "description": "Проверка возврата деталей бронирования по валидному идентификатору.",
-      "type": "Functional",
-      "priority": "Critical",
-      "severity": "Blocker",
-      "preconditions": [
-        "Бронирование с ID 1 создано"
-      ],
-      "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Существует активное бронирование с ID 1",
-          "expected_result": "Бронь существует"
-        },
-        {
-          "keyword": "When",
-          "action": "Отправляется GET /booking/1",
-          "expected_result": "Запрос принят"
-        },
-        {
-          "keyword": "Then",
-          "action": "Сервер возвращает HTTP 200 OK с полями firstname, lastname, totalprice, bookingdates",
-          "expected_result": "Код 200 OK и JSON"
-        }
-      ],
-      "postconditions": [],
-      "test_data": {
-        "booking_id": 1
-      },
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-02",
-      "tags": [
-        "positive",
-        "read",
-        "testit"
-      ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
-    },
-    {
-      "id": "TC-BOOK-003",
-      "title": "Успешная авторизация администратора (Happy Path, POST /auth)",
-      "description": "Проверка выпуска токена администратора по корректным учетным данным.",
-      "type": "Functional",
-      "priority": "Critical",
-      "severity": "Blocker",
-      "preconditions": [
-        "Сервис авторизации активен"
-      ],
-      "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Учетные данные admin / password123",
-          "expected_result": "Валидные креды"
-        },
-        {
-          "keyword": "When",
-          "action": "Отправляется POST /auth с телом JSON",
-          "expected_result": "Запрос принят"
-        },
-        {
-          "keyword": "Then",
-          "action": "Сервер возвращает HTTP 200 OK с непустым полем token (16 символов)",
-          "expected_result": "Токен выдан со сроком TTL 600c"
-        }
-      ],
-      "postconditions": [
-        "Токен активен в течение 600 секунд"
-      ],
-      "test_data": {
-        "username": "admin",
-        "password": "password123"
-      },
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-03",
-      "tags": [
-        "smoke",
-        "auth",
-        "positive",
-        "testit"
-      ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
-    },
-    {
-      "id": "TC-BOOK-004",
-      "title": "Полное обновление бронирования с токеном (Happy Path, PUT /booking/{id})",
-      "description": "Проверка успешной модификации бронирования авторизованным администратором.",
-      "type": "Functional",
+      "check_class": "Happy Path",
       "priority": "High",
       "severity": "Critical",
       "preconditions": [
-        "Бронь с ID 1 существует",
-        "Токен администратора получен"
+        "Пользователь не авторизован (отсутствует активная сессия)",
+        "Открыта главная страница интернет-магазина"
       ],
       "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Заголовок Cookie: token={token} сформирован",
-          "expected_result": "Запрос авторизован"
-        },
-        {
-          "keyword": "When",
-          "action": "Отправляется PUT /booking/1 с новыми данными (James Brown, $200)",
-          "expected_result": "Запрос принят"
-        },
-        {
-          "keyword": "Then",
-          "action": "Сервер возвращает HTTP 200 OK с обновленными полями",
-          "expected_result": "Код 200 OK"
-        }
+        {"keyword": "Given", "action": "Пользователь не авторизован и открывает главную страницу магазина", "expected_result": "Главная страница загружена, шапка сайта отображается"},
+        {"keyword": "When", "action": "Пользователь просматривает шапку страницы", "expected_result": "Шапка отрисована без ошибок и пустых блоков"},
+        {"keyword": "Then", "action": "В шапке отображается кнопка «Войти»", "expected_result": "Кнопка «Войти» видима (не скрыта, не disabled)"},
+        {"keyword": "And", "action": "Кнопка «Войти» доступна для нажатия как на desktop, так и на mobile viewport", "expected_result": "Кнопка кликабельна и доступна (не перекрыта другими элементами)"}
       ],
       "postconditions": [
-        "Данные брони обновлены"
+        "Состояние приложения не изменилось, пользователь остаётся на главной странице"
       ],
       "test_data": {
-        "booking_id": 1,
-        "firstname": "James",
-        "lastname": "Brown",
-        "totalprice": 200
+        "user_state": "unauthorized",
+        "viewport": ["desktop", "mobile"],
+        "expected_element": "login_button"
       },
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-04",
-      "tags": [
-        "positive",
-        "update",
-        "testit"
-      ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
+      "linked_jira_key": "KAN-17",
+      "linked_requirement_id": "REQ-AUTH-001",
+      "tags": ["ui", "auth", "login", "positive", "smoke", "testit", "p0"]
     },
     {
-      "id": "TC-BOOK-005",
-      "title": "Удаление бронирования с токеном (Happy Path, DELETE /booking/{id})",
-      "description": "Проверка успешного аннулирования бронирования администратором.",
+      "id": "TC-SHOP-002",
+      "title": "Переход на /login при нажатии кнопки «Войти» (Happy Path)",
+      "description": "Проверка навигации: клик по кнопке «Войти» ведёт на форму авторизации /login (AC2 REQ-AUTH-001).",
       "type": "Functional",
+      "check_class": "Happy Path",
       "priority": "High",
       "severity": "Critical",
       "preconditions": [
-        "Бронирование создано",
-        "Токен администратора активен"
+        "Пользователь не авторизован",
+        "Открыта главная страница магазина",
+        "Кнопка «Войти» отображается"
       ],
       "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Бронирование создано",
-          "expected_result": "Запись есть в БД"
-        },
-        {
-          "keyword": "When",
-          "action": "Отправляется DELETE /booking/{id} с Cookie: token={token}",
-          "expected_result": "Запрос обработан"
-        },
-        {
-          "keyword": "Then",
-          "action": "Сервер возвращает HTTP 201 Created (успешное удаление)",
-          "expected_result": "Код 201 Created"
-        }
+        {"keyword": "Given", "action": "Пользователь не авторизован и находится на главной странице", "expected_result": "Кнопка «Войти» видима"},
+        {"keyword": "When", "action": "Пользователь нажимает кнопку «Войти»", "expected_result": "Клик обработан без ошибок"},
+        {"keyword": "Then", "action": "Выполняется переход на страницу /login", "expected_result": "URL содержит /login и отображается форма авторизации"},
+        {"keyword": "And", "action": "Кнопка «Назад» браузера возвращает на главную страницу", "expected_result": "Навигация корректна, пользователь снова на главной"}
       ],
       "postconditions": [
-        "Бронирование удалено из базы"
+        "Пользователь находится на странице /login"
       ],
       "test_data": {
-        "booking_id": 1
+        "expected_url": "/login",
+        "redirect_type": "client-side"
       },
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-04",
-      "tags": [
-        "positive",
-        "delete",
-        "testit"
-      ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
+      "linked_jira_key": "KAN-17",
+      "linked_requirement_id": "REQ-AUTH-001",
+      "tags": ["ui", "auth", "login", "navigation", "positive", "smoke", "testit", "p0"]
     },
     {
-      "id": "TC-BOOK-006",
-      "title": "Создание бронирования с отсутствующим обязательным полем (Negative, POST /booking)",
-      "description": "Проверка возврата HTTP 400 Bad Request при отсутствии обязательного поля firstname.",
+      "id": "TC-SHOP-003",
+      "title": "Кнопка «Войти» не отображается для авторизованного пользователя (UI-state)",
+      "description": "Проверка UI-состояния шапки для авторизованного пользователя. ВНИМАНИЕ: поведение кнопки «Войти» для авторизованного пользователя не описано в спецификации (ambiguity) — кейс фиксирует ожидаемое поведение и требует уточнения.",
+      "type": "UI-state",
+      "check_class": "Security/UI-state",
+      "priority": "Medium",
+      "severity": "Major",
+      "preconditions": [
+        "Пользователь авторизован (валидная активная сессия)",
+        "Открыта главная страница магазина"
+      ],
+      "bdd_steps": [
+        {"keyword": "Given", "action": "Пользователь авторизован", "expected_result": "Активная сессия, профиль пользователя доступен"},
+        {"keyword": "When", "action": "Пользователь открывает главную страницу", "expected_result": "Страница загружена в авторизованном контексте"},
+        {"keyword": "Then", "action": "Кнопка «Войти» не отображается в шапке", "expected_result": "В шапке нет кнопки «Войти» (отображается профиль/имя пользователя)"},
+        {"keyword": "And", "action": "Отсутствует кликабельный элемент, ведущий на /login из шапки", "expected_result": "Перехода на /login по шапке не происходит"}
+      ],
+      "postconditions": [
+        "Состояние приложения не изменилось"
+      ],
+      "test_data": {
+        "user_state": "authorized",
+        "expected_element": "user_profile_menu"
+      },
+      "note": "Ambiguity из ReviewReport: «Не описано поведение/видимость кнопки «Войти» для авторизованного пользователя». Кейс требует подтверждения PO.",
+      "linked_jira_key": "KAN-17",
+      "linked_requirement_id": "REQ-AUTH-001",
+      "tags": ["ui", "auth", "ui-state", "negative", "testit", "p0"]
+    },
+    {
+      "id": "TC-SHOP-004",
+      "title": "Корректный email (user@example.com) → ошибки нет, кнопка «Зарегистрироваться» активна (Happy Path)",
+      "description": "Позитивная проверка валидации email: корректный формат user@example.com не вызывает ошибки и активирует кнопку регистрации (AC3 REQ-REG-002).",
+      "type": "Functional",
+      "check_class": "Happy Path",
+      "priority": "High",
+      "severity": "Critical",
+      "preconditions": [
+        "Открыта форма регистрации",
+        "Все обязательные поля формы доступны для ввода"
+      ],
+      "bdd_steps": [
+        {"keyword": "Given", "action": "Открыта форма регистрации", "expected_result": "Поля формы активны, кнопка «Зарегистрироваться» в исходном состоянии"},
+        {"keyword": "When", "action": "Пользователь вводит в поле email значение 'user@example.com'", "expected_result": "Значение принято, поле не подсвечено ошибкой"},
+        {"keyword": "Then", "action": "Сообщение об ошибке не отображается", "expected_result": "Нет текста «Некорректный email» и нет красной подсветки поля"},
+        {"keyword": "And", "action": "Кнопка «Зарегистрироваться» активна", "expected_result": "Кнопка кликабельна (не disabled)"}
+      ],
+      "postconditions": [
+        "Форма валидна и готова к отправке"
+      ],
+      "test_data": {
+        "email": "user@example.com",
+        "expected_error": null,
+        "expected_button_state": "enabled"
+      },
+      "linked_jira_key": "KAN-17",
+      "linked_requirement_id": "REQ-REG-002",
+      "tags": ["ui", "registration", "email", "validation", "positive", "smoke", "testit", "p1"]
+    },
+    {
+      "id": "TC-SHOP-005",
+      "title": "Email без символа @ → ошибка «Некорректный email» (Negative)",
+      "description": "Негативная проверка: email без @ не проходит валидацию (AC1 REQ-REG-002).",
       "type": "Negative",
-      "priority": "Critical",
-      "severity": "Blocker",
+      "check_class": "Negative",
+      "priority": "High",
+      "severity": "Major",
       "preconditions": [
-        "Сервер доступен"
+        "Открыта форма регистрации"
       ],
       "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Тело запроса без обязательного поля firstname",
-          "expected_result": "Нарушена схема контракта"
-        },
-        {
-          "keyword": "When",
-          "action": "Отправляется POST /booking",
-          "expected_result": "Запрос отклонен"
-        },
-        {
-          "keyword": "Then",
-          "action": "Сервер возвращает HTTP 400 Bad Request с описанием ошибки",
-          "expected_result": "Код 400"
-        }
+        {"keyword": "Given", "action": "Открыта форма регистрации", "expected_result": "Поле email активно"},
+        {"keyword": "When", "action": "Пользователь вводит email 'userexample.com' (символ @ отсутствует)", "expected_result": "Невалидное значение принято в поле"},
+        {"keyword": "And", "action": "Пользователь уводит фокус с поля email или пытается отправить форму", "expected_result": "Срабатывает триггер валидации"},
+        {"keyword": "Then", "action": "Отображается сообщение об ошибке «Некорректный email»", "expected_result": "Текст ошибки виден пользователю"},
+        {"keyword": "And", "action": "Кнопка «Зарегистрироваться» неактивна", "expected_result": "Кнопка находится в состоянии disabled"}
       ],
       "postconditions": [
-        "Запись не создана"
+        "Форма не отправлена, данные не отправлены на сервер"
       ],
       "test_data": {
-        "lastname": "Brown",
-        "totalprice": 100,
-        "bookingdates": {
-          "checkin": "2026-12-01",
-          "checkout": "2026-12-05"
-        }
+        "email": "userexample.com",
+        "expected_error": "Некорректный email",
+        "expected_button_state": "disabled"
       },
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-01",
-      "tags": [
-        "negative",
-        "validation",
-        "testit"
-      ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
+      "linked_jira_key": "KAN-17",
+      "linked_requirement_id": "REQ-REG-002",
+      "tags": ["ui", "registration", "email", "validation", "negative", "testit", "p1"]
     },
     {
-      "id": "TC-BOOK-007",
-      "title": "Отправка запроса с некорректным Content-Type (Negative, POST /booking)",
-      "description": "Проверка возврата HTTP 415 Unsupported Media Type при Content-Type: text/plain.",
+      "id": "TC-SHOP-006",
+      "title": "Email с пробелами → ошибка «Некорректный email» (Negative)",
+      "description": "Негативная проверка: email, содержащий пробелы (в начале, в середине, в конце), не проходит валидацию (AC2 REQ-REG-002).",
       "type": "Negative",
-      "priority": "Medium",
+      "check_class": "Negative",
+      "priority": "High",
       "severity": "Major",
-      "preconditions": [],
+      "preconditions": [
+        "Открыта форма регистрации"
+      ],
       "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Заголовок Content-Type: text/plain",
-          "expected_result": "Неподдерживаемый формат"
-        },
-        {
-          "keyword": "When",
-          "action": "Отправляется POST /booking с сырым текстом",
-          "expected_result": "Запрос отправлен"
-        },
-        {
-          "keyword": "Then",
-          "action": "Сервер возвращает HTTP 415 Unsupported Media Type",
-          "expected_result": "Код 415"
-        }
+        {"keyword": "Given", "action": "Открыта форма регистрации", "expected_result": "Поле email активно"},
+        {"keyword": "When", "action": "Пользователь вводит email 'user @example.com' (пробел перед @)", "expected_result": "Значение принято в поле"},
+        {"keyword": "And", "action": "Пользователь уводит фокус с поля email или пытается отправить форму", "expected_result": "Срабатывает триггер валидации"},
+        {"keyword": "Then", "action": "Отображается сообщение об ошибке «Некорректный email»", "expected_result": "Текст ошибки виден пользователю"},
+        {"keyword": "And", "action": "Проверка повторяется для вариантов 'user@ example.com' и 'user@example.com ' (пробелы в разных позициях)", "expected_result": "Во всех вариантах отображается ошибка «Некорректный email», кнопка неактивна"}
       ],
-      "postconditions": [],
-      "test_data": {},
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-01",
-      "tags": [
-        "negative",
-        "headers",
-        "testit"
+      "postconditions": [
+        "Форма не отправлена"
       ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
+      "test_data": {
+        "emails": ["user @example.com", "user@ example.com", "user@example.com ", " user@example.com"],
+        "expected_error": "Некорректный email",
+        "expected_button_state": "disabled"
+      },
+      "linked_jira_key": "KAN-17",
+      "linked_requirement_id": "REQ-REG-002",
+      "tags": ["ui", "registration", "email", "validation", "negative", "testit", "p1"]
     },
     {
-      "id": "TC-BOOK-008",
-      "title": "Получение несуществующего бронирования (Negative, GET /booking/{id})",
-      "description": "Проверка возврата HTTP 404 Not Found при запросе несуществующего ID.",
+      "id": "TC-SHOP-007",
+      "title": "Пустое значение email → ошибка, кнопка неактивна (Boundary)",
+      "description": "Граничная проверка пустого значения email. ВНИМАНИЕ: поведение при пустом значении не описано в критериях приёмки (ambiguity) — кейс фиксирует ожидаемое поведение до уточнения.",
+      "type": "Boundary",
+      "check_class": "Boundary",
+      "priority": "Medium",
+      "severity": "Major",
+      "preconditions": [
+        "Открыта форма регистрации"
+      ],
+      "bdd_steps": [
+        {"keyword": "Given", "action": "Открыта форма регистрации, поле email пустое", "expected_result": "Поле email в состоянии по умолчанию"},
+        {"keyword": "When", "action": "Пользователь не заполняет email и уводит фокус с поля / пытается отправить форму", "expected_result": "Срабатывает триггер валидации"},
+        {"keyword": "Then", "action": "Отображается ошибка о необходимости корректного email (ожидаемо «Некорректный email»)", "expected_result": "Сообщение об ошибке видно"},
+        {"keyword": "And", "action": "Кнопка «Зарегистрироваться» неактивна", "expected_result": "Кнопка в состоянии disabled"}
+      ],
+      "postconditions": [
+        "Форма не отправлена"
+      ],
+      "test_data": {
+        "email": "",
+        "expected_error": "Некорректный email",
+        "expected_button_state": "disabled"
+      },
+      "note": "Ambiguity из ReviewReport: «Не описано поведение при пустой строке email». Требуется уточнение текста ошибки.",
+      "linked_jira_key": "KAN-17",
+      "linked_requirement_id": "REQ-REG-002",
+      "tags": ["ui", "registration", "email", "validation", "boundary", "negative", "testit", "p1"]
+    },
+    {
+      "id": "TC-SHOP-008",
+      "title": "Email с несколькими @, без домена/локальной части → ошибка (Boundary)",
+      "description": "Граничные невалидные форматы email: несколько @, отсутствие домена верхнего уровня, отсутствие локальной части, @ на границах.",
+      "type": "Boundary",
+      "check_class": "Boundary",
+      "priority": "Medium",
+      "severity": "Major",
+      "preconditions": [
+        "Открыта форма регистрации"
+      ],
+      "bdd_steps": [
+        {"keyword": "Given", "action": "Открыта форма регистрации", "expected_result": "Поле email активно"},
+        {"keyword": "When", "action": "Пользователь поочерёдно вводит невалидные email: 'user@@example.com', 'user@example', '@example.com', 'user@'", "expected_result": "Каждое значение принимается в поле"},
+        {"keyword": "Then", "action": "Для каждого варианта отображается ошибка «Некорректный email»", "expected_result": "Текст ошибки виден для всех вариантов"},
+        {"keyword": "And", "action": "Кнопка «Зарегистрироваться» остаётся неактивной", "expected_result": "Кнопка в состоянии disabled во всех случаях"}
+      ],
+      "postconditions": [
+        "Форма не отправлена"
+      ],
+      "test_data": {
+        "emails": ["user@@example.com", "user@example", "@example.com", "user@", "user@.com"],
+        "expected_error": "Некорректный email",
+        "expected_button_state": "disabled"
+      },
+      "linked_jira_key": "KAN-17",
+      "linked_requirement_id": "REQ-REG-002",
+      "tags": ["ui", "registration", "email", "validation", "boundary", "negative", "testit", "p1"]
+    },
+    {
+      "id": "TC-SHOP-009",
+      "title": "Способ доставки «Курьер» → отображаются поля «Адрес» и «Дата доставки» (Happy Path)",
+      "description": "Проверка состава полей при выборе способа доставки «Курьер» (AC1 REQ-CHECKOUT-003).",
+      "type": "Functional",
+      "check_class": "Happy Path",
+      "priority": "High",
+      "severity": "Critical",
+      "preconditions": [
+        "В корзине есть хотя бы один товар",
+        "Пользователь авторизован",
+        "Открыт шаг оформления заказа «Доставка»"
+      ],
+      "bdd_steps": [
+        {"keyword": "Given", "action": "В корзине есть товар, пользователь авторизован и находится на шаге «Доставка»", "expected_result": "Шаг «Доставка» отображается"},
+        {"keyword": "When", "action": "Пользователь выбирает способ доставки «Курьер»", "expected_result": "Способ «Курьер» отмечен (активен)"},
+        {"keyword": "Then", "action": "Отображаются поля «Адрес» и «Дата доставки»", "expected_result": "Оба поля видимы и доступны для ввода"},
+        {"keyword": "And", "action": "Поле «Пункт выдачи» (dropdown) отсутствует", "expected_result": "Dropdown «Пункт выдачи» не отображается"}
+      ],
+      "postconditions": [
+        "Форма доставки «Курьер» готова к заполнению"
+      ],
+      "test_data": {
+        "delivery_method": "courier",
+        "product": {"sku": "SKU-001", "title": "Товар А", "qty": 1},
+        "cart_total": 1500,
+        "expected_fields": ["address", "delivery_date"]
+      },
+      "linked_jira_key": "KAN-17",
+      "linked_requirement_id": "REQ-CHECKOUT-003",
+      "tags": ["checkout", "delivery", "ui", "positive", "smoke", "testit", "p0"]
+    },
+    {
+      "id": "TC-SHOP-010",
+      "title": "Способ доставки «Самовывоз» → dropdown «Пункт выдачи», поля адреса скрыты (Happy Path)",
+      "description": "Проверка состава полей при выборе способа доставки «Самовывоз»: отображается dropdown «Пункт выдачи», поля «Адрес» и «Дата доставки» скрыты (AC2 REQ-CHECKOUT-003).",
+      "type": "Functional",
+      "check_class": "Happy Path",
+      "priority": "High",
+      "severity": "Critical",
+      "preconditions": [
+        "В корзине есть хотя бы один товар",
+        "Пользователь авторизован",
+        "Открыт шаг оформления заказа «Доставка»"
+      ],
+      "bdd_steps": [
+        {"keyword": "Given", "action": "В корзине есть товар, пользователь авторизован и находится на шаге «Доставка»", "expected_result": "Шаг «Доставка» отображается"},
+        {"keyword": "When", "action": "Пользователь выбирает способ доставки «Самовывоз»", "expected_result": "Способ «Самовывоз» отмечен (активен)"},
+        {"keyword": "Then", "action": "Отображается dropdown «Пункт выдачи»", "expected_result": "Dropdown доступен и раскрывает список пунктов выдачи"},
+        {"keyword": "And", "action": "Поля «Адрес» и «Дата доставки» скрыты", "expected_result": "Оба поля не отображаются в форме"}
+      ],
+      "postconditions": [
+        "Форма доставки «Самовывоз» готова к выбору пункта выдачи"
+      ],
+      "test_data": {
+        "delivery_method": "pickup",
+        "pickup_points": ["ПВЗ-001: Москва, ул. Тверская, 1", "ПВЗ-002: Москва, ул. Арбат, 5"],
+        "expected_fields": ["pickup_point"],
+        "hidden_fields": ["address", "delivery_date"]
+      },
+      "note": "Ambiguity из ReviewReport: не определён перечень и источник данных для dropdown «Пункт выдачи». Значения в test_data приведены как референсные.",
+      "linked_jira_key": "KAN-17",
+      "linked_requirement_id": "REQ-CHECKOUT-003",
+      "tags": ["checkout", "delivery", "ui", "positive", "smoke", "testit", "p0"]
+    },
+    {
+      "id": "TC-SHOP-011",
+      "title": "Переключение способа доставки очищает ранее введённые данные (Boundary)",
+      "description": "Проверка бизнес-правила: переключение между «Курьер» и «Самовывоз» очищает ранее введённые данные (AC3 REQ-CHECKOUT-003).",
+      "type": "Boundary",
+      "check_class": "Boundary",
+      "priority": "High",
+      "severity": "Major",
+      "preconditions": [
+        "В корзине есть хотя бы один товар",
+        "Пользователь авторизован",
+        "Открыт шаг оформления заказа «Доставка»"
+      ],
+      "bdd_steps": [
+        {"keyword": "Given", "action": "Выбран способ «Курьер» и заполнены поля «Адрес» = 'Москва, ул. Ленина, 10' и «Дата доставки» = '2026-11-20'", "expected_result": "Поля заполнены валидными значениями"},
+        {"keyword": "When", "action": "Пользователь переключает способ доставки на «Самовывоз»", "expected_result": "Активным становится «Самовывоз», состав полей меняется"},
+        {"keyword": "Then", "action": "Поля «Адрес» и «Дата доставки» скрыты, отображается dropdown «Пункт выдачи»", "expected_result": "Ранее введённые адрес и дата не отображаются"},
+        {"keyword": "And", "action": "Пользователь переключает способ обратно на «Курьер»", "expected_result": "Поля «Адрес» и «Дата доставки» пустые (данные очищены), dropdown «Пункт выдачи» скрыт"}
+      ],
+      "postconditions": [
+        "Форма содержит только поля, соответствующие активному способу доставки, без сохранённых значений"
+      ],
+      "test_data": {
+        "initial_method": "courier",
+        "address": "Москва, ул. Ленина, 10",
+        "delivery_date": "2026-11-20",
+        "switched_method": "pickup"
+      },
+      "linked_jira_key": "KAN-17",
+      "linked_requirement_id": "REQ-CHECKOUT-003",
+      "tags": ["checkout", "delivery", "business-logic", "boundary", "testit", "p0"]
+    },
+    {
+      "id": "TC-SHOP-012",
+      "title": "Кнопка «Оформить заказ» активна при заполнении всех обязательных полей (Курьер) (Happy Path)",
+      "description": "Проверка активации кнопки «Оформить заказ» при заполнении всех обязательных полей способа «Курьер» (AC4 REQ-CHECKOUT-003).",
+      "type": "Functional",
+      "check_class": "Happy Path",
+      "priority": "High",
+      "severity": "Critical",
+      "preconditions": [
+        "В корзине есть хотя бы один товар",
+        "Пользователь авторизован",
+        "Выбран способ доставки «Курьер»"
+      ],
+      "bdd_steps": [
+        {"keyword": "Given", "action": "Выбран способ доставки «Курьер», форма отображает поля «Адрес» и «Дата доставки»", "expected_result": "Поля доступны для ввода"},
+        {"keyword": "When", "action": "Пользователь заполняет «Адрес» = 'Москва, ул. Ленина, 10' и «Дата доставки» = '2026-11-20'", "expected_result": "Все обязательные поля заполнены валидными значениями"},
+        {"keyword": "Then", "action": "Кнопка «Оформить заказ» становится активной", "expected_result": "Кнопка кликабельна (не disabled)"},
+        {"keyword": "And", "action": "Кнопка остаётся активной при повторном изменении значений на валидные", "expected_result": "Состояние кнопки корректно пересчитывается"}
+      ],
+      "postconditions": [
+        "Форма готова к оформлению заказа"
+      ],
+      "test_data": {
+        "delivery_method": "courier",
+        "address": "Москва, ул. Ленина, 10",
+        "delivery_date": "2026-11-20",
+        "expected_button_state": "enabled"
+      },
+      "linked_jira_key": "KAN-17",
+      "linked_requirement_id": "REQ-CHECKOUT-003",
+      "tags": ["checkout", "delivery", "ui", "positive", "smoke", "testit", "p0"]
+    },
+    {
+      "id": "TC-SHOP-013",
+      "title": "Кнопка «Оформить заказ» неактивна при незаполненных обязательных полях (Курьер) (Negative)",
+      "description": "Проверка блокировки кнопки «Оформить заказ», пока не заполнены все обязательные поля способа «Курьер» (AC4 REQ-CHECKOUT-003).",
       "type": "Negative",
+      "check_class": "Negative",
       "priority": "High",
-      "severity": "Critical",
-      "preconditions": [
-        "ID 99999999 отсутствует в базе"
-      ],
-      "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "ID 99999999 не существует",
-          "expected_result": "Записи нет"
-        },
-        {
-          "keyword": "When",
-          "action": "Отправляется GET /booking/99999999",
-          "expected_result": "Запрос отправлен"
-        },
-        {
-          "keyword": "Then",
-          "action": "Сервер возвращает HTTP 404 Not Found",
-          "expected_result": "Код 404"
-        }
-      ],
-      "postconditions": [],
-      "test_data": {
-        "booking_id": 99999999
-      },
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-02",
-      "tags": [
-        "negative",
-        "notfound",
-        "testit"
-      ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
-    },
-    {
-      "id": "TC-BOOK-009",
-      "title": "Попытка PUT /booking/{id} без токена (Security / Negative)",
-      "description": "Проверка защиты от неавторизованного изменения данных без токена (403 Forbidden).",
-      "type": "Security",
-      "priority": "Critical",
-      "severity": "Blocker",
-      "preconditions": [
-        "Бронь существует",
-        "Токен не передан"
-      ],
-      "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Токен авторизации отсутствует в запросе",
-          "expected_result": "Неавторизованный запрос"
-        },
-        {
-          "keyword": "When",
-          "action": "Отправляется PUT /booking/1 с новыми данными",
-          "expected_result": "Запрос отклонен"
-        },
-        {
-          "keyword": "Then",
-          "action": "Сервер возвращает HTTP 403 Forbidden",
-          "expected_result": "Код 403 Forbidden"
-        },
-        {
-          "keyword": "And",
-          "action": "Исходные данные бронирования не изменяются",
-          "expected_result": "Целостность данных сохранена"
-        }
-      ],
-      "postconditions": [
-        "Данные защищены"
-      ],
-      "test_data": {
-        "booking_id": 1
-      },
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-04",
-      "tags": [
-        "security",
-        "auth",
-        "negative",
-        "testit"
-      ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
-    },
-    {
-      "id": "TC-BOOK-010",
-      "title": "Попытка DELETE /booking/{id} без токена (Security / Negative)",
-      "description": "Проверка запрета удаления бронирования без авторизации (HTTP 403 Forbidden).",
-      "type": "Security",
-      "priority": "Critical",
-      "severity": "Blocker",
-      "preconditions": [
-        "Бронь существует",
-        "Токен отсутствует"
-      ],
-      "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Заголовок Cookie token не передан",
-          "expected_result": "Запрос не авторизован"
-        },
-        {
-          "keyword": "When",
-          "action": "Отправляется DELETE /booking/1",
-          "expected_result": "Запрос отклонен"
-        },
-        {
-          "keyword": "Then",
-          "action": "Сервер возвращает HTTP 403 Forbidden",
-          "expected_result": "Код 403"
-        }
-      ],
-      "postconditions": [
-        "Бронь не удалена"
-      ],
-      "test_data": {
-        "booking_id": 1
-      },
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-04",
-      "tags": [
-        "security",
-        "delete",
-        "negative",
-        "testit"
-      ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
-    },
-    {
-      "id": "TC-BOOK-011",
-      "title": "Аутентификация с неверным паролем (Negative, POST /auth)",
-      "description": "Проверка отклонения неверных учетных данных и возврат HTTP 401 Unauthorized.",
-      "type": "Negative",
-      "priority": "High",
-      "severity": "Critical",
-      "preconditions": [],
-      "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Неверный пароль 'wrong_pass' для пользователя admin",
-          "expected_result": "Невалидные креды"
-        },
-        {
-          "keyword": "When",
-          "action": "Отправляется POST /auth",
-          "expected_result": "Запрос отклонен"
-        },
-        {
-          "keyword": "Then",
-          "action": "Сервер возвращает HTTP 401 Unauthorized с ошибкой Bad credentials",
-          "expected_result": "Код 401"
-        }
-      ],
-      "postconditions": [
-        "Токен не выдан"
-      ],
-      "test_data": {
-        "username": "admin",
-        "password": "wrong_password"
-      },
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-03",
-      "tags": [
-        "negative",
-        "auth",
-        "testit"
-      ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
-    },
-    {
-      "id": "TC-BOOK-012",
-      "title": "Валидация дат: checkout раньше checkin (Boundary / Negative, BR-01)",
-      "description": "Проверка отклонения создания брони при checkout < checkin (HTTP 400 Bad Request).",
-      "type": "Boundary",
-      "priority": "High",
-      "severity": "Critical",
-      "preconditions": [],
-      "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Даты: checkin '2026-12-10', checkout '2026-12-01'",
-          "expected_result": "Нарушено правило BR-01"
-        },
-        {
-          "keyword": "When",
-          "action": "Отправляется POST /booking",
-          "expected_result": "Запрос отклонен"
-        },
-        {
-          "keyword": "Then",
-          "action": "Сервер возвращает HTTP 400 Bad Request с описанием ошибки валидации дат",
-          "expected_result": "Код 400"
-        }
-      ],
-      "postconditions": [
-        "Запись не создана"
-      ],
-      "test_data": {
-        "checkin": "2026-12-10",
-        "checkout": "2026-12-01"
-      },
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-01",
-      "tags": [
-        "boundary",
-        "dates",
-        "negative",
-        "testit"
-      ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
-    },
-    {
-      "id": "TC-BOOK-013",
-      "title": "Граничные даты: checkout равен checkin (Boundary / Negative, BR-01)",
-      "description": "Проверка возврата HTTP 400 Bad Request при нулевой длительности пребывания (checkout == checkin).",
-      "type": "Boundary",
-      "priority": "High",
-      "severity": "Critical",
-      "preconditions": [],
-      "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Даты: checkin '2026-12-05', checkout '2026-12-05'",
-          "expected_result": "checkout не позже checkin"
-        },
-        {
-          "keyword": "When",
-          "action": "Отправляется POST /booking",
-          "expected_result": "Запрос отклонен"
-        },
-        {
-          "keyword": "Then",
-          "action": "Сервер возвращает HTTP 400 Bad Request",
-          "expected_result": "Код 400"
-        }
-      ],
-      "postconditions": [],
-      "test_data": {
-        "checkin": "2026-12-05",
-        "checkout": "2026-12-05"
-      },
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-01",
-      "tags": [
-        "boundary",
-        "dates",
-        "negative",
-        "testit"
-      ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
-    },
-    {
-      "id": "TC-BOOK-014",
-      "title": "Граничное значение стоимости: totalprice = 0 (Boundary / Negative, BR-02)",
-      "description": "Проверка запрета создания бронирования с нулевой стоимостью (HTTP 400 Bad Request).",
-      "type": "Boundary",
-      "priority": "Medium",
-      "severity": "Major",
-      "preconditions": [],
-      "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Поле totalprice = 0",
-          "expected_result": "Нарушено правило BR-02 (> 0)"
-        },
-        {
-          "keyword": "When",
-          "action": "Отправляется POST /booking",
-          "expected_result": "Запрос отклонен"
-        },
-        {
-          "keyword": "Then",
-          "action": "Сервер возвращает HTTP 400 Bad Request",
-          "expected_result": "Код 400"
-        }
-      ],
-      "postconditions": [],
-      "test_data": {
-        "totalprice": 0
-      },
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-01",
-      "tags": [
-        "boundary",
-        "price",
-        "negative",
-        "testit"
-      ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
-    },
-    {
-      "id": "TC-BOOK-015",
-      "title": "Отрицательная стоимость бронирования: totalprice < 0 (Boundary / Negative, BR-02)",
-      "description": "Проверка отклонения отрицательной стоимости проживания (HTTP 400 Bad Request).",
-      "type": "Boundary",
-      "priority": "Medium",
-      "severity": "Major",
-      "preconditions": [],
-      "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Поле totalprice = -50",
-          "expected_result": "Отрицательное число"
-        },
-        {
-          "keyword": "When",
-          "action": "Отправляется POST /booking",
-          "expected_result": "Запрос отклонен"
-        },
-        {
-          "keyword": "Then",
-          "action": "Сервер возвращает HTTP 400 Bad Request",
-          "expected_result": "Код 400"
-        }
-      ],
-      "postconditions": [],
-      "test_data": {
-        "totalprice": -50
-      },
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-01",
-      "tags": [
-        "boundary",
-        "price",
-        "negative",
-        "testit"
-      ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
-    },
-    {
-      "id": "TC-BOOK-016",
-      "title": "Невалидный формат даты (Boundary / Negative, ISO 8601)",
-      "description": "Проверка отклонения невалидного формата дат (DD-MM-YYYY вместо YYYY-MM-DD).",
-      "type": "Boundary",
-      "priority": "Medium",
-      "severity": "Major",
-      "preconditions": [],
-      "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Даты в формате '01/12/2026'",
-          "expected_result": "Не соответствует ISO 8601"
-        },
-        {
-          "keyword": "When",
-          "action": "Отправляется POST /booking",
-          "expected_result": "Запрос отклонен"
-        },
-        {
-          "keyword": "Then",
-          "action": "Сервер возвращает HTTP 400 Bad Request",
-          "expected_result": "Код 400"
-        }
-      ],
-      "postconditions": [],
-      "test_data": {
-        "checkin": "01/12/2026",
-        "checkout": "05/12/2026"
-      },
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-01",
-      "tags": [
-        "boundary",
-        "dates",
-        "format",
-        "testit"
-      ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
-    },
-    {
-      "id": "TC-BOOK-017",
-      "title": "Проверка соблюдения SLA времени отклика (NFR-01)",
-      "description": "Проверка, что время отклика сервиса на POST /booking на 95-м перцентиле < 600 мс.",
-      "type": "Non-Functional",
-      "priority": "Medium",
       "severity": "Major",
       "preconditions": [
-        "Сервер работает в штатном режиме"
+        "В корзине есть хотя бы один товар",
+        "Пользователь авторизован",
+        "Выбран способ доставки «Курьер»"
       ],
       "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Серия из 10 тестовых запросов POST /booking",
-          "expected_result": "Тестовая нагрузка"
-        },
-        {
-          "keyword": "When",
-          "action": "Замеряется время ответа сервера (latency)",
-          "expected_result": "Тайминги получены"
-        },
-        {
-          "keyword": "Then",
-          "action": "Время ответа p95 не превышает 600 мс (согласно NFR-01)",
-          "expected_result": "SLA соблюден"
-        }
-      ],
-      "postconditions": [],
-      "test_data": {},
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-01",
-      "tags": [
-        "nfr",
-        "sla",
-        "performance",
-        "testit"
-      ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
-    },
-    {
-      "id": "TC-BOOK-018",
-      "title": "Защита от перебора паролей rate limit на POST /auth (Security, NFR-03)",
-      "description": "Проверка блокировки с кодом HTTP 429 Too Many Requests при более чем 5 попытках авторизации в минуту.",
-      "type": "Security",
-      "priority": "High",
-      "severity": "Critical",
-      "preconditions": [
-        "Лимит 5 попыток/мин активен"
-      ],
-      "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Отправлено 5 неверных попыток авторизации подряд",
-          "expected_result": "Лимит исчерпан"
-        },
-        {
-          "keyword": "When",
-          "action": "Отправляется 6-я попытка POST /auth в течение 60 секунд",
-          "expected_result": "Запрос перехвачен rate limiter"
-        },
-        {
-          "keyword": "Then",
-          "action": "Сервер возвращает HTTP 429 Too Many Requests",
-          "expected_result": "Код 429"
-        }
+        {"keyword": "Given", "action": "Выбран способ «Курьер», все поля пустые", "expected_result": "Кнопка «Оформить заказ» неактивна"},
+        {"keyword": "When", "action": "Пользователь заполняет только «Адрес», оставляя «Дата доставки» пустой", "expected_result": "Часть обязательных полей заполнена"},
+        {"keyword": "Then", "action": "Кнопка «Оформить заказ» остаётся неактивной", "expected_result": "Кнопка disabled"},
+        {"keyword": "And", "action": "Пользователь очищает «Адрес» (или заполняет только «Дату доставки»)", "expected_result": "Во всех случаях неполного заполнения кнопка остаётся неактивной"}
       ],
       "postconditions": [
-        "Брутфорс предотвращен"
+        "Заказ не оформлен, форма остаётся открытой"
       ],
-      "test_data": {},
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-03",
-      "tags": [
-        "security",
-        "ratelimit",
-        "bruteforce",
-        "testit"
-      ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
-    },
-    {
-      "id": "TC-BOOK-019",
-      "title": "Идемпотентность повторного удаления брони (Security / Idempotency, FR-04)",
-      "description": "Проверка поведения при повторном DELETE уже удаленного бронирования (HTTP 405 / 404).",
-      "type": "Security",
-      "priority": "Medium",
-      "severity": "Major",
-      "preconditions": [
-        "Бронь с ID 1 уже была успешно удалена в TC-BOOK-005"
-      ],
-      "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Бронь с ID 1 уже удалена",
-          "expected_result": "Запись отсутствует"
-        },
-        {
-          "keyword": "When",
-          "action": "Отправляется повторный DELETE /booking/1 с токеном",
-          "expected_result": "Запрос обработан"
-        },
-        {
-          "keyword": "Then",
-          "action": "Сервер возвращает HTTP 405 Method Not Allowed или 404 Not Found",
-          "expected_result": "Код 405/404"
-        }
-      ],
-      "postconditions": [],
       "test_data": {
-        "booking_id": 1
+        "delivery_method": "courier",
+        "scenarios": [
+          {"address": "", "delivery_date": ""},
+          {"address": "Москва, ул. Ленина, 10", "delivery_date": ""},
+          {"address": "", "delivery_date": "2026-11-20"}
+        ],
+        "expected_button_state": "disabled"
       },
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-04",
-      "tags": [
-        "security",
-        "delete",
-        "idempotency",
-        "testit"
-      ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
+      "linked_jira_key": "KAN-17",
+      "linked_requirement_id": "REQ-CHECKOUT-003",
+      "tags": ["checkout", "delivery", "ui", "negative", "testit", "p0"]
     },
     {
-      "id": "TC-BOOK-020",
-      "title": "Проверка срока жизни токена авторизации TTL 600с (Security, FR-03/FR-04)",
-      "description": "Проверка отклонения защищенной операции с истекшим токеном (HTTP 403 Forbidden).",
-      "type": "Security",
+      "id": "TC-SHOP-014",
+      "title": "Успешное оформление заказа с доставкой курьером → заказ создан (Happy Path / E2E)",
+      "description": "Сквозной позитивный сценарий оформления заказа с курьерской доставкой: заполнение полей, активация кнопки, создание заказа (AC1+AC4 REQ-CHECKOUT-003).",
+      "type": "Functional",
+      "check_class": "Happy Path",
       "priority": "High",
       "severity": "Critical",
       "preconditions": [
-        "Токен был получен более 600 секунд назад и истек"
+        "В корзине есть хотя бы один товар",
+        "Пользователь авторизован",
+        "Выбран способ доставки «Курьер»",
+        "Заполнены все обязательные поля"
       ],
       "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Срок жизни токена (TTL 600с) истек",
-          "expected_result": "Токен недействителен"
-        },
-        {
-          "keyword": "When",
-          "action": "Отправляется PUT /booking/1 с истекшим токеном",
-          "expected_result": "Запрос отклонен"
-        },
-        {
-          "keyword": "Then",
-          "action": "Сервер возвращает HTTP 403 Forbidden",
-          "expected_result": "Код 403"
-        }
+        {"keyword": "Given", "action": "Пользователь авторизован, в корзине есть товар, выбран «Курьер», заполнены «Адрес» и «Дата доставки»", "expected_result": "Кнопка «Оформить заказ» активна"},
+        {"keyword": "When", "action": "Пользователь нажимает кнопку «Оформить заказ»", "expected_result": "Запрос на создание заказа отправлен"},
+        {"keyword": "Then", "action": "Заказ успешно создан, отображается страница подтверждения с номером заказа", "expected_result": "HTTP 200/201, номер заказа присвоен"},
+        {"keyword": "And", "action": "Корзина очищена, заказ отображается в «Моих заказах» со статусом «В обработке»", "expected_result": "Корзина пуста, заказ доступен в списке заказов"}
       ],
-      "postconditions": [],
-      "test_data": {},
-      "linked_jira_key": "KAN-14",
-      "linked_requirement_id": "FR-04",
-      "tags": [
-        "security",
-        "ttl",
-        "auth",
-        "testit"
+      "postconditions": [
+        "Заказ создан",
+        "Корзина очищена"
       ],
-      "status": "Ready",
-      "assumption": false,
-      "blocked": false
+      "test_data": {
+        "delivery_method": "courier",
+        "address": "Москва, ул. Ленина, 10",
+        "delivery_date": "2026-11-20",
+        "product": {"sku": "SKU-001", "title": "Товар А", "qty": 1},
+        "expected_http_status": [200, 201]
+      },
+      "linked_jira_key": "KAN-17",
+      "linked_requirement_id": "REQ-CHECKOUT-003",
+      "tags": ["checkout", "delivery", "positive", "smoke", "e2e", "testit", "p0"]
+    },
+    {
+      "id": "TC-SHOP-015",
+      "title": "Активация кнопки «Оформить заказ» при выборе пункта выдачи (Самовывоз) (Positive/Negative)",
+      "description": "Проверка активации кнопки «Оформить заказ» для способа «Самовывоз»: неактивна без выбранного пункта выдачи, активна после выбора (AC2+AC4 REQ-CHECKOUT-003).",
+      "type": "Functional",
+      "check_class": "Happy Path",
+      "priority": "High",
+      "severity": "Major",
+      "preconditions": [
+        "В корзине есть хотя бы один товар",
+        "Пользователь авторизован",
+        "Выбран способ доставки «Самовывоз»"
+      ],
+      "bdd_steps": [
+        {"keyword": "Given", "action": "Выбран способ «Самовывоз», отображается dropdown «Пункт выдачи»", "expected_result": "Пункт выдачи не выбран по умолчанию"},
+        {"keyword": "When", "action": "Пользователь не выбирает пункт выдачи", "expected_result": "Кнопка «Оформить заказ» неактивна"},
+        {"keyword": "And", "action": "Пользователь выбирает пункт выдачи 'ПВЗ-001: Москва, ул. Тверская, 1'", "expected_result": "Пункт выдачи выбран"},
+        {"keyword": "Then", "action": "Кнопка «Оформить заказ» становится активной", "expected_result": "Кнопка кликабельна (не disabled)"}
+      ],
+      "postconditions": [
+        "Форма «Самовывоз» готова к оформлению заказа"
+      ],
+      "test_data": {
+        "delivery_method": "pickup",
+        "pickup_point": "ПВЗ-001: Москва, ул. Тверская, 1",
+        "expected_button_state_before": "disabled",
+        "expected_button_state_after": "enabled"
+      },
+      "linked_jira_key": "KAN-17",
+      "linked_requirement_id": "REQ-CHECKOUT-003",
+      "tags": ["checkout", "delivery", "ui", "positive", "negative", "testit", "p0"]
+    },
+    {
+      "id": "TC-SHOP-016",
+      "title": "Оформление заказа недоступно неавторизованному пользователю (Security / Access control)",
+      "description": "Проверка контроля доступа: неавторизованный пользователь не может перейти к оформлению заказа — выполняется редирект на /login (связь REQ-CHECKOUT-003 с REQ-AUTH-001).",
+      "type": "Security",
+      "check_class": "Security/UI-state",
+      "priority": "High",
+      "severity": "Critical",
+      "preconditions": [
+        "В корзине есть хотя бы один товар",
+        "Пользователь НЕ авторизован"
+      ],
+      "bdd_steps": [
+        {"keyword": "Given", "action": "В корзине есть товар, пользователь не авторизован", "expected_result": "Активной сессии нет"},
+        {"keyword": "When", "action": "Пользователь пытается открыть страницу оформления заказа /checkout", "expected_result": "Прямой доступ к оформлению заблокирован"},
+        {"keyword": "Then", "action": "Выполняется редирект на страницу /login", "expected_result": "URL содержит /login, отображается форма авторизации"},
+        {"keyword": "And", "action": "Форма оформления заказа не отображается, данные заказа недоступны", "expected_result": "Нет доступа к полям доставки и кнопке «Оформить заказ»"}
+      ],
+      "postconditions": [
+        "Пользователь находится на /login, заказ не создан"
+      ],
+      "test_data": {
+        "user_state": "unauthorized",
+        "target_url": "/checkout",
+        "expected_redirect": "/login",
+        "product": {"sku": "SKU-001", "qty": 1}
+      },
+      "linked_jira_key": "KAN-17",
+      "linked_requirement_id": "REQ-CHECKOUT-003",
+      "tags": ["checkout", "security", "access-control", "negative", "testit", "p0"]
     }
   ]
 }
