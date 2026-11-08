@@ -1,10 +1,17 @@
 import argparse
+import io
 import json
 import shutil
 import subprocess
 import sys
 from pathlib import Path
 from typing import Any, Dict, List
+
+# Настройка UTF-8 для консоли Windows
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 from evaluator import evaluate_response
 
@@ -42,9 +49,26 @@ MAX_ERRORS = 0
 # RUNNER
 # =============================================================
 
+def get_opencode_cmd() -> str:
+    exe_path = (
+        Path.home()
+        / "AppData"
+        / "Roaming"
+        / "npm"
+        / "node_modules"
+        / "opencode-ai"
+        / "bin"
+        / "opencode.exe"
+    )
+    if exe_path.exists():
+        return str(exe_path)
+    return shutil.which("opencode") or "opencode"
+
+
 def run_agent(prompt: str) -> str:
     """Запускает AI QA Агента в OpenCode и возвращает итоговый текстовый ответ."""
-    opencode_cmd = shutil.which("opencode") or "opencode"
+    prompt = prompt.strip()
+    opencode_cmd = get_opencode_cmd()
 
     process = subprocess.Popen(
         [

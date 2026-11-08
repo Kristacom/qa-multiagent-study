@@ -1,16 +1,39 @@
+import io
 import json
 import re
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any, Dict
 
+# Настройка UTF-8 для консоли Windows
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 # =============================================================
 # PATHS
 # =============================================================
 
 project_path = Path(__file__).resolve().parent.parent
+
+
+def get_opencode_cmd() -> str:
+    exe_path = (
+        Path.home()
+        / "AppData"
+        / "Roaming"
+        / "npm"
+        / "node_modules"
+        / "opencode-ai"
+        / "bin"
+        / "opencode.exe"
+    )
+    if exe_path.exists():
+        return str(exe_path)
+    return shutil.which("opencode") or "opencode"
 
 
 # =============================================================
@@ -110,11 +133,13 @@ ACTUAL AGENT RESPONSE:
 - Только чистый JSON.
 """
 
+    judge_prompt = judge_prompt.strip()
+
     # =========================================================
     # ЗАПУСК EVALUATOR ЧЕРЕЗ OPENCODE
     # =========================================================
 
-    opencode_cmd = shutil.which("opencode") or "opencode"
+    opencode_cmd = get_opencode_cmd()
 
     process = subprocess.Popen(
         [
