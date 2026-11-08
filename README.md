@@ -151,27 +151,29 @@ opencode
 2. **Task Designer:** Проверит Jira на наличие существующих задач:
    - Обнаружит существующую Story `KAN-17` и QA-подзадачу `KAN-18` (не создавая дубликатов).
    - Обнаружит связанные тикеты вопросов `[QUESTION]` (`KAN-19` — `KAN-24`) и зафиксирует их связь.
-3. **Test Designer:** Сформирует 16 BDD тест-кейсов со 100% покрытием критериев приемки в виде файлов `features/*.feature`, `artifacts/testomat_export.csv` и `artifacts/testomat_export.json`.
+3. **Test Designer:** Сформирует 16 BDD тест-кейсов со 100% покрытием критериев приемки в виде файлов `features/*.feature`, `artifacts/testomat_export.csv`, `artifacts/testomat_export.json` и **автоматически выгрузит их в Testomat.io TMS** через модуль `sync_testomat.py` (с созданием отчета `artifacts/testomat_sync_result.json`).
 4. **QA Orchestrator:** Соберет сквозную матрицу трассируемости и опубликует `FinalReport.md`.
 
 ---
 
 ## 🚀 Синхронизация с Testomat.io TMS
 
-Все 16 тест-кейсов готовы к отображению в твоем проекте [app.testomat.io](https://app.testomat.io):
+Синхронизация происходит **полностью автоматически** при работе агента `test-designer` через скрипт `sync_testomat.py`.
 
-### Вариант 1 (Мгновенный Drag & Drop через интерфейс — 15 секунд):
-1. Открой свой проект в [app.testomat.io](https://app.testomat.io).
-2. Перейди во вкладку **Tests** $\rightarrow$ нажми меню **«...»** (или кнопку «Import»).
-3. Выбери **«Import from CSV»** и перетащи файл:
-   [`artifacts/testomat_export.csv`](file:///C:/Users/Kosmos/qa-multiagent-study/artifacts/testomat_export.csv).
-4. Все 16 тест-кейсов со сьютами, шагами `Given/When/Then`, тегами и приоритетами сразу появятся в интерфейсе!
-
-### Вариант 2 (Автоматический через CLI синхронизатор):
-В настройках проекта Testomat.io (Settings $\rightarrow$ API) скопируй токен проекта (`tstmt_...`) и выполни:
+### 1. Автоматический режим (по умолчанию при `/qa-flow`):
+Агент самостоятельно выполняет команду:
 ```bash
-TESTOMATIO=tstmt_ТВОЙ_ТОКЕН npx @testomatio/check-cucumber -d features --sync
+python sync_testomat.py
 ```
+Скрипт подтягивает токен из файла `.env` (`TESTOMATIO=tstmt_...`), отправляет 16 BDD-сценариев в облачный проект `SHOP-QA` в [app.testomat.io](https://app.testomat.io), размечает feature-файлы уникальными ID (`@T...`, `@S...`) и сохраняет артефакт `artifacts/testomat_sync_result.json`.
+
+### 2. Ручной запуск синхронизации (при необходимости):
+Если вы хотите пересинхронизировать тесты вручную из терминала:
+```bash
+python sync_testomat.py
+```
+Или через Drag & Drop в веб-интерфейсе:
+* В [app.testomat.io](https://app.testomat.io) во вкладке **Tests** нажать меню **«...»** $\rightarrow$ **«Import from CSV»** $\rightarrow$ выбрать [`artifacts/testomat_export.csv`](file:///C:/Users/Kosmos/qa-multiagent-study/artifacts/testomat_export.csv).
 
 ---
 

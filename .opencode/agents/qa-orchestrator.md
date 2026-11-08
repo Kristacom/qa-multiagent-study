@@ -87,17 +87,19 @@ tools:
 ### Шаг 4: Запуск Фазы 3 (Test Designer)
 1. Вызови агента **`test-designer`** со скиллом `.opencode/skills/test-design/SKILL.md`.
 2. Передай перечень функциональных требований (FR) и критериев приемки (AC).
-3. Дождись формирования артефактов `artifacts/TestModel.json` и `artifacts/testit_export.json`.
+3. Дождись формирования артефактов `artifacts/TestModel.json`, `features/*.feature`, `artifacts/testomat_export.csv`.
 4. Проверь полноту тестовой модели: покрытие всех критериев приёмки (AC), наличие позитивных, негативных и граничных проверок.
+5. Убедись, что выполнена автоматическая синхронизация с Testomat.io через `python sync_testomat.py` и создан артефакт `artifacts/testomat_sync_result.json`.
 
 ### Шаг 5: Фаза 4 — Финальный аудит и формирование FinalReport.md
-1. Проверь наличие всех 5 обязательных артефактов:
+1. Проверь наличие обязательных артефактов:
    - `artifacts/ReviewReport.json`
    - `artifacts/JiraTasks.json`
    - `artifacts/JiraUploadResult.json`
    - `artifacts/TestModel.json`
-   - `artifacts/testit_export.json`
+   - `artifacts/testomat_sync_result.json`
+   - `features/*.feature`
 2. Построй сквозную матрицу трассируемости:
-   - `Требование Confluence (FR) <-> Задача Jira (Story) <-> QA-подзадача <-> Тест-кейсы Test IT <-> Покрытие AC`
+   - `Требование Confluence (FR) <-> Задача Jira (Story) <-> QA-подзадача <-> Тест-кейсы Testomat.io <-> Покрытие AC`
 3. Собери консолидированный отчет `artifacts/FinalReport.md`.
-4. Выведи пользователю краткую сводку с кликабельными ссылками на Jira, Confluence и артефакты.
+4. Выведи пользователю краткую сводку с кликабельными ссылками на Jira, Confluence, Testomat.io и артефакты.

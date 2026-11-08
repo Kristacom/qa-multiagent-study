@@ -1,35 +1,45 @@
 {
   "suite_id": "SUITE-SHOP-CHECKOUT-24",
+  "project": "SHOP-QA",
+  "version": "2.4",
   "title": "Тестирование модуля оформления заказа (Checkout), релиз 2.4",
-  "description": "BDD Gherkin тест-модель для модуля оформления заказа интернет-магазина (release 2.4). Покрывает требования REQ-AUTH-001 (кнопка «Войти»), REQ-REG-002 (валидация email при регистрации) и REQ-CHECKOUT-003 (оформление заказа с выбором способа доставки). Классы проверок: Happy Path, Negative, Boundary, Security/UI-state. Целевая TMS: проект SHOP-QA, тип Manual, язык ru. Источник требований: CONF-SHOP-CHECKOUT-24 (Confluence page 2031617).",
-  "jira_task_key": "KAN-17",
-  "qa_subtask_key": "KAN-18",
-  "tms": {
-    "platform": "Testomat.io",
-    "url": "https://app.testomat.io",
-    "project": "SHOP-QA",
-    "import_formats": [
-      "Cucumber BDD (.feature files)",
-      "Testomat Import API (POST /api/load)",
-      "CSV / Excel Import"
-    ],
-    "language": "ru"
-  },
+  "description": "BDD Gherkin тест-модель для модуля оформления заказа интернет-магазина (release 2.4). Покрывает требования REQ-AUTH-001 (кнопка «Войти» и защита маршрута), REQ-REG-002 (валидация email при регистрации) и REQ-CHECKOUT-003 (оформление заказа с выбором способа доставки). Классы проверок: Happy Path, Negative, Boundary, Security/UI-state. Целевая TMS: Testomat.io, проект SHOP-QA, тип Manual, язык ru. Источник требований: Confluence page 2031617 (CONF-PAGE-2031617).",
+  "jira_task_key": "KAN-26",
+  "qa_subtask_key": "KAN-27",
+  "total_cases": 16,
+  "coverage_percentage": 100,
   "source_requirements": [
     "REQ-AUTH-001",
     "REQ-REG-002",
     "REQ-CHECKOUT-003"
   ],
-  "confluence_source": "https://kristapro.atlassian.net/wiki/spaces/MFS/pages/2031617",
+  "confluence_source": {
+    "space_key": "MFS",
+    "page_id": "2031617",
+    "page_title": "Требования к модулю оформления заказа — релиз 2.4 для интернет-магазина",
+    "url": "https://kristapro.atlassian.net/wiki/spaces/MFS/pages/2031617"
+  },
+  "tms": {
+    "platform": "Testomat.io",
+    "url": "https://app.testomat.io",
+    "project": "SHOP-QA",
+    "language": "ru",
+    "test_type": "Manual",
+    "import_formats": [
+      "Cucumber BDD (.feature files)",
+      "Testomat Load API (POST /api/load)",
+      "CSV / Excel Import"
+    ]
+  },
   "test_cases": [
     {
       "id": "TC-SHOP-001",
-      "title": "Отображение кнопки «Войти» для неавторизованного пользователя (Happy Path)",
-      "description": "Проверка видимости и кликабельности кнопки «Войти» в шапке главной страницы для неавторизованного пользователя (AC1 REQ-AUTH-001).",
+      "title": "Отображение кнопки «Войти» для неавторизованного пользователя и переход на /login (Happy Path)",
+      "description": "Проверка видимости кнопки «Войти» в шапке главной страницы для неавторизованного пользователя и перехода на форму авторизации /login по клику (AC1 + AC2 REQ-AUTH-001).",
       "type": "Functional",
       "check_class": "Happy Path",
-      "priority": "High",
-      "severity": "Critical",
+      "priority": "Critical",
+      "severity": "Blocker",
       "preconditions": [
         "Пользователь не авторизован (отсутствует активная сессия)",
         "Открыта главная страница интернет-магазина"
@@ -42,154 +52,84 @@
         },
         {
           "keyword": "When",
-          "action": "Пользователь просматривает шапку страницы",
-          "expected_result": "Шапка отрисована без ошибок и пустых блоков"
-        },
-        {
-          "keyword": "Then",
-          "action": "В шапке отображается кнопка «Войти»",
+          "action": "Пользователь проверяет наличие кнопки «Войти» в шапке страницы",
           "expected_result": "Кнопка «Войти» видима (не скрыта, не disabled)"
         },
         {
-          "keyword": "And",
-          "action": "Кнопка «Войти» доступна для нажатия как на desktop, так и на mobile viewport",
-          "expected_result": "Кнопка кликабельна и доступна (не перекрыта другими элементами)"
-        }
-      ],
-      "postconditions": [
-        "Состояние приложения не изменилось, пользователь остаётся на главной странице"
-      ],
-      "test_data": {
-        "user_state": "unauthorized",
-        "viewport": [
-          "desktop",
-          "mobile"
-        ],
-        "expected_element": "login_button"
-      },
-      "linked_jira_key": "KAN-17",
-      "linked_requirement_id": "REQ-AUTH-001",
-      "tags": [
-        "ui",
-        "auth",
-        "login",
-        "positive",
-        "smoke",
-        "testit",
-        "p0"
-      ]
-    },
-    {
-      "id": "TC-SHOP-002",
-      "title": "Переход на /login при нажатии кнопки «Войти» (Happy Path)",
-      "description": "Проверка навигации: клик по кнопке «Войти» ведёт на форму авторизации /login (AC2 REQ-AUTH-001).",
-      "type": "Functional",
-      "check_class": "Happy Path",
-      "priority": "High",
-      "severity": "Critical",
-      "preconditions": [
-        "Пользователь не авторизован",
-        "Открыта главная страница магазина",
-        "Кнопка «Войти» отображается"
-      ],
-      "bdd_steps": [
-        {
-          "keyword": "Given",
-          "action": "Пользователь не авторизован и находится на главной странице",
-          "expected_result": "Кнопка «Войти» видима"
-        },
-        {
-          "keyword": "When",
+          "keyword": "Then",
           "action": "Пользователь нажимает кнопку «Войти»",
           "expected_result": "Клик обработан без ошибок"
         },
         {
-          "keyword": "Then",
-          "action": "Выполняется переход на страницу /login",
-          "expected_result": "URL содержит /login и отображается форма авторизации"
-        },
-        {
           "keyword": "And",
-          "action": "Кнопка «Назад» браузера возвращает на главную страницу",
-          "expected_result": "Навигация корректна, пользователь снова на главной"
+          "action": "Выполняется переход на страницу авторизации",
+          "expected_result": "URL содержит /login, отображается форма авторизации"
         }
       ],
       "postconditions": [
         "Пользователь находится на странице /login"
       ],
       "test_data": {
-        "expected_url": "/login",
-        "redirect_type": "client-side"
+        "user_state": "unauthorized",
+        "viewport": ["desktop", "mobile"],
+        "expected_element": "login_button",
+        "expected_url": "/login"
       },
-      "linked_jira_key": "KAN-17",
+      "linked_jira_key": "KAN-26",
       "linked_requirement_id": "REQ-AUTH-001",
-      "tags": [
-        "ui",
-        "auth",
-        "login",
-        "navigation",
-        "positive",
-        "smoke",
-        "testit",
-        "p0"
-      ]
+      "tags": ["ui", "auth", "login", "navigation", "positive", "smoke", "p0"]
     },
     {
-      "id": "TC-SHOP-003",
-      "title": "Кнопка «Войти» не отображается для авторизованного пользователя (UI-state)",
-      "description": "Проверка UI-состояния шапки для авторизованного пользователя. ВНИМАНИЕ: поведение кнопки «Войти» для авторизованного пользователя не описано в спецификации (ambiguity) — кейс фиксирует ожидаемое поведение и требует уточнения.",
-      "type": "UI-state",
+      "id": "TC-SHOP-002",
+      "title": "Защита маршрута /checkout для неавторизованного пользователя — редирект на /login (Security / Access control)",
+      "description": "Проверка контроля доступа: неавторизованный пользователь при прямом открытии защищённого маршрута /checkout перенаправляется на /login (связь REQ-AUTH-001 с REQ-CHECKOUT-003).",
+      "type": "Security",
       "check_class": "Security/UI-state",
-      "priority": "Medium",
-      "severity": "Major",
+      "priority": "High",
+      "severity": "Critical",
       "preconditions": [
-        "Пользователь авторизован (валидная активная сессия)",
-        "Открыта главная страница магазина"
+        "Пользователь не авторизован (отсутствует активная сессия)",
+        "В корзине есть хотя бы один товар"
       ],
       "bdd_steps": [
         {
           "keyword": "Given",
-          "action": "Пользователь авторизован",
-          "expected_result": "Активная сессия, профиль пользователя доступен"
+          "action": "Пользователь не авторизован и имеет товар в корзине",
+          "expected_result": "Активной сессии нет"
         },
         {
           "keyword": "When",
-          "action": "Пользователь открывает главную страницу",
-          "expected_result": "Страница загружена в авторизованном контексте"
+          "action": "Пользователь пытается напрямую открыть защищённый маршрут /checkout",
+          "expected_result": "Прямой доступ к оформлению заказа заблокирован"
         },
         {
           "keyword": "Then",
-          "action": "Кнопка «Войти» не отображается в шапке",
-          "expected_result": "В шапке нет кнопки «Войти» (отображается профиль/имя пользователя)"
+          "action": "Выполняется редирект на страницу /login",
+          "expected_result": "URL содержит /login, отображается форма авторизации"
         },
         {
           "keyword": "And",
-          "action": "Отсутствует кликабельный элемент, ведущий на /login из шапки",
-          "expected_result": "Перехода на /login по шапке не происходит"
+          "action": "Форма оформления заказа не отображается",
+          "expected_result": "Поля доставки и кнопка «Оформить заказ» недоступны"
         }
       ],
       "postconditions": [
-        "Состояние приложения не изменилось"
+        "Пользователь находится на /login, заказ не создан"
       ],
       "test_data": {
-        "user_state": "authorized",
-        "expected_element": "user_profile_menu"
+        "user_state": "unauthorized",
+        "target_url": "/checkout",
+        "expected_redirect": "/login",
+        "product": {"sku": "SKU-001", "qty": 1}
       },
-      "note": "Ambiguity из ReviewReport: «Не описано поведение/видимость кнопки «Войти» для авторизованного пользователя». Кейс требует подтверждения PO.",
-      "linked_jira_key": "KAN-17",
+      "note": "Ambiguity из ReviewReport: «REQ-AUTH-001: не уточнено поведение для глубоких ссылок — что видит неавторизованный пользователь при прямом открытии защищённых страниц (требуется ли редирект на авторизацию)». Кейс фиксирует ожидаемый редирект на /login и требует подтверждения PO.",
+      "linked_jira_key": "KAN-26",
       "linked_requirement_id": "REQ-AUTH-001",
-      "tags": [
-        "ui",
-        "auth",
-        "ui-state",
-        "negative",
-        "testit",
-        "p0"
-      ]
+      "tags": ["auth", "security", "access-control", "deep-link", "negative", "p0"]
     },
     {
-      "id": "TC-SHOP-004",
-      "title": "Корректный email (user@example.com) → ошибки нет, кнопка «Зарегистрироваться» активна (Happy Path)",
+      "id": "TC-SHOP-003",
+      "title": "Корректный email (user@example.com) → ошибки нет, кнопка «Зарегистрироваться» активна (Positive)",
       "description": "Позитивная проверка валидации email: корректный формат user@example.com не вызывает ошибки и активирует кнопку регистрации (AC3 REQ-REG-002).",
       "type": "Functional",
       "check_class": "Happy Path",
@@ -197,7 +137,7 @@
       "severity": "Critical",
       "preconditions": [
         "Открыта форма регистрации",
-        "Все обязательные поля формы доступны для ввода"
+        "Поле Email доступно для ввода"
       ],
       "bdd_steps": [
         {
@@ -229,23 +169,14 @@
         "expected_error": null,
         "expected_button_state": "enabled"
       },
-      "linked_jira_key": "KAN-17",
+      "linked_jira_key": "KAN-26",
       "linked_requirement_id": "REQ-REG-002",
-      "tags": [
-        "ui",
-        "registration",
-        "email",
-        "validation",
-        "positive",
-        "smoke",
-        "testit",
-        "p1"
-      ]
+      "tags": ["ui", "registration", "email", "validation", "positive", "smoke", "p1"]
     },
     {
-      "id": "TC-SHOP-005",
+      "id": "TC-SHOP-004",
       "title": "Email без символа @ → ошибка «Некорректный email» (Negative)",
-      "description": "Негативная проверка: email без @ не проходит валидацию (AC1 REQ-REG-002).",
+      "description": "Негативная проверка: email без символа @ не проходит валидацию, отображается ошибка «Некорректный email» (AC1 REQ-REG-002).",
       "type": "Negative",
       "check_class": "Negative",
       "priority": "High",
@@ -281,27 +212,20 @@
         }
       ],
       "postconditions": [
-        "Форма не отправлена, данные не отправлены на сервер"
+        "Форма не отправлена, данные не переданы на сервер"
       ],
       "test_data": {
         "email": "userexample.com",
         "expected_error": "Некорректный email",
         "expected_button_state": "disabled"
       },
-      "linked_jira_key": "KAN-17",
+      "note": "Ambiguity из ReviewReport: «REQ-REG-002: не определено поведение кнопки «Зарегистрироваться» при невалидном email (disabled или активна с показом ошибки)». Кейс фиксирует ожидаемое состояние disabled и требует уточнения PO.",
+      "linked_jira_key": "KAN-26",
       "linked_requirement_id": "REQ-REG-002",
-      "tags": [
-        "ui",
-        "registration",
-        "email",
-        "validation",
-        "negative",
-        "testit",
-        "p1"
-      ]
+      "tags": ["ui", "registration", "email", "validation", "negative", "p1"]
     },
     {
-      "id": "TC-SHOP-006",
+      "id": "TC-SHOP-005",
       "title": "Email с пробелами → ошибка «Некорректный email» (Negative)",
       "description": "Негативная проверка: email, содержащий пробелы (в начале, в середине, в конце), не проходит валидацию (AC2 REQ-REG-002).",
       "type": "Negative",
@@ -334,7 +258,7 @@
         },
         {
           "keyword": "And",
-          "action": "Проверка повторяется для вариантов 'user@ example.com' и 'user@example.com ' (пробелы в разных позициях)",
+          "action": "Проверка повторяется для вариантов 'user@ example.com', 'user@example.com ' и ' user@example.com' (пробелы в разных позициях)",
           "expected_result": "Во всех вариантах отображается ошибка «Некорректный email», кнопка неактивна"
         }
       ],
@@ -351,28 +275,21 @@
         "expected_error": "Некорректный email",
         "expected_button_state": "disabled"
       },
-      "linked_jira_key": "KAN-17",
+      "linked_jira_key": "KAN-26",
       "linked_requirement_id": "REQ-REG-002",
-      "tags": [
-        "ui",
-        "registration",
-        "email",
-        "validation",
-        "negative",
-        "testit",
-        "p1"
-      ]
+      "tags": ["ui", "registration", "email", "validation", "negative", "p1"]
     },
     {
-      "id": "TC-SHOP-007",
-      "title": "Пустое значение email → ошибка, кнопка неактивна (Boundary)",
-      "description": "Граничная проверка пустого значения email. ВНИМАНИЕ: поведение при пустом значении не описано в критериях приёмки (ambiguity) — кейс фиксирует ожидаемое поведение до уточнения.",
+      "id": "TC-SHOP-006",
+      "title": "Пустое значение email → ошибка, кнопка «Зарегистрироваться» неактивна (Boundary)",
+      "description": "Граничная проверка пустого значения email: валидация не пропускает пустое поле и блокирует отправку формы.",
       "type": "Boundary",
       "check_class": "Boundary",
       "priority": "Medium",
       "severity": "Major",
       "preconditions": [
-        "Открыта форма регистрации"
+        "Открыта форма регистрации",
+        "Поле email пустое"
       ],
       "bdd_steps": [
         {
@@ -404,23 +321,14 @@
         "expected_error": "Некорректный email",
         "expected_button_state": "disabled"
       },
-      "note": "Ambiguity из ReviewReport: «Не описано поведение при пустой строке email». Требуется уточнение текста ошибки.",
-      "linked_jira_key": "KAN-17",
+      "note": "Ambiguity из ReviewReport: «REQ-REG-002: не определён точный формат валидации email; прочие невалидные кейсы (пустое значение, длина) не описаны». Кейс фиксирует ожидаемое поведение для пустого значения и требует уточнения текста ошибки PO.",
+      "linked_jira_key": "KAN-26",
       "linked_requirement_id": "REQ-REG-002",
-      "tags": [
-        "ui",
-        "registration",
-        "email",
-        "validation",
-        "boundary",
-        "negative",
-        "testit",
-        "p1"
-      ]
+      "tags": ["ui", "registration", "email", "validation", "boundary", "negative", "p1"]
     },
     {
-      "id": "TC-SHOP-008",
-      "title": "Email с несколькими @, без домена/локальной части → ошибка (Boundary)",
+      "id": "TC-SHOP-007",
+      "title": "Email с несколькими @ / незавершённые форматы → ошибка «Некорректный email» (Boundary)",
       "description": "Граничные невалидные форматы email: несколько @, отсутствие домена верхнего уровня, отсутствие локальной части, @ на границах.",
       "type": "Boundary",
       "check_class": "Boundary",
@@ -465,27 +373,19 @@
         "expected_error": "Некорректный email",
         "expected_button_state": "disabled"
       },
-      "linked_jira_key": "KAN-17",
+      "note": "Ambiguity из ReviewReport: «REQ-REG-002: не определён точный формат (стандарт/регулярное выражение) валидации email; критерии покрывают только «без @» и «с пробелами», прочие невалидные кейсы (двойной @, пустой домен, длина, национальные символы) не описаны». Кейс покрывает расширенный набор негативных форматов и требует подтверждения regex PO.",
+      "linked_jira_key": "KAN-26",
       "linked_requirement_id": "REQ-REG-002",
-      "tags": [
-        "ui",
-        "registration",
-        "email",
-        "validation",
-        "boundary",
-        "negative",
-        "testit",
-        "p1"
-      ]
+      "tags": ["ui", "registration", "email", "validation", "boundary", "negative", "p1"]
     },
     {
-      "id": "TC-SHOP-009",
+      "id": "TC-SHOP-008",
       "title": "Способ доставки «Курьер» → отображаются поля «Адрес» и «Дата доставки» (Happy Path)",
-      "description": "Проверка состава полей при выборе способа доставки «Курьер» (AC1 REQ-CHECKOUT-003).",
+      "description": "Проверка состава полей при выборе способа доставки «Курьер»: отображаются поля «Адрес» и «Дата доставки» (AC1 REQ-CHECKOUT-003).",
       "type": "Functional",
       "check_class": "Happy Path",
-      "priority": "High",
-      "severity": "Critical",
+      "priority": "Critical",
+      "severity": "Blocker",
       "preconditions": [
         "В корзине есть хотя бы один товар",
         "Пользователь авторизован",
@@ -518,37 +418,22 @@
       ],
       "test_data": {
         "delivery_method": "courier",
-        "product": {
-          "sku": "SKU-001",
-          "title": "Товар А",
-          "qty": 1
-        },
+        "product": {"sku": "SKU-001", "title": "Товар А", "qty": 1},
         "cart_total": 1500,
-        "expected_fields": [
-          "address",
-          "delivery_date"
-        ]
+        "expected_fields": ["address", "delivery_date"]
       },
-      "linked_jira_key": "KAN-17",
+      "linked_jira_key": "KAN-26",
       "linked_requirement_id": "REQ-CHECKOUT-003",
-      "tags": [
-        "checkout",
-        "delivery",
-        "ui",
-        "positive",
-        "smoke",
-        "testit",
-        "p0"
-      ]
+      "tags": ["checkout", "delivery", "ui", "positive", "smoke", "p0"]
     },
     {
-      "id": "TC-SHOP-010",
-      "title": "Способ доставки «Самовывоз» → dropdown «Пункт выдачи», поля адреса скрыты (Happy Path)",
+      "id": "TC-SHOP-009",
+      "title": "Способ доставки «Самовывоз» → dropdown «Пункт выдачи», поля «Адрес»/«Дата доставки» скрыты (Happy Path)",
       "description": "Проверка состава полей при выборе способа доставки «Самовывоз»: отображается dropdown «Пункт выдачи», поля «Адрес» и «Дата доставки» скрыты (AC2 REQ-CHECKOUT-003).",
       "type": "Functional",
       "check_class": "Happy Path",
-      "priority": "High",
-      "severity": "Critical",
+      "priority": "Critical",
+      "severity": "Blocker",
       "preconditions": [
         "В корзине есть хотя бы один товар",
         "Пользователь авторизован",
@@ -585,29 +470,16 @@
           "ПВЗ-001: Москва, ул. Тверская, 1",
           "ПВЗ-002: Москва, ул. Арбат, 5"
         ],
-        "expected_fields": [
-          "pickup_point"
-        ],
-        "hidden_fields": [
-          "address",
-          "delivery_date"
-        ]
+        "expected_fields": ["pickup_point"],
+        "hidden_fields": ["address", "delivery_date"]
       },
-      "note": "Ambiguity из ReviewReport: не определён перечень и источник данных для dropdown «Пункт выдачи». Значения в test_data приведены как референсные.",
-      "linked_jira_key": "KAN-17",
+      "note": "Ambiguity из ReviewReport: «REQ-CHECKOUT-003: не описан источник данных и поведение при пустом/недоступном списке «Пункт выдачи»». Значения в test_data приведены как референсные и требуют подтверждения PO.",
+      "linked_jira_key": "KAN-26",
       "linked_requirement_id": "REQ-CHECKOUT-003",
-      "tags": [
-        "checkout",
-        "delivery",
-        "ui",
-        "positive",
-        "smoke",
-        "testit",
-        "p0"
-      ]
+      "tags": ["checkout", "delivery", "ui", "positive", "smoke", "p0"]
     },
     {
-      "id": "TC-SHOP-011",
+      "id": "TC-SHOP-010",
       "title": "Переключение способа доставки очищает ранее введённые данные (Boundary)",
       "description": "Проверка бизнес-правила: переключение между «Курьер» и «Самовывоз» очищает ранее введённые данные (AC3 REQ-CHECKOUT-003).",
       "type": "Boundary",
@@ -650,25 +522,19 @@
         "delivery_date": "2026-11-20",
         "switched_method": "pickup"
       },
-      "linked_jira_key": "KAN-17",
+      "note": "Ambiguity из ReviewReport: «REQ-CHECKOUT-003: не сказано, сохраняются ли данные при возврате на предыдущий шаг оформления» и «не формализованы правила очистки/сохранения данных». Кейс фиксирует ожидаемую очистку и требует подтверждения PO.",
+      "linked_jira_key": "KAN-26",
       "linked_requirement_id": "REQ-CHECKOUT-003",
-      "tags": [
-        "checkout",
-        "delivery",
-        "business-logic",
-        "boundary",
-        "testit",
-        "p0"
-      ]
+      "tags": ["checkout", "delivery", "business-logic", "boundary", "p0"]
     },
     {
-      "id": "TC-SHOP-012",
+      "id": "TC-SHOP-011",
       "title": "Кнопка «Оформить заказ» активна при заполнении всех обязательных полей (Курьер) (Happy Path)",
       "description": "Проверка активации кнопки «Оформить заказ» при заполнении всех обязательных полей способа «Курьер» (AC4 REQ-CHECKOUT-003).",
       "type": "Functional",
       "check_class": "Happy Path",
-      "priority": "High",
-      "severity": "Critical",
+      "priority": "Critical",
+      "severity": "Blocker",
       "preconditions": [
         "В корзине есть хотя бы один товар",
         "Пользователь авторизован",
@@ -705,20 +571,12 @@
         "delivery_date": "2026-11-20",
         "expected_button_state": "enabled"
       },
-      "linked_jira_key": "KAN-17",
+      "linked_jira_key": "KAN-26",
       "linked_requirement_id": "REQ-CHECKOUT-003",
-      "tags": [
-        "checkout",
-        "delivery",
-        "ui",
-        "positive",
-        "smoke",
-        "testit",
-        "p0"
-      ]
+      "tags": ["checkout", "delivery", "ui", "positive", "smoke", "p0"]
     },
     {
-      "id": "TC-SHOP-013",
+      "id": "TC-SHOP-012",
       "title": "Кнопка «Оформить заказ» неактивна при незаполненных обязательных полях (Курьер) (Negative)",
       "description": "Проверка блокировки кнопки «Оформить заказ», пока не заполнены все обязательные поля способа «Курьер» (AC4 REQ-CHECKOUT-003).",
       "type": "Negative",
@@ -733,7 +591,7 @@
       "bdd_steps": [
         {
           "keyword": "Given",
-          "action": "Выбран способ «Курьер», все поля пустые",
+          "action": "Выбран способ «Курьер», все обязательные поля пустые",
           "expected_result": "Кнопка «Оформить заказ» неактивна"
         },
         {
@@ -758,40 +616,71 @@
       "test_data": {
         "delivery_method": "courier",
         "scenarios": [
-          {
-            "address": "",
-            "delivery_date": ""
-          },
-          {
-            "address": "Москва, ул. Ленина, 10",
-            "delivery_date": ""
-          },
-          {
-            "address": "",
-            "delivery_date": "2026-11-20"
-          }
+          {"address": "", "delivery_date": ""},
+          {"address": "Москва, ул. Ленина, 10", "delivery_date": ""},
+          {"address": "", "delivery_date": "2026-11-20"}
         ],
         "expected_button_state": "disabled"
       },
-      "linked_jira_key": "KAN-17",
+      "linked_jira_key": "KAN-26",
       "linked_requirement_id": "REQ-CHECKOUT-003",
-      "tags": [
-        "checkout",
-        "delivery",
-        "ui",
-        "negative",
-        "testit",
-        "p0"
-      ]
+      "tags": ["checkout", "delivery", "ui", "negative", "p0"]
     },
     {
-      "id": "TC-SHOP-014",
-      "title": "Успешное оформление заказа с доставкой курьером → заказ создан (Happy Path / E2E)",
-      "description": "Сквозной позитивный сценарий оформления заказа с курьерской доставкой: заполнение полей, активация кнопки, создание заказа (AC1+AC4 REQ-CHECKOUT-003).",
+      "id": "TC-SHOP-013",
+      "title": "Активация кнопки «Оформить заказ» при выборе пункта выдачи (Самовывоз) (Happy Path)",
+      "description": "Проверка активации кнопки «Оформить заказ» для способа «Самовывоз»: активна после выбора обязательного пункта выдачи (AC2 + AC4 REQ-CHECKOUT-003).",
       "type": "Functional",
       "check_class": "Happy Path",
       "priority": "High",
       "severity": "Critical",
+      "preconditions": [
+        "В корзине есть хотя бы один товар",
+        "Пользователь авторизован",
+        "Выбран способ доставки «Самовывоз»"
+      ],
+      "bdd_steps": [
+        {
+          "keyword": "Given",
+          "action": "Выбран способ «Самовывоз», отображается dropdown «Пункт выдачи»",
+          "expected_result": "Пункт выдачи не выбран по умолчанию"
+        },
+        {
+          "keyword": "When",
+          "action": "Пользователь выбирает пункт выдачи 'ПВЗ-001: Москва, ул. Тверская, 1'",
+          "expected_result": "Пункт выдачи выбран"
+        },
+        {
+          "keyword": "Then",
+          "action": "Кнопка «Оформить заказ» становится активной",
+          "expected_result": "Кнопка кликабельна (не disabled)"
+        },
+        {
+          "keyword": "And",
+          "action": "Скрытые поля «Адрес» и «Дата доставки» не требуются для активации кнопки",
+          "expected_result": "Кнопка активна без заполнения адреса и даты"
+        }
+      ],
+      "postconditions": [
+        "Форма «Самовывоз» готова к оформлению заказа"
+      ],
+      "test_data": {
+        "delivery_method": "pickup",
+        "pickup_point": "ПВЗ-001: Москва, ул. Тверская, 1",
+        "expected_button_state": "enabled"
+      },
+      "linked_jira_key": "KAN-26",
+      "linked_requirement_id": "REQ-CHECKOUT-003",
+      "tags": ["checkout", "delivery", "ui", "positive", "p0"]
+    },
+    {
+      "id": "TC-SHOP-014",
+      "title": "Успешное оформление заказа с доставкой курьером → заказ создан (E2E / Happy Path)",
+      "description": "Сквозной позитивный сценарий оформления заказа с курьерской доставкой: заполнение полей, активация кнопки, создание заказа (AC1 + AC4 REQ-CHECKOUT-003).",
+      "type": "Functional",
+      "check_class": "Happy Path",
+      "priority": "Critical",
+      "severity": "Blocker",
       "preconditions": [
         "В корзине есть хотя бы один товар",
         "Пользователь авторизован",
@@ -828,34 +717,19 @@
         "delivery_method": "courier",
         "address": "Москва, ул. Ленина, 10",
         "delivery_date": "2026-11-20",
-        "product": {
-          "sku": "SKU-001",
-          "title": "Товар А",
-          "qty": 1
-        },
-        "expected_http_status": [
-          200,
-          201
-        ]
+        "product": {"sku": "SKU-001", "title": "Товар А", "qty": 1},
+        "expected_http_status": [200, 201]
       },
-      "linked_jira_key": "KAN-17",
+      "linked_jira_key": "KAN-26",
       "linked_requirement_id": "REQ-CHECKOUT-003",
-      "tags": [
-        "checkout",
-        "delivery",
-        "positive",
-        "smoke",
-        "e2e",
-        "testit",
-        "p0"
-      ]
+      "tags": ["checkout", "delivery", "positive", "smoke", "e2e", "p0"]
     },
     {
       "id": "TC-SHOP-015",
-      "title": "Активация кнопки «Оформить заказ» при выборе пункта выдачи (Самовывоз) (Positive/Negative)",
-      "description": "Проверка активации кнопки «Оформить заказ» для способа «Самовывоз»: неактивна без выбранного пункта выдачи, активна после выбора (AC2+AC4 REQ-CHECKOUT-003).",
-      "type": "Functional",
-      "check_class": "Happy Path",
+      "title": "Кнопка «Оформить заказ» неактивна без выбранного пункта выдачи (Самовывоз) (Negative)",
+      "description": "Проверка блокировки кнопки «Оформить заказ» для способа «Самовывоз», пока не выбран обязательный пункт выдачи (AC2 + AC4 REQ-CHECKOUT-003).",
+      "type": "Negative",
+      "check_class": "Negative",
       "priority": "High",
       "severity": "Major",
       "preconditions": [
@@ -866,102 +740,86 @@
       "bdd_steps": [
         {
           "keyword": "Given",
-          "action": "Выбран способ «Самовывоз», отображается dropdown «Пункт выдачи»",
+          "action": "Выбран способ «Самовывоз», dropdown «Пункт выдачи» отображается",
           "expected_result": "Пункт выдачи не выбран по умолчанию"
         },
         {
           "keyword": "When",
           "action": "Пользователь не выбирает пункт выдачи",
-          "expected_result": "Кнопка «Оформить заказ» неактивна"
-        },
-        {
-          "keyword": "And",
-          "action": "Пользователь выбирает пункт выдачи 'ПВЗ-001: Москва, ул. Тверская, 1'",
-          "expected_result": "Пункт выдачи выбран"
+          "expected_result": "Обязательное поле осталось незаполненным"
         },
         {
           "keyword": "Then",
-          "action": "Кнопка «Оформить заказ» становится активной",
-          "expected_result": "Кнопка кликабельна (не disabled)"
+          "action": "Кнопка «Оформить заказ» остаётся неактивной",
+          "expected_result": "Кнопка в состоянии disabled"
+        },
+        {
+          "keyword": "And",
+          "action": "Попытка нажать кнопку не приводит к созданию заказа",
+          "expected_result": "Заказ не создан, отображается подсказка о необходимости выбрать пункт выдачи"
         }
       ],
       "postconditions": [
-        "Форма «Самовывоз» готова к оформлению заказа"
+        "Заказ не оформлен, форма остаётся открытой"
       ],
       "test_data": {
         "delivery_method": "pickup",
-        "pickup_point": "ПВЗ-001: Москва, ул. Тверская, 1",
-        "expected_button_state_before": "disabled",
-        "expected_button_state_after": "enabled"
+        "pickup_point": "",
+        "expected_button_state": "disabled"
       },
-      "linked_jira_key": "KAN-17",
+      "linked_jira_key": "KAN-26",
       "linked_requirement_id": "REQ-CHECKOUT-003",
-      "tags": [
-        "checkout",
-        "delivery",
-        "ui",
-        "positive",
-        "negative",
-        "testit",
-        "p0"
-      ]
+      "tags": ["checkout", "delivery", "ui", "negative", "p0"]
     },
     {
       "id": "TC-SHOP-016",
-      "title": "Оформление заказа недоступно неавторизованному пользователю (Security / Access control)",
-      "description": "Проверка контроля доступа: неавторизованный пользователь не может перейти к оформлению заказа — выполняется редирект на /login (связь REQ-CHECKOUT-003 с REQ-AUTH-001).",
-      "type": "Security",
-      "check_class": "Security/UI-state",
-      "priority": "High",
-      "severity": "Critical",
+      "title": "Поведение при пустом/недоступном списке «Пункт выдачи» (Boundary)",
+      "description": "Граничная проверка способа «Самовывоз» при пустом или недоступном источнике данных выпадающего списка «Пункт выдачи».",
+      "type": "Boundary",
+      "check_class": "Boundary",
+      "priority": "Medium",
+      "severity": "Major",
       "preconditions": [
         "В корзине есть хотя бы один товар",
-        "Пользователь НЕ авторизован"
+        "Пользователь авторизован",
+        "Выбран способ доставки «Самовывоз»",
+        "Сервис/источник списка «Пункт выдачи» возвращает пустой или недоступный список"
       ],
       "bdd_steps": [
         {
           "keyword": "Given",
-          "action": "В корзине есть товар, пользователь не авторизован",
-          "expected_result": "Активной сессии нет"
+          "action": "Выбран способ «Самовывоз», источник данных пунктов выдачи недоступен или список пуст",
+          "expected_result": "Dropdown «Пункт выдачи» не содержит опций"
         },
         {
           "keyword": "When",
-          "action": "Пользователь пытается открыть страницу оформления заказа /checkout",
-          "expected_result": "Прямой доступ к оформлению заблокирован"
+          "action": "Пользователь открывает dropdown «Пункт выдачи»",
+          "expected_result": "Отображается пустой список или сообщение об отсутствии пунктов выдачи"
         },
         {
           "keyword": "Then",
-          "action": "Выполняется редирект на страницу /login",
-          "expected_result": "URL содержит /login, отображается форма авторизации"
+          "action": "Кнопка «Оформить заказ» остаётся неактивной",
+          "expected_result": "Кнопка в состоянии disabled, заказ оформить невозможно"
         },
         {
           "keyword": "And",
-          "action": "Форма оформления заказа не отображается, данные заказа недоступны",
-          "expected_result": "Нет доступа к полям доставки и кнопке «Оформить заказ»"
+          "action": "Пользователь может переключиться на способ «Курьер»",
+          "expected_result": "Переключение доступно, отображаются поля «Адрес» и «Дата доставки»"
         }
       ],
       "postconditions": [
-        "Пользователь находится на /login, заказ не создан"
+        "Заказ не оформлен, отображён корректный деградированный сценарий"
       ],
       "test_data": {
-        "user_state": "unauthorized",
-        "target_url": "/checkout",
-        "expected_redirect": "/login",
-        "product": {
-          "sku": "SKU-001",
-          "qty": 1
-        }
+        "delivery_method": "pickup",
+        "pickup_points": [],
+        "source_state": "unavailable",
+        "expected_button_state": "disabled"
       },
-      "linked_jira_key": "KAN-17",
+      "note": "Ambiguity из ReviewReport: «REQ-CHECKOUT-003: не описан источник данных и поведение при пустом/недоступном списке «Пункт выдачи»». Кейс фиксирует ожидаемое деградированное поведение и требует подтверждения PO.",
+      "linked_jira_key": "KAN-26",
       "linked_requirement_id": "REQ-CHECKOUT-003",
-      "tags": [
-        "checkout",
-        "security",
-        "access-control",
-        "negative",
-        "testit",
-        "p0"
-      ]
+      "tags": ["checkout", "delivery", "boundary", "negative", "p0"]
     }
   ]
 }

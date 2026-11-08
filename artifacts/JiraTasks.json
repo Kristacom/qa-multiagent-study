@@ -1,23 +1,22 @@
 {
   "task": {
-    "key": "KAN-17",
+    "key": "KAN-26",
     "project_key": "KAN",
     "issue_type": "Задача",
-    "summary": "Реализация модуля оформления заказа (Checkout) — релиз 2.4 [CONF-SHOP-CHECKOUT-24]",
+    "summary": "Реализация модуля оформления заказа (Checkout) — релиз 2.4",
     "status": "Idea",
-    "priority": "Medium",
     "labels": ["qa-parent", "mcp-synced", "checkout", "conf-page-2031617"],
-    "source_requirements": ["REQ-AUTH-001", "REQ-REG-002", "REQ-CHECKOUT-003"],
-    "confluence_source": "https://kristapro.atlassian.net/wiki/spaces/MFS/pages/2031617",
-    "note": "В спецификации указан Jira project key SHOP и issue type Story; в целевом инстансе проект SHOP и тип Story отсутствуют, поэтому Story-родитель восстановлен в проекте KAN типом «Задача»."
+    "source_requirements": ["REQ-AUTH-001", "REQ-REG-002", "REQ-CHECKOUT-003"]
   },
   "verification": {
-    "task_key": "KAN-17",
+    "task_key": "KAN-26",
     "is_ready_for_testing": true,
     "matched_requirements": ["REQ-AUTH-001", "REQ-REG-002", "REQ-CHECKOUT-003"],
     "missing_requirements": [],
     "dod_passed": true,
-    "discrepancies": [],
+    "discrepancies": [
+      "Метаданные спецификации Confluence page 2031617 указывают Jira project key = SHOP и issue type = Story, однако проект SHOP в инстансе отсутствует, а тип Story недоступен. Все задачи созданы в проекте KAN типом «Задача» (id 10004)."
+    ],
     "quality_gate": {
       "passed": true,
       "score": 84,
@@ -26,50 +25,50 @@
   },
   "clarification_tasks": [
     {
-      "key": "KAN-19",
+      "key": "KAN-28",
       "issue_type": "Задача",
-      "summary": "[QUESTION][REQ-CHECKOUT-003] Уточнить перечень вариантов и источник данных для dropdown «Пункт выдачи»",
-      "linked_story": "KAN-17",
+      "summary": "[QUESTION][REQ-CHECKOUT-003] Отсутствуют нефункциональные требования (производительность, безопасность, доступность, аудит) для шага оформления заказа",
+      "linked_story": "KAN-26",
       "link_type": "Relates",
       "status": "Idea"
     },
     {
-      "key": "KAN-20",
+      "key": "KAN-29",
       "issue_type": "Задача",
-      "summary": "[QUESTION][REQ-REG-002] Уточнить поведение и валидацию формы при пустом значении поля Email",
-      "linked_story": "KAN-17",
+      "summary": "[QUESTION][REQ-CHECKOUT-003] Не определены API-контракты и события шага оформления заказа (эндпоинты, форматы, коды ошибок)",
+      "linked_story": "KAN-26",
       "link_type": "Relates",
       "status": "Idea"
     },
     {
-      "key": "KAN-21",
+      "key": "KAN-30",
       "issue_type": "Задача",
-      "summary": "[QUESTION][REQ-CHECKOUT-003] Задать форматы и правила валидации полей «Адрес» и «Дата доставки»",
-      "linked_story": "KAN-17",
+      "summary": "[QUESTION][REQ-AUTH-001] Не описано поведение уже авторизованного пользователя и защита маршрутов (глубокие ссылки)",
+      "linked_story": "KAN-26",
       "link_type": "Relates",
       "status": "Idea"
     },
     {
-      "key": "KAN-22",
+      "key": "KAN-31",
       "issue_type": "Задача",
-      "summary": "[QUESTION][REQ-CHECKOUT-003] Зафиксировать явный перечень обязательных полей для способов доставки",
-      "linked_story": "KAN-17",
+      "summary": "[QUESTION][REQ-REG-002] Не задан точный формат email-валидации (regex/стандарт) и полный набор негативных кейсов",
+      "linked_story": "KAN-26",
       "link_type": "Relates",
       "status": "Idea"
     },
     {
-      "key": "KAN-23",
+      "key": "KAN-32",
       "issue_type": "Задача",
-      "summary": "[QUESTION][REQ-AUTH-001] Уточнить отображение и состояние кнопки «Войти» для авторизованного пользователя",
-      "linked_story": "KAN-17",
+      "summary": "[QUESTION][REQ-CHECKOUT-003] Не формализованы обязательные поля по способам доставки и правила очистки/сохранения данных",
+      "linked_story": "KAN-26",
       "link_type": "Relates",
       "status": "Idea"
     },
     {
-      "key": "KAN-24",
+      "key": "KAN-33",
       "issue_type": "Задача",
-      "summary": "[QUESTION][REQ-REG-002] Уточнить место и формат отображения ошибки валидации «Некорректный email»",
-      "linked_story": "KAN-17",
+      "summary": "[QUESTION][REQ-CHECKOUT-003] Не описан источник данных выпадающего списка «Пункт выдачи» и поведение при его недоступности",
+      "linked_story": "KAN-26",
       "link_type": "Relates",
       "status": "Idea"
     }

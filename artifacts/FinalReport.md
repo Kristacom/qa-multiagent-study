@@ -1,90 +1,139 @@
-# 🛡 Итоговый отчет мультиагентной QA-системы (Final Report)
+# 📊 Final Report — QA Multi-Agent Pipeline (Confluence page 2031617)
 
-**Дата выполнения:** 2026-11-08  
-**Система:** OpenCode Multi-Agent QA System (`qa-multiagent-study`)  
-**Источник требований:** Confluence page [2031617 — «Требования к модулю оформления заказа — релиз 2.4 для интернет-магазина»](https://kristapro.atlassian.net/wiki/spaces/MFS/pages/2031617) (space `MFS`)  
-**Спецификация:** `CONF-SHOP-CHECKOUT-24` (v2.4, Status: Approved)  
-**Статус Quality Gate:** ✅ **PASSED** (Оценка: **84/100**, критических блокеров: 0, предупреждений: 6)  
-**Интеграция Jira:** ✅ Создан Story-родитель [KAN-17](https://kristapro.atlassian.net/browse/KAN-17), QA-подзадача [KAN-18](https://kristapro.atlassian.net/browse/KAN-18), а также **6 задач типа Задача/Question на уточнение требований (KAN-19 — KAN-24)**, связанных с KAN-17; опубликован комментарий верификации (id 10014)  
-**Целевая TMS:** [Testomat.io TMS](https://app.testomat.io) (проект `SHOP-QA`, BDD Gherkin `.feature` файлы, тип `Manual / BDD`, язык `ru`)
+**Спецификация:** Требования к модулю оформления заказа — релиз 2.4 для интернет-магазина
+**Источник:** Confluence `MFS` / page_id `2031617` — https://kristapro.atlassian.net/wiki/spaces/MFS/pages/2031617
+**Дата прогона:** 2026-11-08
+**Оркестратор:** QA Orchestrator Agent (OpenCode Multi-Agent System)
+**Статус сквозного конвейера:** ✅ SUCCESS (все 4 фазы пройдены, Quality Gate пройден)
 
 ---
 
-## 👥 Результаты работы специализированных агентов
+## 1. Сводка Quality Gate
 
-1. **Requirement Reviewer Agent (Фаза 1):**
-   - Проанализирована живая страница Confluence `2031617`; выгружен нормализованный текст → `requirements/CONF-PAGE-2031617.md`.
-   - Выделено 3 функциональных требования (`REQ-AUTH-001`, `REQ-REG-002`, `REQ-CHECKOUT-003`), 6 бизнес-правил, 8 ограничений, 7 неоднозначностей, 5 рисков.
-   - Quality Gate: **PASSED (84/100)**, критических замечаний нет, 6 warnings.
-   - Артефакт: `artifacts/ReviewReport.json`.
+| Метрика | Значение |
+| :--- | :--- |
+| Quality Gate | ✅ **PASSED** |
+| Quality Score | **84 / 100** |
+| Blocking issues | **0** |
+| Warnings | **6** |
+| Ambiguities | **6** |
+| FR извлечено | **3** (REQ-AUTH-001, REQ-REG-002, REQ-CHECKOUT-003) |
+| PII санитизация | PASSED (0 реальных PII; `user@example.com` — синтетическая фикстура) |
+| Prompt-injection | не обнаружен |
 
-2. **Task Designer Agent (Фаза 2, Jira Upload & Sync):**
-   - В спецификации указан Jira project key `SHOP` и тип `Story`; в целевом инстансе проект `SHOP` и тип `Story` отсутствуют, поэтому Story-родитель восстановлен в проекте `KAN` типом «Задача».
-   - Создан родитель **`KAN-17`** (labels: `qa-parent`, `mcp-synced`, `checkout`, `conf-page-2031617`).
-   - Создана QA-подзадача **`KAN-18`**: «`[QA] Test Execution: Реализация модуля оформления заказа (Checkout) — релиз 2.4`».
-   - **Автоматическое создание задач на уточнение требований (6 тикетов):** для каждого из 6 warnings агент автоматически создал в Jira задачи типа «Задача» (`[QUESTION]`) и связал их связью `Relates` с `KAN-17`:
-     - [KAN-19](https://kristapro.atlassian.net/browse/KAN-19): `[QUESTION][REQ-CHECKOUT-003] Уточнить перечень вариантов и источник данных для dropdown «Пункт выдачи»`
-     - [KAN-20](https://kristapro.atlassian.net/browse/KAN-20): `[QUESTION][REQ-REG-002] Уточнить поведение и валидацию формы при пустом значении поля Email`
-     - [KAN-21](https://kristapro.atlassian.net/browse/KAN-21): `[QUESTION][REQ-CHECKOUT-003] Задать форматы и правила валидации полей «Адрес» и «Дата доставки»`
-     - [KAN-22](https://kristapro.atlassian.net/browse/KAN-22): `[QUESTION][REQ-CHECKOUT-003] Зафиксировать явный перечень обязательных полей для способов доставки`
-     - [KAN-23](https://kristapro.atlassian.net/browse/KAN-23): `[QUESTION][REQ-AUTH-001] Уточнить отображение и состояние кнопки «Войти» для авторизованного пользователя`
-     - [KAN-24](https://kristapro.atlassian.net/browse/KAN-24): `[QUESTION][REQ-REG-002] Уточнить место и формат отображения ошибки валидации «Некорректный email»`
-   - Опубликован комментарий верификации к `KAN-17` (DoD подтверждён, DoD: passed).
-   - Артефакты: `artifacts/JiraTasks.json`, `artifacts/JiraUploadResult.json`.
-
-3. **Test Designer Agent (Фаза 3):**
-   - Сформирована тестовая модель: **16 тест-кейсов** в нотации BDD Gherkin со 100% покрытием критериев приёмки.
-   - Разбивка по классам: Happy Path — 8, Negative — 4, Boundary — 2, Security/UI-state — 2.
-   - Сгенерированы нативные файлы спецификаций: `features/auth.feature`, `features/registration.feature`, `features/checkout.feature`.
-   - Подготовлен экспорт для Testomat.io TMS: `artifacts/testomat_export.json` (API) и `artifacts/testomat_export.csv` (Web UI Import).
-   - Артефакты: `artifacts/TestModel.json`, `features/*.feature`, `artifacts/testomat_export.json`, `artifacts/testomat_export.csv`.
-
-4. **QA Orchestrator Agent (Фаза 4):**
-   - Проведён контроль Quality Gate, верификация схем артефактов по контрактам `AGENTS.md` (Раздел 5).
-   - Построена сквозная матрица трассируемости.
+**Обоснование score:** `100 − 12 (6 warnings × −2) − 4 (кластер неоднозначностей среднего уровня в REQ-CHECKOUT-003) = 84`. Требования непротиворечивы, критерии приёмки пригодны для тест-дизайна, блокеров нет → `passed: true`.
 
 ---
 
-## 📋 Матрица трассируемости (Traceability Matrix)
+## 2. Фазы конвейера и результаты
 
-| Требование Confluence | Задача Jira (Story) | QA-подзадача Jira | Тест-кейсы Testomat.io | Покрытие AC | Статус |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| [REQ-AUTH-001](https://kristapro.atlassian.net/wiki/spaces/MFS/pages/2031617) — кнопка «Войти» | `KAN-17` | [KAN-18](https://kristapro.atlassian.net/browse/KAN-18) | `TC-SHOP-001`, `TC-SHOP-002`, `TC-SHOP-003` | 2/2 | ✅ Full |
-| [REQ-REG-002](https://kristapro.atlassian.net/wiki/spaces/MFS/pages/2031617) — валидация email | `KAN-17` | [KAN-18](https://kristapro.atlassian.net/browse/KAN-18) | `TC-SHOP-004`, `TC-SHOP-005`, `TC-SHOP-006`, `TC-SHOP-007`, `TC-SHOP-008` | 3/3 | ✅ Full |
-| [REQ-CHECKOUT-003](https://kristapro.atlassian.net/wiki/spaces/MFS/pages/2031617) — оформление заказа / доставка | `KAN-17` | [KAN-18](https://kristapro.atlassian.net/browse/KAN-18) | `TC-SHOP-009`..`TC-SHOP-016` | 4/4 | ✅ Full |
-
-**Итого:** 3/3 требования покрыты, 9/9 критериев приёмки покрыты, 16 тест-кейсов.
-
----
-
-## ❓ Задачи на уточнение требований (Jira Clarification Tasks)
-
-Все выявленные агентом белые пятна требований автоматически заведены в Jira для согласования с Product Owner / Business Analyst:
-
-| Тикет Jira | Требование | Суть вопроса / Неоднозначность | Связь |
+| Фаза | Агент | Skill | Результат |
 | :--- | :--- | :--- | :--- |
-| [KAN-19](https://kristapro.atlassian.net/browse/KAN-19) | `REQ-CHECKOUT-003` | Уточнить перечень вариантов и источник данных для dropdown «Пункт выдачи» | Relates to `KAN-17` |
-| [KAN-20](https://kristapro.atlassian.net/browse/KAN-20) | `REQ-REG-002` | Уточнить поведение и валидацию формы при пустом значении поля Email | Relates to `KAN-17` |
-| [KAN-21](https://kristapro.atlassian.net/browse/KAN-21) | `REQ-CHECKOUT-003` | Задать форматы и правила валидации полей «Адрес» и «Дата доставки» | Relates to `KAN-17` |
-| [KAN-22](https://kristapro.atlassian.net/browse/KAN-22) | `REQ-CHECKOUT-003` | Зафиксировать явный перечень обязательных полей для способов доставки | Relates to `KAN-17` |
-| [KAN-23](https://kristapro.atlassian.net/browse/KAN-23) | `REQ-AUTH-001` | Уточнить отображение и состояние кнопки «Войти» для авторизованного пользователя | Relates to `KAN-17` |
-| [KAN-24](https://kristapro.atlassian.net/browse/KAN-24) | `REQ-REG-002` | Уточнить место и формат отображения ошибки валидации «Некорректный email» | Relates to `KAN-17` |
+| 1. Анализ требований | Requirement Reviewer | `requirement-review` | `artifacts/ReviewReport.json` |
+| 2. Проектирование задач + загрузка в Jira | Task Designer | `task-design` | `artifacts/JiraTasks.json`, `artifacts/JiraUploadResult.json` |
+| 3. BDD тест-модель + экспорт TMS | Test Designer | `test-design` | `artifacts/TestModel.json`, `features/*.feature`, `artifacts/testomat_export.{json,csv}` |
+| 4. Аудит и отчёт | QA Orchestrator | — | `artifacts/FinalReport.md` |
 
 ---
 
-## 🔌 Подключенные MCP-серверы (Model Context Protocol)
+## 3. Артефакты Jira (проект KAN)
 
-- **`jira`:** `mcp-jira-cloud` — создание тикетов (`create_issue`), линкование (`issueLink`), публикация комментариев (`add_comment`).
-- **`confluence`:** `@aashari/mcp-server-atlassian-confluence` — чтение/синхронизация страниц спецификации.
+| Роль | Ключ | Тип | URL | Статус |
+| :--- | :--- | :--- | :--- | :--- |
+| Parent (Story-эквивалент) | **KAN-26** | Задача | https://kristapro.atlassian.net/browse/KAN-26 | Idea |
+| QA Subtask | **KAN-27** | Subtask | https://kristapro.atlassian.net/browse/KAN-27 | Idea |
+| Clarification (NFR) | **KAN-28** | Задача | https://kristapro.atlassian.net/browse/KAN-28 | Idea |
+| Clarification (API-контракты) | **KAN-29** | Задача | https://kristapro.atlassian.net/browse/KAN-29 | Idea |
+| Clarification (AUTH-001) | **KAN-30** | Задача | https://kristapro.atlassian.net/browse/KAN-30 | Idea |
+| Clarification (REG-002) | **KAN-31** | Задача | https://kristapro.atlassian.net/browse/KAN-31 | Idea |
+| Clarification (CHECKOUT-003) | **KAN-32** | Задача | https://kristapro.atlassian.net/browse/KAN-32 | Idea |
+| Clarification (CHECKOUT-003) | **KAN-33** | Задача | https://kristapro.atlassian.net/browse/KAN-33 | Idea |
+
+- Все 6 `[QUESTION]` задач связаны с KAN-26 связью **Relates** (link id 10008–10013).
+- Верификационный комментарий опубликован на **KAN-26** (comment id 10015).
+- Idempotency Check: `project = KAN AND labels = "conf-page-2031617"` → пусто; дубликаты не создавались.
+- Режим загрузки: `live_sync` (Jira Cloud, https://kristapro.atlassian.net).
+
+### ⚠️ Зафиксированное расхождение (Discrepancy)
+Метаданные спецификации указывают Jira project = **SHOP** и issue type = **Story**, но проекта SHOP в инстансе нет, а типа Story нет. Все задачи созданы в проекте **KAN** типом **«Задача»** (id 10004). Отражено в `JiraTasks.json → verification.discrepancies[]`.
 
 ---
 
-## ✅ Вывод
+## 4. Тестовая модель (TMS: SHOP-QA)
 
-Мультиагентный конвейер успешно выполнен:
-1. Требования из Confluence `2031617` проанализированы (Quality Gate **PASSED, 84/100**).
-2. В Jira автоматически созданы:
-   - Родительская задача `KAN-17` и QA-подзадача `KAN-18`.
-   - **6 задач типа Question/Task (`KAN-19` — `KAN-24`)** на уточнение выявленных предупреждений требований, привязанные к `KAN-17`.
-3. Сформированы **16 BDD тест-кейсов** с 100% покрытием критериев приемки в формате нативных `.feature` файлов и экспорта для TMS **Testomat.io**.
-4. Готовность к демонстрации на защите проекта в живых системах (Jira + Confluence + Testomat.io): **100%**.
+- **Всего тест-кейсов:** 16 (TC-SHOP-001 … TC-SHOP-016)
+- **Покрытие AC:** 100%
+- **Формат:** BDD Gherkin (`Given / When / Then / And`), язык `ru`, тип `Manual`
+
+| REQ | FR | Кол-во TC | Кейсы |
+| :--- | :--- | :--- | :--- |
+| REQ-AUTH-001 | FR-01 | 2 | TC-SHOP-001 (Happy Path), TC-SHOP-002 (Security/Access control) |
+| REQ-REG-002 | FR-02 | 5 | TC-SHOP-003 … TC-SHOP-007 (Positive + Negative + Boundary) |
+| REQ-CHECKOUT-003 | FR-03 | 9 | TC-SHOP-008 … TC-SHOP-016 (все 4 AC + E2E) |
+
+**Распределение по классам проверок:** Happy Path — 7, Negative — 4, Boundary — 4, Security/UI-state — 1.
+
+**Соответствие AC:**
+- REQ-AUTH-001: показ кнопки «Войти» + переход на `/login` (001); защита `/checkout` для неавторизованного (002).
+- REQ-REG-002: позитив `user@example.com` (003); негативы без `@` (004), с пробелами (005); boundary пустое поле (006), множественные `@`/незавершённые (007).
+- REQ-CHECKOUT-003: AC1→008, AC2→009/013/015/016, AC3→010, AC4→011/012/013/015, E2E→014. Для всех 9 кейсов предусловие «товар в корзине + авторизация» задано.
+
+**Файлы:**
+
+| Файл | Назначение |
+| :--- | :--- |
+| `artifacts/TestModel.json` | Полная модель (16 кейсов, `linked_jira_key = KAN-26`) |
+| `features/auth.feature` | 2 сценария (REQ-AUTH-001) |
+| `features/registration.feature` | 5 сценариев (REQ-REG-002) |
+| `features/checkout.feature` | 9 сценариев (REQ-CHECKOUT-003) |
+| `artifacts/testomat_export.json` | Экспорт для Testomat.io Load API |
+| `artifacts/testomat_export.csv` | Экспорт для Drag&Drop импорта в Testomat.io (16 строк) |
+
+---
+
+## 5. Сквозная матрица трассируемости
+
+`Confluence REQ  ↔  FR  ↔  Jira Story  ↔  QA Subtask  ↔  Test Cases (Testomat.io)`
+
+| Confluence REQ | FR | Jira Story | QA Subtask | Test Cases | Clarification ([QUESTION]) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| REQ-AUTH-001 | FR-01 | KAN-26 | KAN-27 | TC-SHOP-001, TC-SHOP-002 | KAN-30 |
+| REQ-REG-002 | FR-02 | KAN-26 | KAN-27 | TC-SHOP-003 … TC-SHOP-007 | KAN-31 |
+| REQ-CHECKOUT-003 | FR-03 | KAN-26 | KAN-27 | TC-SHOP-008 … TC-SHOP-016 | KAN-28, KAN-29, KAN-32, KAN-33 |
+
+---
+
+## 6. Открытые вопросы (Warnings / Ambiguities)
+
+1. **NFR отсутствуют** — не заданы latency, availability, security, audit (KAN-28).
+2. **API-контракты не заданы** — нет эндпоинтов, форматов запросов/ответов, кодов ошибок (KAN-29).
+3. **REQ-AUTH-001** — не описано поведение авторизованного пользователя и защита глубоких ссылок (KAN-30).
+4. **REQ-REG-002** — не задан точный формат (regex/стандарт) email-валидации и полный набор негативных кейсов (KAN-31).
+5. **REQ-CHECKOUT-003** — не формализованы обязательные поля по способам доставки и правила очистки/сохранения данных (KAN-32).
+6. **REQ-CHECKOUT-003** — не описан источник данных и поведение при недоступности dropdown «Пункт выдачи» (KAN-33).
+
+---
+
+## 7. Рекомендации
+
+- Дополнить REQ-AUTH-001 поведением авторизованного пользователя и правилами редиректа на `/login`.
+- Зафиксировать точный формат email-валидации, тексты ошибок и полный набор негативных кейсов.
+- Формализовать обязательные поля и правила валидации для «Курьер» / «Самовывоз».
+- Определить источник данных и обработку отказа сервиса пунктов выдачи.
+- Добавить NFR (latency, security, audit) и API-контракты шага оформления заказа.
+- Уточнить сохранение данных при переключении способа доставки и возврате на предыдущий шаг.
+
+---
+
+## 8. Инструкции для Testomat.io TMS
+
+**Вариант 1 — Drag&Drop (CSV):** login в [app.testomat.io](https://app.testomat.io) → Tests → **Import from CSV** → файл `artifacts/testomat_export.csv` (16 кейсов).
+
+**Вариант 2 — CLI/API:** получить API-токен в Settings → API и выполнить:
+```bash
+npx @testomatio/check-cucumber -d features --sync
+```
+
+---
+
+*Отчёт сгенерирован автоматически QA Orchestrator Agent (OpenCode Multi-Agent System).*

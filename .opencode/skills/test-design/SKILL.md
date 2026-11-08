@@ -42,6 +42,13 @@ description: Создание тестовой модели в формате BD
 3. Сформировать `artifacts/testomat_export.csv` (для прямого импорта через Web UI Testomat.io).
 4. Сохранить общую модель в `artifacts/TestModel.json`.
 
+### Шаг 5: Автоматическая синхронизация с Testomat.io TMS (Auto-Sync)
+1. Выполнить команду в окружении:
+   ```bash
+   python sync_testomat.py
+   ```
+2. Скрипт автоматически считывает токен из `.env`, выгружает сценарии в облачный проект `SHOP-QA` в [Testomat.io](https://app.testomat.io) через официальный CLI `check-cucumber`, размечает файлы `@T...` идентификаторами и сохраняет статус в `artifacts/testomat_sync_result.json`.
+
 ---
 
 ## 3. Выходной артефакт (Output)

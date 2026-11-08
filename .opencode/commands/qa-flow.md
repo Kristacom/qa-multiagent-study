@@ -38,20 +38,22 @@ description: Запуск сквозного мультиагентного ко
 
 ---
 
-### Фаза 3: Проектирование BDD тест-модели для Test IT TMS
+### Фаза 3: Проектирование BDD тест-модели и авто-синхронизация с Testomat.io TMS
 1. Вызови субагента **`test-designer`** со скиллом `.opencode/skills/test-design/SKILL.md`.
 2. Субагент динамически разрабатывает BDD тест-кейсы:
    - 100% покрытие критериев приемки (AC).
    - Позитивные (Happy Path), негативные, граничные значения и проверки UI/Security.
-   - Дедупликация: проверка существующих стабильных идентификаторов `TC-SHOP-xxx`.
-3. Сформировать payload для WorkItem API Test IT TMS.
-4. Сохранить артефакты `artifacts/TestModel.json` и `artifacts/testit_export.json`.
+   - Дедупликация: сохранение стабильных идентификаторов `TC-SHOP-xxx`.
+3. Сохранить артефакты `features/*.feature`, `artifacts/testomat_export.csv` и `artifacts/TestModel.json`.
+4. **Автоматическая выгрузка в Testomat.io TMS:**
+   - Выполнить команду `python sync_testomat.py`.
+   - Проверить статус выгрузки всех 16 сценариев в облачный проект `https://app.testomat.io` и зафиксировать артефакт `artifacts/testomat_sync_result.json`.
 
 ---
 
 ### Фаза 4: Финальный аудит и отчет трассируемости
 1. Проверить соответствие схем артефактов контрактам `AGENTS.md`.
 2. Построить сквозную матрицу трассируемости:
-   `Confluence REQ <-> Jira Story <-> QA Subtask <-> Test IT Test Cases <-> AC Coverage`
+   `Confluence REQ <-> Jira Story <-> QA Subtask <-> Testomat.io Test Cases <-> AC Coverage`
 3. Сформировать консолидированный отчет `artifacts/FinalReport.md`.
 4. Вывести отчет пользователю.

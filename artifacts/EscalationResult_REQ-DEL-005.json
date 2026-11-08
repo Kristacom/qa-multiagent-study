@@ -1,0 +1,25 @@
+{
+  "status": "halted_quality_gate_failed",
+  "mode": "live_sync",
+  "jira_instance": "https://kristapro.atlassian.net",
+  "source_spec": "REQ-DEL-005",
+  "phase_reached": 1,
+  "phases_executed": ["pii_and_security_check", "requirement_review", "quality_gate"],
+  "phases_blocked": ["task_design_phase_2", "test_design_phase_3", "final_audit_phase_4"],
+  "escalation_issue": {
+    "key": "KAN-25",
+    "id": "10024",
+    "url": "https://kristapro.atlassian.net/browse/KAN-25",
+    "issue_type": "Задача",
+    "summary": "[ESCALATION] REQ-DEL-005: Quality Gate FAILED — prompt-injection в ТЗ + неполные требования",
+    "status": "К выполнению",
+    "labels": ["qa-escalation", "req-del-005", "quality-gate-failed", "security"]
+  },
+  "destructive_actions_performed": false,
+  "prompt_injection": {
+    "detected": true,
+    "executed": false,
+    "action": "ignored_and_quarantined"
+  },
+  "mcp_server_used": "mcp-jira-cloud"
+}
