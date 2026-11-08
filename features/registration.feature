@@ -1,4 +1,4 @@
-@REQ-REG-002 @KAN-17 @registration
+@REQ-REG-002 @KAN-17 @registration @S4e162df5
 Feature: Регистрация — валидация поля Email
   Как новый пользователь интернет-магазина
     Я хочу зарегистрироваться в системе с корректным email
@@ -12,7 +12,7 @@ Feature: Регистрация — валидация поля Email
     Then Сообщение об ошибке не отображается
     And Кнопка «Зарегистрироваться» активна
 
-  @TC-SHOP-005 @ui @registration @email @validation @negative @testit @p1
+  @TC-SHOP-005 @ui @registration @email @validation @negative @testit @p1 @T075b3f3e
   Scenario: Email без символа @ → ошибка «Некорректный email» (Negative)
     # Негативная проверка: email без @ не проходит валидацию (AC1 REQ-REG-002).
     Given Открыта форма регистрации
@@ -21,7 +21,7 @@ Feature: Регистрация — валидация поля Email
     Then Отображается сообщение об ошибке «Некорректный email»
     And Кнопка «Зарегистрироваться» неактивна
 
-  @TC-SHOP-006 @ui @registration @email @validation @negative @testit @p1
+  @TC-SHOP-006 @ui @registration @email @validation @negative @testit @p1 @T13dd1f9c
   Scenario: Email с пробелами → ошибка «Некорректный email» (Negative)
     # Негативная проверка: email, содержащий пробелы (в начале, в середине, в конце), не проходит валидацию (AC2 REQ-REG-002).
     Given Открыта форма регистрации
@@ -30,7 +30,7 @@ Feature: Регистрация — валидация поля Email
     Then Отображается сообщение об ошибке «Некорректный email»
     And Проверка повторяется для вариантов 'user@ example.com' и 'user@example.com ' (пробелы в разных позициях)
 
-  @TC-SHOP-007 @ui @registration @email @validation @boundary @negative @testit @p1
+  @TC-SHOP-007 @ui @registration @email @validation @boundary @negative @testit @p1 @T513b4906
   Scenario: Пустое значение email → ошибка, кнопка неактивна (Boundary)
     # Граничная проверка пустого значения email. ВНИМАНИЕ: поведение при пустом значении не описано в критериях приёмки (ambiguity) — кейс фиксирует ожидаемое поведение до уточнения.
     Given Открыта форма регистрации, поле email пустое
@@ -38,7 +38,7 @@ Feature: Регистрация — валидация поля Email
     Then Отображается ошибка о необходимости корректного email (ожидаемо «Некорректный email»)
     And Кнопка «Зарегистрироваться» неактивна
 
-  @TC-SHOP-008 @ui @registration @email @validation @boundary @negative @testit @p1
+  @TC-SHOP-008 @ui @registration @email @validation @boundary @negative @testit @p1 @T240faf28
   Scenario: Email с несколькими @, без домена/локальной части → ошибка (Boundary)
     # Граничные невалидные форматы email: несколько @, отсутствие домена верхнего уровня, отсутствие локальной части, @ на границах.
     Given Открыта форма регистрации
