@@ -1,32 +1,57 @@
 ---
-description: Запуск сквозного мультиагентного конвейера обеспечения качества (QA Flow)
+description: Запуск сквозного мультиагентного конвейера обеспечения качества (QA Flow) через автономных субагентов
 ---
 
-Ты — **QA Orchestrator Agent**. Твоя цель — запустить и проконтролировать выполнение сквозного мультиагентного QA-конвейера строго по регламенту [`AGENTS.md`](file:///C:/Users/Kosmos/qa-multiagent-study/AGENTS.md):
+# 🚀 Автономный запуск QA-конвейера (OpenCode Multi-Agent Flow)
 
-1. **Фаза 1: Анализ требований Confluence**
-   - Вызови роль **Requirement Reviewer Agent** со скиллом `.opencode/skills/requirement-review/SKILL.md`.
-   - Проанализируй архитектурную спецификацию `requirements/CONF-AUTH-01.md` (или живую страницу Confluence через MCP).
-   - Извлеки требования FR-01..FR-04, NFR, бизнес-правила и рассчитай Quality Gate.
-   - Сохрани результат в `artifacts/ReviewReport.json`.
+Ты — **QA Orchestrator Agent**. Твоя цель — автономно запустить и проконтролировать выполнение сквозного мультиагентного QA-конвейера без использования жестко зашитых скриптов, вызывая специализированных субагентов и применяя их скиллы:
 
-2. **Контроль Quality Gate:**
-   - Если Quality Gate пройден (`passed == true`), переходи к Фазе 2.
-   - При наличии блокирующих дефектов останови процесс и зафиксируй отчет.
+---
 
-3. **Фаза 2: Валидация задачи Jira и загрузка подзадачи**
-   - Вызови роль **Task Designer Agent** со скиллом `.opencode/skills/task-design/SKILL.md`.
-   - Проверь тикет `requirements/AUTH-101.json`, сопоставь с FR-01..FR-04 и проверь критерии DoD.
-   - Используй MCP-сервер `mcp-jira-cloud` для создания подзадачи `[QA] Test Execution` и публикации комментария.
-   - Сохрани артефакты `artifacts/JiraTasks.json` и `artifacts/JiraUploadResult.json`.
+### Фаза 1: Анализ требований в Confluence
+1. Вызови субагента **`requirement-reviewer`** со скиллом `.opencode/skills/requirement-review/SKILL.md`.
+2. Субагент должен динамически проанализировать актуальную спецификацию (живую страницу Confluence `2031617` через Confluence MCP либо файл `requirements/CONF-PAGE-2031617.md`):
+   - Выделить функциональные требования (`REQ-AUTH-001`, `REQ-REG-002`, `REQ-CHECKOUT-003`), критерии приемки, бизнес-правила и ограничения.
+   - Выявить белые пятна (`ambiguities` и `warnings`).
+   - Рассчитать метрику Quality Gate (оценка от 0 до 100).
+   - Сохранить результат в `artifacts/ReviewReport.json`.
 
-4. **Фаза 3: Проектирование тест-модели для Test IT TMS**
-   - Вызови роль **Test Designer Agent** со скиллом `.opencode/skills/test-design/SKILL.md`.
-   - Разработай BDD-сценарии Gherkin (Happy Path, Replay Attack, Brute-Force, TTL Boundary).
-   - Сформируй экспорт Work Items для Test IT TMS.
-   - Сохрани `artifacts/TestModel.json` и `artifacts/testit_export.json`.
+---
 
-5. **Фаза 4: Верификация и итоговый отчет**
-   - Проверь соответствие схем всех артефактов контрактам в `AGENTS.md`.
-   - Построй сквозную матрицу трассируемости (`FR <-> Jira Story <-> QA Subtask <-> Test IT Test Cases`).
-   - Сформируй итоговый отчет `artifacts/FinalReport.md`.
+### Контроль Quality Gate:
+1. Проверь статус `quality_gate.passed` в `artifacts/ReviewReport.json`.
+2. Если `passed == false` (критические блокеры) — останови флоу и зафиксируй отчет.
+3. Если `passed == true` — зафиксируй предупреждения (`warnings`) и переходи к Фазе 2.
+
+---
+
+### Фаза 2: Проектирование задач в Jira и защита от дубликатов
+1. Вызови субагента **`task-designer`** со скиллом `.opencode/skills/task-design/SKILL.md`.
+2. **Обязательная проверка дедупликации (Anti-duplication):**
+   - Перед вызовом создания сущностей проверить наличие тикетов в Jira (поиск по меткам `checkout`, `conf-page-2031617`).
+   - Если Story уже создана (например, `KAN-17`) — использовать существующий ключ.
+   - Если подзадача `[QA] Test Execution` уже существует (`KAN-18`) — не создавать дубликат.
+   - Если для найденных warnings уже созданы тикеты `[QUESTION]` (`KAN-19` — `KAN-24`) — не создавать дубликаты, связать при необходимости.
+   - Если появились новые warnings — создать для них тикеты `[QUESTION]` и связать через `Relates`.
+3. Опубликовать комментарий верификации DoD к родительской задаче.
+4. Сохранить артефакты `artifacts/JiraTasks.json` и `artifacts/JiraUploadResult.json`.
+
+---
+
+### Фаза 3: Проектирование BDD тест-модели для Test IT TMS
+1. Вызови субагента **`test-designer`** со скиллом `.opencode/skills/test-design/SKILL.md`.
+2. Субагент динамически разрабатывает BDD тест-кейсы:
+   - 100% покрытие критериев приемки (AC).
+   - Позитивные (Happy Path), негативные, граничные значения и проверки UI/Security.
+   - Дедупликация: проверка существующих стабильных идентификаторов `TC-SHOP-xxx`.
+3. Сформировать payload для WorkItem API Test IT TMS.
+4. Сохранить артефакты `artifacts/TestModel.json` и `artifacts/testit_export.json`.
+
+---
+
+### Фаза 4: Финальный аудит и отчет трассируемости
+1. Проверить соответствие схем артефактов контрактам `AGENTS.md`.
+2. Построить сквозную матрицу трассируемости:
+   `Confluence REQ <-> Jira Story <-> QA Subtask <-> Test IT Test Cases <-> AC Coverage`
+3. Сформировать консолидированный отчет `artifacts/FinalReport.md`.
+4. Вывести отчет пользователю.

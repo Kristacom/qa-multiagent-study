@@ -1,54 +1,56 @@
-# 🤖 QA Multi-Agent System (OpenCode Study Project)
+# 🤖 QA Multi-Agent System (OpenCode Project)
 
-> **Учебный проект мультиагентной системы в OpenCode** по материалам домашнего задания.  
-> Система построена на базе декомпозиции монолитных `Agent Instructions` на 4 специализированных AI-агентов с подключением `Skills` и формированием тестовой модели для **Test IT TMS**.
-
----
-
-## 📋 Задание (Методичка)
-
-1. **Декомпозировать Agent Instructions на специализированных агентов:**
-   - **`Requirement Reviewer Agent`** — анализ требований (`requirement-review`).
-   - **`Task Designer Agent`** — проектирование задач Jira (`task-design`).
-   - **`Test Designer Agent`** — создание тестовой модели для Test IT (`test-design`).
-   - **`QA Orchestrator Agent`** — управление агентами и контроль Quality Gate.
-2. **Реализовать агентов и подключить ранее разработанные Skills** и необходимые интеграции в OpenCode.
-3. **Настроить взаимодействие агентов.**
-4. **Запустить флоу и проверить корректность работы агентов**, передачи данных и создания артефактов.
-
-**Формат сдачи:** ссылка на GitHub-репозиторий с агентами, Skills, конфигурацией OpenCode, результатами выполнения и README с инструкцией по запуску.
+> **Автономная мультиагентная система обеспечения качества в среде OpenCode.**  
+> Система построена на базе декомпозиции монолитных инструкций на 4 специализированных AI-агентов (`.opencode/agents/`), использующих выделенные `Skills` (`.opencode/skills/`), MCP-интеграции (Jira Cloud, Confluence Cloud) и формирующих тестовую модель для **Test IT TMS**.
 
 ---
 
-## 🏗 Архитектура декомпозиции
+## 📋 Выполненные требования преподавателя и методички
+
+1. **Отказ от скриптового воспроизведения (No hardcoded scripts):**  
+   Логика анализа требований, синтеза тестов, контроля Quality Gate и синхронизации с Jira выполняется **исключительно автономными AI-агентами в OpenCode**, а не через Python-скрипт с заранее подготовленными ответами.
+2. **Глубокие самодостаточные инструкции субагентов:**  
+   Каждый агент в `.opencode/agents/*.md` снабжен подробной инструкцией: зона ответственности (In/Out of Scope), входные данные, пошаговый алгоритм, используемые инструменты и контракты артефактов.
+3. **Защита от повторного создания сущностей (Idempotency / Anti-Duplication):**  
+   Перед созданием задач в Jira (`Story`, `QA Subtask`, `Questions`) и тест-кейсов в TMS агенты проверяют существующие записи по ключам, меткам и связям, предотвращая появление дубликатов при повторных запусках.
+4. **Автоматическое создание задач на уточнение требований ([QUESTION]):**  
+   При обнаружении «белых пятен» или предупреждений (warnings) в ТЗ агент `task-designer` автоматически создает в Jira тикеты типа `Задача` на Product Owner / Business Analyst и связывает их с родительской Story связью `Relates`.
+
+---
+
+## 🏗 Архитектура конвейера агентов
 
 ```mermaid
 flowchart TD
-    User["👤 Пользователь / Команда /qa-flow"] --> Orch["🧠 QA Orchestrator Agent\n(AGENTS.md)"]
+    User["👤 Пользователь / Команда /qa-flow"] --> Orch["👑 QA Orchestrator Agent\n(.opencode/agents/qa-orchestrator.md)"]
 
     subgraph Phase1 ["Фаза 1: Анализ требований Confluence"]
-        Orch --> RRA["📋 Requirement Reviewer Agent\n(skill: requirement-review)"]
-        RRA --> RR["artifacts/ReviewReport.json"]
+        Orch --> RRA["📋 Requirement Reviewer Agent\n(.opencode/agents/requirement-reviewer.md)"]
+        RRA --> RR["artifacts/ReviewReport.json\n(Динамический анализ ТЗ, Quality Gate)"]
     end
 
     subgraph Gate ["Контроль качества (Quality Gate)"]
-        RR --> QG{"Quality Gate?\n(score >= 90, блокеры?)"}
+        RR --> QG{"Quality Gate?\n(score >= 80, 0 блокеров)"}
         QG -- "❌ Блокеры" --> Stop["🛑 Остановка флоу и эскалация"]
         QG -- "✅ Passed" --> Phase2
     end
 
-    subgraph Phase2 ["Фаза 2: Валидация задачи Jira"]
-        TD["📐 Task Designer Agent\n(skill: task-design)"]
-        TD --> JT["artifacts/JiraTasks.json"]
+    subgraph Phase2 ["Фаза 2: Проектирование задач в Jira"]
+        TD["🎯 Task Designer Agent\n(.opencode/agents/task-designer.md)"]
+        TD --> TD_Check{"Проверка дубликатов?\n(Jira Idempotency)"}
+        TD_Check -- "Уже есть" --> TD_Reuse["Использование KAN-17 / KAN-18"]
+        TD_Check -- "Новые" --> TD_Create["Создание Story + QA Subtask"]
+        TD --> TD_Quest["Авто-создание тикетов [QUESTION] для warnings\n(KAN-19..KAN-24)"]
+        TD --> JT["artifacts/JiraTasks.json\nartifacts/JiraUploadResult.json"]
     end
 
-    subgraph Phase3 ["Фаза 3: Проектирование тестов для Test IT"]
-        TeD["🧪 Test Designer Agent\n(skill: test-design)"]
-        TeD --> TM["artifacts/TestModel.json\nartifacts/testit_export.json"]
+    subgraph Phase3 ["Фаза 3: BDD Тест-модель для Test IT"]
+        TeD["🧪 Test Designer Agent\n(.opencode/agents/test-designer.md)"]
+        TeD --> TM["artifacts/TestModel.json\nartifacts/testit_export.json\n(100% покрытие AC, WorkItem API)"]
     end
 
     subgraph Phase4 ["Фаза 4: Верификация и Отчетность"]
-        FR["artifacts/FinalReport.md\n(Матрица трассируемости FR <-> Jira <-> Test IT)"]
+        FR["artifacts/FinalReport.md\n(Сквозная трассируемость Confluence ↔ Jira ↔ Test IT)"]
     end
 
     Phase2 --> TD
@@ -58,15 +60,16 @@ flowchart TD
     Orch --> FR
 ```
 
-### Сводная таблица этапов конвейера
+---
 
-| Этап | Специализированный Агент | Входные данные | Инструменты / MCP | Выходные артефакты |
-| :--- | :--- | :--- | :--- | :--- |
-| **1. Анализ требований** | `Requirement Reviewer` | Спецификация Confluence (`requirements/CONF-AUTH-01.md`) | `confluence` (`get`, `search`), `read` | `artifacts/ReviewReport.json` |
-| **2. Контроль Quality Gate** | `QA Orchestrator` | `ReviewReport.json` | Внутренняя логика Quality Gate | При блокерах — тикет эскалации в Jira |
-| **3. Задача Jira + Загрузка** | `Task Designer` | Задача Jira (`requirements/AUTH-101.json`), `ReviewReport.json` | `jira` (`create_issue`, `add_comment`) | `artifacts/JiraTasks.json`, `artifacts/JiraUploadResult.json` |
-| **4. Тест-модель для Test IT** | `Test Designer` | `JiraTasks.json`, `ReviewReport.json` | Экспорт в Test IT WorkItem API | `artifacts/TestModel.json`, `artifacts/testit_export.json` |
-| **5. Верификация и отчет** | `QA Orchestrator` | Все артефакты конвейера | Валидация контрактов из `AGENTS.md` | `artifacts/FinalReport.md` |
+## 👥 Специализированные агенты
+
+| Агент | Манифест | Подключенный Skill | Роль и ответственность |
+| :--- | :--- | :--- | :--- |
+| **`QA Orchestrator Agent`** | [qa-orchestrator.md](file:///.opencode/agents/qa-orchestrator.md) | — | Управление конвейером, контроль Quality Gate на каждом этапе, финальный аудит и формирование `FinalReport.md`. |
+| **`Requirement Reviewer Agent`** | [requirement-reviewer.md](file:///.opencode/agents/requirement-reviewer.md) | `requirement-review` | Динамический анализ спецификаций Confluence, выделение FR/NFR, бизнес-правил, аудит белых пятен и расчет Quality Gate. |
+| **`Task Designer Agent`** | [task-designer.md](file:///.opencode/agents/task-designer.md) | `task-design` | Защита от дубликатов в Jira, создание родительской Story, QA-подзадачи, авто-создание тикетов `[QUESTION]` по warnings. |
+| **`Test Designer Agent`** | [test-designer.md](file:///.opencode/agents/test-designer.md) | `test-design` | Разработка BDD Gherkin тест-кейсов (Positive, Negative, Boundary, UI), экспорт WorkItems для Test IT TMS. |
 
 ---
 
@@ -74,135 +77,84 @@ flowchart TD
 
 ```text
 qa-multiagent-study/
-├── .opencode/                     # Конфигурация среды OpenCode
-│   ├── agents/                    # Зарегистрированные роли 4-х агентов OpenCode
-│   │   ├── qa-orchestrator.md     # Primary: QA Orchestrator Agent
-│   │   ├── requirement-reviewer.md # Subagent: Requirement Reviewer Agent
-│   │   ├── task-designer.md       # Subagent: Task Designer Agent
-│   │   └── test-designer.md       # Subagent: Test Designer Agent
-│   ├── skills/                    # Подключенные регламенты Skills
-│   │   ├── requirement-review/    # Skill: requirement-review
-│   │   ├── task-design/           # Skill: task-design
-│   │   └── test-design/           # Skill: test-design (для Test IT TMS)
+├── .opencode/
+│   ├── agents/                    # Полноценные системные инструкции 4-х агентов
+│   │   ├── qa-orchestrator.md     # Primary Orchestrator
+│   │   ├── requirement-reviewer.md # Анализ требований и Quality Gate
+│   │   ├── task-designer.md       # Управление Jira и анти-дубликация
+│   │   └── test-designer.md       # BDD тест-дизайн для Test IT
+│   ├── skills/                    # Регламенты навыков (Skills)
+│   │   ├── requirement-review/    # Скилл аудита требований Confluence
+│   │   ├── task-design/           # Скилл работы с Jira и защиты от дубликатов
+│   │   └── test-design/           # Скилл проектирования BDD тестов для TMS
 │   └── commands/
-│       └── qa-flow.md             # Пользовательская команда OpenCode (/qa-flow)
+│       └── qa-flow.md             # Сквозная команда OpenCode (/qa-flow)
 │
-├── opencode.jsonc                 # Файл конфигурации OpenCode (MCP Jira, Confluence, Cloud.ru LLM)
-├── AGENTS.md                      # Декомпозиция 4-х агентов, правила взаимодействия, Artifact Storage и контракты
+├── opencode.jsonc                 # Конфигурация среды (MCP Jira, Confluence, Gemini, Cloud.ru)
+├── AGENTS.md                      # Базовый регламент, контракты артефактов и роли
 │
-├── requirements/                  # Входные требования для флоу
-│   ├── CONF-AUTH-01.md            # Спецификация Confluence (Архитектура)
-│   ├── AUTH-101.json              # Задача Jira (JSON экспорт)
-│   └── AUTH-101.xml               # Задача Jira (XML RSS экспорт)
+├── requirements/                  # Синхронизированные спецификации
+│   ├── CONF-PAGE-2031617.md       # ТЗ: Модуль оформления заказа (релиз 2.4)
+│   ├── CONF-BOOK-01.md            # ТЗ: Restful-Booker API v4.0
+│   └── ...
 │
-├── artifacts/                     # Результаты выполнения (артефакты)
-│   ├── ReviewReport.json          # Отчет анализа требований Confluence (Quality Gate)
-│   ├── JiraTasks.json             # Валидированная задача Jira
-│   ├── JiraUploadResult.json      # Результат загрузки подзадачи и комментария в Jira
-│   ├── TestModel.json             # Тестовая модель с BDD-сценариями
-│   ├── testit_export.json         # Готовый экспорт для Test IT WorkItem API
-│   └── FinalReport.md             # Итоговый отчет и сквозная матрица трассируемости
-│
-├── run_flow.py                    # Исполняемый скрипт сквозной проверки флоу
-└── README.md                      # Документация и инструкция по запуску
+└── artifacts/                     # Результаты автономной работы агентов
+    ├── ReviewReport.json          # Отчет анализа требований (Quality Gate: 84/100, 6 warnings)
+    ├── JiraTasks.json             # Валидированная задача Jira с привязанными вопросами
+    ├── JiraUploadResult.json      # Результат выгрузки KAN-17, KAN-18 и KAN-19..KAN-24
+    ├── TestModel.json             # 16 BDD тест-кейсов (100% покрытие AC)
+    ├── testit_export.json         # Экспорт для Test IT TMS WorkItem API
+    └── FinalReport.md             # Итоговый отчет и матрица трассируемости
 ```
 
 ---
 
-## 👥 Специализированные агенты
+## ⚡️ Инструкция по запуску в OpenCode
 
-| Агент | Описание и регламент | Подключенный Skill | Роль и назначение |
-| :--- | :--- | :--- | :--- |
-| **`Requirement Reviewer Agent`** | `AGENTS.md` | `requirement-review` | Аудит архитектурной спецификации Confluence, выделение функциональных требований (FR-01..FR-04), расчет Quality Gate. |
-| **`Task Designer Agent`** | `AGENTS.md` | `task-design` | Парсинг и валидация задачи Jira (`AUTH-101`), проверка критериев приемки (AC) и Definition of Done (DoD), загрузка подзадач в Jira через MCP. |
-| **`Test Designer Agent`** | `AGENTS.md` | `test-design` | Синтез требований и задачи в BDD-сценарии Gherkin (Given/When/Then), тестовые данные, расчет severity/priority для **Test IT TMS**. |
-| **`QA Orchestrator Agent`** | `AGENTS.md` | — | Управление конвейером, контроль прохождения Quality Gate, валидация контрактов данных, построение матрицы трассируемости. |
-
----
-
-## ⚡️ Инструкция по запуску
-
-### Способ 1: Запуск через скрипт валидации флоу (быстрый запуск)
-
-Для быстрой проверки корректности взаимодействия агентов, передачи данных и генерации всех артефактов:
-
+### Шаг 1: Открытие проекта в OpenCode
+Откройте терминал в папке проекта:
 ```bash
-python run_flow.py
+cd C:\Users\Kosmos\qa-multiagent-study
+opencode
 ```
 
-**Ожидаемый результат работы в консоли:**
+### Шаг 2: Запуск конвейера
+В чате OpenCode выполните команду:
 ```text
-===========================================================================
-🤖 OPENCODE QA MULTI-AGENT SYSTEM (STUDY)
-🔌 Интеграции: Confluence, Jira (Upload/Write), Test IT TMS, MCP Protocol
-===========================================================================
-
-🚀 [Requirement Reviewer Agent]: Запуск анализа требований из Confluence...
-🔹 [Requirement Reviewer Agent]: Подключен скилл 'SKILL.md'. Чтение спецификации CONF-SPEC-AUTH-01...
-✅ [Requirement Reviewer Agent]: Выделено 4 требований. Score: 96/100
-🔹 [Requirement Reviewer Agent]: Артефакт сохранен: ReviewReport.json
-🚀 [QA Orchestrator Agent]: Проверка Quality Gate требований...
-✅ [QA Orchestrator Agent]: Quality Gate PASSED: Блокирующих дефектов в требованиях нет. Переход к Фазе 2.
-🚀 [Task Designer Agent]: Запуск валидации и сопоставления задачи Jira...
-🔹 [Task Designer Agent]: Подключен скилл 'SKILL.md'. Анализ задачи AUTH-101...
-✅ [Task Designer Agent]: Задача AUTH-101 сопоставлена с FR-01..FR-04. DoD: Пройден
-🔹 [Task Designer Agent]: Артефакт сохранен: JiraTasks.json
-🚀 [Test Designer Agent]: Создание тестовой модели BDD для Test IT TMS...
-🔹 [Test Designer Agent]: Подключен скилл 'SKILL.md'. Генерация BDD сценариев...
-✅ [Test Designer Agent]: Сгенерировано 4 BDD тест-кейсов для Test IT TMS
-🔹 [Test Designer Agent]: Артефакты сохранены: TestModel.json, testit_export.json
-🚀 [QA Orchestrator Agent]: Построение матрицы трассируемости и финальный аудит качества...
-✅ [QA Orchestrator Agent]: Итоговый отчет сформирован: FinalReport.md
-
-===========================================================================
-🎉 МУЛЬТИАГЕНТНЫЙ ФЛОУ В OPENCODE УСПЕШНО ЗАВЕРШЕН ЗА 0.0 СЕК!
-📁 Все артефакты сохранены в: .../qa-multiagent-study/artifacts
-===========================================================================
+/qa-flow
 ```
+Или отправьте текстовый запрос агенту:
+> *«Проанализируй требования по странице Confluence 2031617, проверь Quality Gate, синхронизируй задачи с Jira с защитой от дубликатов и сформируй экспорт для Test IT TMS.»*
 
-### Способ 2: Запуск в интерфейсе OpenCode CLI
-
-1. Убедитесь, что OpenCode установлен (`opencode --version`).
-2. Перейдите в корень проекта:
-   ```bash
-   cd qa-multiagent-study
-   ```
-3. Запустите OpenCode:
-   ```bash
-   opencode
-   ```
-4. В интерфейсе OpenCode вызовите команду запуска сквозного конвейера:
-   ```text
-   /qa-flow
-   ```
+### Что произойдет автономно:
+1. **Requirement Reviewer:** Считает спецификацию из Confluence, выделит 3 требования (`REQ-AUTH-001`, `REQ-REG-002`, `REQ-CHECKOUT-003`), 6 бизнес-правил, выявит 6 предупреждений и рассчитает Quality Gate (84/100, PASSED).
+2. **Task Designer:** Проверит Jira на наличие существующих задач:
+   - Обнаружит существующую Story `KAN-17` и QA-подзадачу `KAN-18` (не создавая дубликатов).
+   - Обнаружит связанные тикеты вопросов `[QUESTION]` (`KAN-19` — `KAN-24`) и зафиксирует их связь.
+3. **Test Designer:** Сформирует 16 BDD тест-кейсов со 100% покрытием критериев приемки и подготовит файл импорта `testit_export.json` для Test IT TMS.
+4. **QA Orchestrator:** Соберет сквозную матрицу трассируемости и опубликует `FinalReport.md`.
 
 ---
 
-## 📊 Результаты выполнения (Артефакты)
+## 🛡 Защита от дубликатов (Jira & TMS Idempotency)
 
-Все результаты сохраняются в папке `artifacts/`:
-1. **`ReviewReport.json`** — отчет анализа требований, включающий `spec_id`, `functional_requirements`, `business_rules`, `constraints` и `quality_gate`.
-2. **`JiraTasks.json`** — разобранная задача `AUTH-101` с верификацией критериев приемки и статусом DoD.
-3. **`JiraUploadResult.json`** — подтверждение создания подзадачи и комментария в Jira.
-4. **`TestModel.json`** — тестовая модель с 4-мя детальными BDD-кейсами (Happy Path, Replay Attack, Brute-Force, TTL Boundary).
-5. **`testit_export.json`** — экспорт тестовой модели в формат Test IT WorkItem API (`entityTypeName: "TestCases"`, steps, preconditions, priority, tags).
-6. **`FinalReport.md`** — финальный отчет аудита с полной матрицей трассируемости:
+Система гарантирует идемпотентность:
+- **Jira Story:** Поиск существующего тикета по меткам (`conf-page-2031617`, `checkout`). Создание выполняется только при отсутствии задачи.
+- **QA Subtask:** Проверка массива `fields.subtasks` у родительской задачи. При наличии тикета с префиксом `[QA] Test Execution` создание дубликата блокируется.
+- **Jira Questions:** Проверка массива `fields.issuelinks` у родительской задачи. Тикеты на уточнение требований (`[QUESTION]`) создаются только для новых предупреждений, не представленных в Jira.
+- **Test IT TMS:** Стабильная детерминированная схема идентификаторов `TC-SHOP-001`..`TC-SHOP-016` исключает дублирование кейсов при повторных выгрузках.
 
-| Требование Confluence | Задача Jira | Тест-кейсы Test IT | Статус покрытия |
+---
+
+## 📊 Результаты и статус сущностей в Jira
+
+| Сущность | Ключ | Назначение | Статус |
 | :--- | :--- | :--- | :--- |
-| `FR-01` | `AUTH-101` | `TC-AUTH-001` | ✅ Full (100%) |
-| `FR-02` | `AUTH-101` | `TC-AUTH-001`, `TC-AUTH-002` | ✅ Full (100%) |
-| `FR-03` | `AUTH-101` | `TC-AUTH-003` | ✅ Full (100%) |
-| `FR-04` | `AUTH-101` | `TC-AUTH-004` | ✅ Full (100%) |
-
----
-
-## 📦 Формат сдачи
-
-Репозиторий содержит полный комплект файлов, требуемых методичкой:
-- ✅ **Декомпозиция Agent Instructions:** представлена в файле `AGENTS.md` (структура агентов, правила общения, контракты артефактов).
-- ✅ **Специализированные агенты:** реализованы 4 роли (`requirement-reviewer`, `task-designer`, `test-designer`, `qa-orchestrator`).
-- ✅ **Подключенные Skills:** папка `.opencode/skills/` с регламентами `requirement-review`, `task-design`, `test-design` (для Test IT).
-- ✅ **Конфигурация OpenCode:** файлы `opencode.jsonc`, `AGENTS.md`, `.opencode/commands/qa-flow.md`.
-- ✅ **Результаты выполнения:** артефакты в папке `artifacts/` (`ReviewReport.json`, `JiraTasks.json`, `JiraUploadResult.json`, `TestModel.json`, `testit_export.json`, `FinalReport.md`).
-- ✅ **README.md** с пошаговой инструкцией по запуску и архитектурой.
+| **Story-родитель** | [KAN-17](https://kristapro.atlassian.net/browse/KAN-17) | Реализация модуля оформления заказа (Checkout) | ✅ Заведена |
+| **QA-подзадача** | [KAN-18](https://kristapro.atlassian.net/browse/KAN-18) | `[QA] Test Execution` с комментарием DoD | ✅ Заведена |
+| **Вопрос 1 (Dropdown ПВЗ)** | [KAN-19](https://kristapro.atlassian.net/browse/KAN-19) | `[QUESTION][REQ-CHECKOUT-003] Варианты и источник данных ПВЗ` | 🔗 Связан с KAN-17 |
+| **Вопрос 2 (Пустой email)** | [KAN-20](https://kristapro.atlassian.net/browse/KAN-20) | `[QUESTION][REQ-REG-002] Поведение при пустом поле Email` | 🔗 Связан с KAN-17 |
+| **Вопрос 3 (Валидация адреса/даты)** | [KAN-21](https://kristapro.atlassian.net/browse/KAN-21) | `[QUESTION][REQ-CHECKOUT-003] Маска и правила валидации полей` | 🔗 Связан с KAN-17 |
+| **Вопрос 4 (Обязательные поля)** | [KAN-22](https://kristapro.atlassian.net/browse/KAN-22) | `[QUESTION][REQ-CHECKOUT-003] Список обязательных полей доставки` | 🔗 Связан с KAN-17 |
+| **Вопрос 5 (Кнопка Войти)** | [KAN-23](https://kristapro.atlassian.net/browse/KAN-23) | `[QUESTION][REQ-AUTH-001] Состояние для авторизованного юзера` | 🔗 Связан с KAN-17 |
+| **Вопрос 6 (Формат ошибки)** | [KAN-24](https://kristapro.atlassian.net/browse/KAN-24) | `[QUESTION][REQ-REG-002] Место и формат ошибки email` | 🔗 Связан с KAN-17 |
