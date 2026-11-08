@@ -17,6 +17,8 @@
    При обнаружении «белых пятен» или предупреждений (warnings) в ТЗ агент `task-designer` автоматически создает в Jira тикеты типа `Задача` на Product Owner / Business Analyst и связывает их с родительской Story связью `Relates`.
 5. **Интеграция с реальной облачной TMS Testomat.io:**  
    Все 16 BDD сценариев выгружены в нативные спецификации `features/*.feature`, а также подготовлены `artifacts/testomat_export.csv` и `artifacts/testomat_export.json` для прямой синхронизации с проектом в [Testomat.io](https://app.testomat.io).
+6. **Маскирование чувствительной информации (PII Masking & Security Policy):**  
+   Внедрен отдельный регламент [`PII.md`](file:///C:/Users/Kosmos/qa-multiagent-study/PII.md) и модуль [`pii_sanitizer.py`](file:///C:/Users/Kosmos/qa-multiagent-study/pii_sanitizer.py) для автоматического маскирования персональных данных (ФИО, email, телефоны, документы, токены) при импорте спецификаций из Confluence, исключая их утечку в логи и открытые артефакты.
 
 ---
 
@@ -99,6 +101,8 @@ qa-multiagent-study/
 │
 ├── opencode.jsonc                 # Конфигурация среды (MCP Jira, Confluence, Gemini, Cloud.ru)
 ├── AGENTS.md                      # Базовый регламент, контракты артефактов и роли
+├── PII.md                         # Регламент маскирования персональных данных (PII Policy)
+├── pii_sanitizer.py               # Автономный модуль санитизации PII (Email, Phone, ФИО, секреты)
 │
 ├── requirements/                  # Синхронизированные спецификации
 │   ├── CONF-PAGE-2031617.md       # ТЗ: Модуль оформления заказа (релиз 2.4)
