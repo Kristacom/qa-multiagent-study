@@ -1,17 +1,17 @@
 ---
 name: test-design
-description: Создание тестовой модели в формате BDD Gherkin, дедупликация и экспорт сценариев для Test IT TMS
+description: Создание тестовой модели в формате BDD Gherkin, генерация .feature файлов и экспорт для Testomat.io TMS
 ---
 
 ## Описание
-Навык предназначен для синтеза требований архитектуры Confluence и задачи Jira в исчерпывающую тестовую модель, совместимую со спецификацией **Test IT TMS** (Work Items). Тест-кейсы формулируются по стандарту BDD Gherkin (`Given / When / Then`) со 100% покрытием критериев приёмки (AC) и дедупликацией сущностей.
+Навык предназначен для синтеза требований архитектуры Confluence и задачи Jira в исчерпывающую тестовую модель, совместимую со спецификацией **Testomat.io TMS** (`https://app.testomat.io`). Тест-кейсы формулируются по стандарту BDD Gherkin (`Given / When / Then`) со 100% покрытием критериев приёмки (AC), формированием `.feature` файлов и дедупликацией сущностей.
 
 ---
 
 ## 1. Входные данные (Inputs)
 - `artifacts/ReviewReport.json` — структурированные требования Confluence.
 - `artifacts/JiraTasks.json` — разобранная задача Jira с критериями приемки.
-- Параметры проекта Test IT: `SHOP-QA`, тип `Manual`, язык `ru`.
+- Параметры проекта Testomat.io: `SHOP-QA`, тип `Manual / BDD`, язык `ru`.
 
 ---
 
@@ -33,16 +33,14 @@ description: Создание тестовой модели в формате BD
 - `When`: действие пользователя (ввод данных, клик по кнопке, переключение радио-кнопки).
 - `Then`: ожидаемый результат (активность кнопки, переход на URL, появление сообщения об ошибке).
 
-### Шаг 4: Маппинг на атрибуты Test IT TMS
-- `entityTypeName`: `TestCases`.
-- `severity`: Blocker (Critical), Critical (High), Major (Medium), Normal (Low).
-- `priority`: High, Medium, Low.
-- `preconditions` / `postconditions`.
-- `tags`: метки `#ui`, `#auth`, `#checkout`, `#p0`, привязка к задаче Jira.
-
-### Шаг 5: Сохранение артефактов и подготовка экспорта в Test IT
-- Сохранить общую тестовую модель в `artifacts/TestModel.json`.
-- Сформировать готовый экспорт для Test IT WorkItem API в `artifacts/testit_export.json`.
+### Шаг 4: Генерация файлов спецификаций и экспорта для Testomat.io
+1. Сохранить `.feature` файлы в каталоге `features/`:
+   - `features/auth.feature` (для `REQ-AUTH-001`)
+   - `features/registration.feature` (для `REQ-REG-002`)
+   - `features/checkout.feature` (для `REQ-CHECKOUT-003`)
+2. Сформировать `artifacts/testomat_export.json` (формат для Testomat Load API).
+3. Сформировать `artifacts/testomat_export.csv` (для прямого импорта через Web UI Testomat.io).
+4. Сохранить общую модель в `artifacts/TestModel.json`.
 
 ---
 

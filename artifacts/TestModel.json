@@ -5,12 +5,21 @@
   "jira_task_key": "KAN-17",
   "qa_subtask_key": "KAN-18",
   "tms": {
-    "project_key": "SHOP-QA",
-    "entityTypeName": "TestCases",
-    "test_case_type": "Manual",
+    "platform": "Testomat.io",
+    "url": "https://app.testomat.io",
+    "project": "SHOP-QA",
+    "import_formats": [
+      "Cucumber BDD (.feature files)",
+      "Testomat Import API (POST /api/load)",
+      "CSV / Excel Import"
+    ],
     "language": "ru"
   },
-  "source_requirements": ["REQ-AUTH-001", "REQ-REG-002", "REQ-CHECKOUT-003"],
+  "source_requirements": [
+    "REQ-AUTH-001",
+    "REQ-REG-002",
+    "REQ-CHECKOUT-003"
+  ],
   "confluence_source": "https://kristapro.atlassian.net/wiki/spaces/MFS/pages/2031617",
   "test_cases": [
     {
@@ -26,22 +35,49 @@
         "Открыта главная страница интернет-магазина"
       ],
       "bdd_steps": [
-        {"keyword": "Given", "action": "Пользователь не авторизован и открывает главную страницу магазина", "expected_result": "Главная страница загружена, шапка сайта отображается"},
-        {"keyword": "When", "action": "Пользователь просматривает шапку страницы", "expected_result": "Шапка отрисована без ошибок и пустых блоков"},
-        {"keyword": "Then", "action": "В шапке отображается кнопка «Войти»", "expected_result": "Кнопка «Войти» видима (не скрыта, не disabled)"},
-        {"keyword": "And", "action": "Кнопка «Войти» доступна для нажатия как на desktop, так и на mobile viewport", "expected_result": "Кнопка кликабельна и доступна (не перекрыта другими элементами)"}
+        {
+          "keyword": "Given",
+          "action": "Пользователь не авторизован и открывает главную страницу магазина",
+          "expected_result": "Главная страница загружена, шапка сайта отображается"
+        },
+        {
+          "keyword": "When",
+          "action": "Пользователь просматривает шапку страницы",
+          "expected_result": "Шапка отрисована без ошибок и пустых блоков"
+        },
+        {
+          "keyword": "Then",
+          "action": "В шапке отображается кнопка «Войти»",
+          "expected_result": "Кнопка «Войти» видима (не скрыта, не disabled)"
+        },
+        {
+          "keyword": "And",
+          "action": "Кнопка «Войти» доступна для нажатия как на desktop, так и на mobile viewport",
+          "expected_result": "Кнопка кликабельна и доступна (не перекрыта другими элементами)"
+        }
       ],
       "postconditions": [
         "Состояние приложения не изменилось, пользователь остаётся на главной странице"
       ],
       "test_data": {
         "user_state": "unauthorized",
-        "viewport": ["desktop", "mobile"],
+        "viewport": [
+          "desktop",
+          "mobile"
+        ],
         "expected_element": "login_button"
       },
       "linked_jira_key": "KAN-17",
       "linked_requirement_id": "REQ-AUTH-001",
-      "tags": ["ui", "auth", "login", "positive", "smoke", "testit", "p0"]
+      "tags": [
+        "ui",
+        "auth",
+        "login",
+        "positive",
+        "smoke",
+        "testit",
+        "p0"
+      ]
     },
     {
       "id": "TC-SHOP-002",
@@ -57,10 +93,26 @@
         "Кнопка «Войти» отображается"
       ],
       "bdd_steps": [
-        {"keyword": "Given", "action": "Пользователь не авторизован и находится на главной странице", "expected_result": "Кнопка «Войти» видима"},
-        {"keyword": "When", "action": "Пользователь нажимает кнопку «Войти»", "expected_result": "Клик обработан без ошибок"},
-        {"keyword": "Then", "action": "Выполняется переход на страницу /login", "expected_result": "URL содержит /login и отображается форма авторизации"},
-        {"keyword": "And", "action": "Кнопка «Назад» браузера возвращает на главную страницу", "expected_result": "Навигация корректна, пользователь снова на главной"}
+        {
+          "keyword": "Given",
+          "action": "Пользователь не авторизован и находится на главной странице",
+          "expected_result": "Кнопка «Войти» видима"
+        },
+        {
+          "keyword": "When",
+          "action": "Пользователь нажимает кнопку «Войти»",
+          "expected_result": "Клик обработан без ошибок"
+        },
+        {
+          "keyword": "Then",
+          "action": "Выполняется переход на страницу /login",
+          "expected_result": "URL содержит /login и отображается форма авторизации"
+        },
+        {
+          "keyword": "And",
+          "action": "Кнопка «Назад» браузера возвращает на главную страницу",
+          "expected_result": "Навигация корректна, пользователь снова на главной"
+        }
       ],
       "postconditions": [
         "Пользователь находится на странице /login"
@@ -71,7 +123,16 @@
       },
       "linked_jira_key": "KAN-17",
       "linked_requirement_id": "REQ-AUTH-001",
-      "tags": ["ui", "auth", "login", "navigation", "positive", "smoke", "testit", "p0"]
+      "tags": [
+        "ui",
+        "auth",
+        "login",
+        "navigation",
+        "positive",
+        "smoke",
+        "testit",
+        "p0"
+      ]
     },
     {
       "id": "TC-SHOP-003",
@@ -86,10 +147,26 @@
         "Открыта главная страница магазина"
       ],
       "bdd_steps": [
-        {"keyword": "Given", "action": "Пользователь авторизован", "expected_result": "Активная сессия, профиль пользователя доступен"},
-        {"keyword": "When", "action": "Пользователь открывает главную страницу", "expected_result": "Страница загружена в авторизованном контексте"},
-        {"keyword": "Then", "action": "Кнопка «Войти» не отображается в шапке", "expected_result": "В шапке нет кнопки «Войти» (отображается профиль/имя пользователя)"},
-        {"keyword": "And", "action": "Отсутствует кликабельный элемент, ведущий на /login из шапки", "expected_result": "Перехода на /login по шапке не происходит"}
+        {
+          "keyword": "Given",
+          "action": "Пользователь авторизован",
+          "expected_result": "Активная сессия, профиль пользователя доступен"
+        },
+        {
+          "keyword": "When",
+          "action": "Пользователь открывает главную страницу",
+          "expected_result": "Страница загружена в авторизованном контексте"
+        },
+        {
+          "keyword": "Then",
+          "action": "Кнопка «Войти» не отображается в шапке",
+          "expected_result": "В шапке нет кнопки «Войти» (отображается профиль/имя пользователя)"
+        },
+        {
+          "keyword": "And",
+          "action": "Отсутствует кликабельный элемент, ведущий на /login из шапки",
+          "expected_result": "Перехода на /login по шапке не происходит"
+        }
       ],
       "postconditions": [
         "Состояние приложения не изменилось"
@@ -101,7 +178,14 @@
       "note": "Ambiguity из ReviewReport: «Не описано поведение/видимость кнопки «Войти» для авторизованного пользователя». Кейс требует подтверждения PO.",
       "linked_jira_key": "KAN-17",
       "linked_requirement_id": "REQ-AUTH-001",
-      "tags": ["ui", "auth", "ui-state", "negative", "testit", "p0"]
+      "tags": [
+        "ui",
+        "auth",
+        "ui-state",
+        "negative",
+        "testit",
+        "p0"
+      ]
     },
     {
       "id": "TC-SHOP-004",
@@ -116,10 +200,26 @@
         "Все обязательные поля формы доступны для ввода"
       ],
       "bdd_steps": [
-        {"keyword": "Given", "action": "Открыта форма регистрации", "expected_result": "Поля формы активны, кнопка «Зарегистрироваться» в исходном состоянии"},
-        {"keyword": "When", "action": "Пользователь вводит в поле email значение 'user@example.com'", "expected_result": "Значение принято, поле не подсвечено ошибкой"},
-        {"keyword": "Then", "action": "Сообщение об ошибке не отображается", "expected_result": "Нет текста «Некорректный email» и нет красной подсветки поля"},
-        {"keyword": "And", "action": "Кнопка «Зарегистрироваться» активна", "expected_result": "Кнопка кликабельна (не disabled)"}
+        {
+          "keyword": "Given",
+          "action": "Открыта форма регистрации",
+          "expected_result": "Поля формы активны, кнопка «Зарегистрироваться» в исходном состоянии"
+        },
+        {
+          "keyword": "When",
+          "action": "Пользователь вводит в поле email значение 'user@example.com'",
+          "expected_result": "Значение принято, поле не подсвечено ошибкой"
+        },
+        {
+          "keyword": "Then",
+          "action": "Сообщение об ошибке не отображается",
+          "expected_result": "Нет текста «Некорректный email» и нет красной подсветки поля"
+        },
+        {
+          "keyword": "And",
+          "action": "Кнопка «Зарегистрироваться» активна",
+          "expected_result": "Кнопка кликабельна (не disabled)"
+        }
       ],
       "postconditions": [
         "Форма валидна и готова к отправке"
@@ -131,7 +231,16 @@
       },
       "linked_jira_key": "KAN-17",
       "linked_requirement_id": "REQ-REG-002",
-      "tags": ["ui", "registration", "email", "validation", "positive", "smoke", "testit", "p1"]
+      "tags": [
+        "ui",
+        "registration",
+        "email",
+        "validation",
+        "positive",
+        "smoke",
+        "testit",
+        "p1"
+      ]
     },
     {
       "id": "TC-SHOP-005",
@@ -145,11 +254,31 @@
         "Открыта форма регистрации"
       ],
       "bdd_steps": [
-        {"keyword": "Given", "action": "Открыта форма регистрации", "expected_result": "Поле email активно"},
-        {"keyword": "When", "action": "Пользователь вводит email 'userexample.com' (символ @ отсутствует)", "expected_result": "Невалидное значение принято в поле"},
-        {"keyword": "And", "action": "Пользователь уводит фокус с поля email или пытается отправить форму", "expected_result": "Срабатывает триггер валидации"},
-        {"keyword": "Then", "action": "Отображается сообщение об ошибке «Некорректный email»", "expected_result": "Текст ошибки виден пользователю"},
-        {"keyword": "And", "action": "Кнопка «Зарегистрироваться» неактивна", "expected_result": "Кнопка находится в состоянии disabled"}
+        {
+          "keyword": "Given",
+          "action": "Открыта форма регистрации",
+          "expected_result": "Поле email активно"
+        },
+        {
+          "keyword": "When",
+          "action": "Пользователь вводит email 'userexample.com' (символ @ отсутствует)",
+          "expected_result": "Невалидное значение принято в поле"
+        },
+        {
+          "keyword": "And",
+          "action": "Пользователь уводит фокус с поля email или пытается отправить форму",
+          "expected_result": "Срабатывает триггер валидации"
+        },
+        {
+          "keyword": "Then",
+          "action": "Отображается сообщение об ошибке «Некорректный email»",
+          "expected_result": "Текст ошибки виден пользователю"
+        },
+        {
+          "keyword": "And",
+          "action": "Кнопка «Зарегистрироваться» неактивна",
+          "expected_result": "Кнопка находится в состоянии disabled"
+        }
       ],
       "postconditions": [
         "Форма не отправлена, данные не отправлены на сервер"
@@ -161,7 +290,15 @@
       },
       "linked_jira_key": "KAN-17",
       "linked_requirement_id": "REQ-REG-002",
-      "tags": ["ui", "registration", "email", "validation", "negative", "testit", "p1"]
+      "tags": [
+        "ui",
+        "registration",
+        "email",
+        "validation",
+        "negative",
+        "testit",
+        "p1"
+      ]
     },
     {
       "id": "TC-SHOP-006",
@@ -175,23 +312,56 @@
         "Открыта форма регистрации"
       ],
       "bdd_steps": [
-        {"keyword": "Given", "action": "Открыта форма регистрации", "expected_result": "Поле email активно"},
-        {"keyword": "When", "action": "Пользователь вводит email 'user @example.com' (пробел перед @)", "expected_result": "Значение принято в поле"},
-        {"keyword": "And", "action": "Пользователь уводит фокус с поля email или пытается отправить форму", "expected_result": "Срабатывает триггер валидации"},
-        {"keyword": "Then", "action": "Отображается сообщение об ошибке «Некорректный email»", "expected_result": "Текст ошибки виден пользователю"},
-        {"keyword": "And", "action": "Проверка повторяется для вариантов 'user@ example.com' и 'user@example.com ' (пробелы в разных позициях)", "expected_result": "Во всех вариантах отображается ошибка «Некорректный email», кнопка неактивна"}
+        {
+          "keyword": "Given",
+          "action": "Открыта форма регистрации",
+          "expected_result": "Поле email активно"
+        },
+        {
+          "keyword": "When",
+          "action": "Пользователь вводит email 'user @example.com' (пробел перед @)",
+          "expected_result": "Значение принято в поле"
+        },
+        {
+          "keyword": "And",
+          "action": "Пользователь уводит фокус с поля email или пытается отправить форму",
+          "expected_result": "Срабатывает триггер валидации"
+        },
+        {
+          "keyword": "Then",
+          "action": "Отображается сообщение об ошибке «Некорректный email»",
+          "expected_result": "Текст ошибки виден пользователю"
+        },
+        {
+          "keyword": "And",
+          "action": "Проверка повторяется для вариантов 'user@ example.com' и 'user@example.com ' (пробелы в разных позициях)",
+          "expected_result": "Во всех вариантах отображается ошибка «Некорректный email», кнопка неактивна"
+        }
       ],
       "postconditions": [
         "Форма не отправлена"
       ],
       "test_data": {
-        "emails": ["user @example.com", "user@ example.com", "user@example.com ", " user@example.com"],
+        "emails": [
+          "user @example.com",
+          "user@ example.com",
+          "user@example.com ",
+          " user@example.com"
+        ],
         "expected_error": "Некорректный email",
         "expected_button_state": "disabled"
       },
       "linked_jira_key": "KAN-17",
       "linked_requirement_id": "REQ-REG-002",
-      "tags": ["ui", "registration", "email", "validation", "negative", "testit", "p1"]
+      "tags": [
+        "ui",
+        "registration",
+        "email",
+        "validation",
+        "negative",
+        "testit",
+        "p1"
+      ]
     },
     {
       "id": "TC-SHOP-007",
@@ -205,10 +375,26 @@
         "Открыта форма регистрации"
       ],
       "bdd_steps": [
-        {"keyword": "Given", "action": "Открыта форма регистрации, поле email пустое", "expected_result": "Поле email в состоянии по умолчанию"},
-        {"keyword": "When", "action": "Пользователь не заполняет email и уводит фокус с поля / пытается отправить форму", "expected_result": "Срабатывает триггер валидации"},
-        {"keyword": "Then", "action": "Отображается ошибка о необходимости корректного email (ожидаемо «Некорректный email»)", "expected_result": "Сообщение об ошибке видно"},
-        {"keyword": "And", "action": "Кнопка «Зарегистрироваться» неактивна", "expected_result": "Кнопка в состоянии disabled"}
+        {
+          "keyword": "Given",
+          "action": "Открыта форма регистрации, поле email пустое",
+          "expected_result": "Поле email в состоянии по умолчанию"
+        },
+        {
+          "keyword": "When",
+          "action": "Пользователь не заполняет email и уводит фокус с поля / пытается отправить форму",
+          "expected_result": "Срабатывает триггер валидации"
+        },
+        {
+          "keyword": "Then",
+          "action": "Отображается ошибка о необходимости корректного email (ожидаемо «Некорректный email»)",
+          "expected_result": "Сообщение об ошибке видно"
+        },
+        {
+          "keyword": "And",
+          "action": "Кнопка «Зарегистрироваться» неактивна",
+          "expected_result": "Кнопка в состоянии disabled"
+        }
       ],
       "postconditions": [
         "Форма не отправлена"
@@ -221,7 +407,16 @@
       "note": "Ambiguity из ReviewReport: «Не описано поведение при пустой строке email». Требуется уточнение текста ошибки.",
       "linked_jira_key": "KAN-17",
       "linked_requirement_id": "REQ-REG-002",
-      "tags": ["ui", "registration", "email", "validation", "boundary", "negative", "testit", "p1"]
+      "tags": [
+        "ui",
+        "registration",
+        "email",
+        "validation",
+        "boundary",
+        "negative",
+        "testit",
+        "p1"
+      ]
     },
     {
       "id": "TC-SHOP-008",
@@ -235,22 +430,53 @@
         "Открыта форма регистрации"
       ],
       "bdd_steps": [
-        {"keyword": "Given", "action": "Открыта форма регистрации", "expected_result": "Поле email активно"},
-        {"keyword": "When", "action": "Пользователь поочерёдно вводит невалидные email: 'user@@example.com', 'user@example', '@example.com', 'user@'", "expected_result": "Каждое значение принимается в поле"},
-        {"keyword": "Then", "action": "Для каждого варианта отображается ошибка «Некорректный email»", "expected_result": "Текст ошибки виден для всех вариантов"},
-        {"keyword": "And", "action": "Кнопка «Зарегистрироваться» остаётся неактивной", "expected_result": "Кнопка в состоянии disabled во всех случаях"}
+        {
+          "keyword": "Given",
+          "action": "Открыта форма регистрации",
+          "expected_result": "Поле email активно"
+        },
+        {
+          "keyword": "When",
+          "action": "Пользователь поочерёдно вводит невалидные email: 'user@@example.com', 'user@example', '@example.com', 'user@'",
+          "expected_result": "Каждое значение принимается в поле"
+        },
+        {
+          "keyword": "Then",
+          "action": "Для каждого варианта отображается ошибка «Некорректный email»",
+          "expected_result": "Текст ошибки виден для всех вариантов"
+        },
+        {
+          "keyword": "And",
+          "action": "Кнопка «Зарегистрироваться» остаётся неактивной",
+          "expected_result": "Кнопка в состоянии disabled во всех случаях"
+        }
       ],
       "postconditions": [
         "Форма не отправлена"
       ],
       "test_data": {
-        "emails": ["user@@example.com", "user@example", "@example.com", "user@", "user@.com"],
+        "emails": [
+          "user@@example.com",
+          "user@example",
+          "@example.com",
+          "user@",
+          "user@.com"
+        ],
         "expected_error": "Некорректный email",
         "expected_button_state": "disabled"
       },
       "linked_jira_key": "KAN-17",
       "linked_requirement_id": "REQ-REG-002",
-      "tags": ["ui", "registration", "email", "validation", "boundary", "negative", "testit", "p1"]
+      "tags": [
+        "ui",
+        "registration",
+        "email",
+        "validation",
+        "boundary",
+        "negative",
+        "testit",
+        "p1"
+      ]
     },
     {
       "id": "TC-SHOP-009",
@@ -266,23 +492,54 @@
         "Открыт шаг оформления заказа «Доставка»"
       ],
       "bdd_steps": [
-        {"keyword": "Given", "action": "В корзине есть товар, пользователь авторизован и находится на шаге «Доставка»", "expected_result": "Шаг «Доставка» отображается"},
-        {"keyword": "When", "action": "Пользователь выбирает способ доставки «Курьер»", "expected_result": "Способ «Курьер» отмечен (активен)"},
-        {"keyword": "Then", "action": "Отображаются поля «Адрес» и «Дата доставки»", "expected_result": "Оба поля видимы и доступны для ввода"},
-        {"keyword": "And", "action": "Поле «Пункт выдачи» (dropdown) отсутствует", "expected_result": "Dropdown «Пункт выдачи» не отображается"}
+        {
+          "keyword": "Given",
+          "action": "В корзине есть товар, пользователь авторизован и находится на шаге «Доставка»",
+          "expected_result": "Шаг «Доставка» отображается"
+        },
+        {
+          "keyword": "When",
+          "action": "Пользователь выбирает способ доставки «Курьер»",
+          "expected_result": "Способ «Курьер» отмечен (активен)"
+        },
+        {
+          "keyword": "Then",
+          "action": "Отображаются поля «Адрес» и «Дата доставки»",
+          "expected_result": "Оба поля видимы и доступны для ввода"
+        },
+        {
+          "keyword": "And",
+          "action": "Поле «Пункт выдачи» (dropdown) отсутствует",
+          "expected_result": "Dropdown «Пункт выдачи» не отображается"
+        }
       ],
       "postconditions": [
         "Форма доставки «Курьер» готова к заполнению"
       ],
       "test_data": {
         "delivery_method": "courier",
-        "product": {"sku": "SKU-001", "title": "Товар А", "qty": 1},
+        "product": {
+          "sku": "SKU-001",
+          "title": "Товар А",
+          "qty": 1
+        },
         "cart_total": 1500,
-        "expected_fields": ["address", "delivery_date"]
+        "expected_fields": [
+          "address",
+          "delivery_date"
+        ]
       },
       "linked_jira_key": "KAN-17",
       "linked_requirement_id": "REQ-CHECKOUT-003",
-      "tags": ["checkout", "delivery", "ui", "positive", "smoke", "testit", "p0"]
+      "tags": [
+        "checkout",
+        "delivery",
+        "ui",
+        "positive",
+        "smoke",
+        "testit",
+        "p0"
+      ]
     },
     {
       "id": "TC-SHOP-010",
@@ -298,24 +555,56 @@
         "Открыт шаг оформления заказа «Доставка»"
       ],
       "bdd_steps": [
-        {"keyword": "Given", "action": "В корзине есть товар, пользователь авторизован и находится на шаге «Доставка»", "expected_result": "Шаг «Доставка» отображается"},
-        {"keyword": "When", "action": "Пользователь выбирает способ доставки «Самовывоз»", "expected_result": "Способ «Самовывоз» отмечен (активен)"},
-        {"keyword": "Then", "action": "Отображается dropdown «Пункт выдачи»", "expected_result": "Dropdown доступен и раскрывает список пунктов выдачи"},
-        {"keyword": "And", "action": "Поля «Адрес» и «Дата доставки» скрыты", "expected_result": "Оба поля не отображаются в форме"}
+        {
+          "keyword": "Given",
+          "action": "В корзине есть товар, пользователь авторизован и находится на шаге «Доставка»",
+          "expected_result": "Шаг «Доставка» отображается"
+        },
+        {
+          "keyword": "When",
+          "action": "Пользователь выбирает способ доставки «Самовывоз»",
+          "expected_result": "Способ «Самовывоз» отмечен (активен)"
+        },
+        {
+          "keyword": "Then",
+          "action": "Отображается dropdown «Пункт выдачи»",
+          "expected_result": "Dropdown доступен и раскрывает список пунктов выдачи"
+        },
+        {
+          "keyword": "And",
+          "action": "Поля «Адрес» и «Дата доставки» скрыты",
+          "expected_result": "Оба поля не отображаются в форме"
+        }
       ],
       "postconditions": [
         "Форма доставки «Самовывоз» готова к выбору пункта выдачи"
       ],
       "test_data": {
         "delivery_method": "pickup",
-        "pickup_points": ["ПВЗ-001: Москва, ул. Тверская, 1", "ПВЗ-002: Москва, ул. Арбат, 5"],
-        "expected_fields": ["pickup_point"],
-        "hidden_fields": ["address", "delivery_date"]
+        "pickup_points": [
+          "ПВЗ-001: Москва, ул. Тверская, 1",
+          "ПВЗ-002: Москва, ул. Арбат, 5"
+        ],
+        "expected_fields": [
+          "pickup_point"
+        ],
+        "hidden_fields": [
+          "address",
+          "delivery_date"
+        ]
       },
       "note": "Ambiguity из ReviewReport: не определён перечень и источник данных для dropdown «Пункт выдачи». Значения в test_data приведены как референсные.",
       "linked_jira_key": "KAN-17",
       "linked_requirement_id": "REQ-CHECKOUT-003",
-      "tags": ["checkout", "delivery", "ui", "positive", "smoke", "testit", "p0"]
+      "tags": [
+        "checkout",
+        "delivery",
+        "ui",
+        "positive",
+        "smoke",
+        "testit",
+        "p0"
+      ]
     },
     {
       "id": "TC-SHOP-011",
@@ -331,10 +620,26 @@
         "Открыт шаг оформления заказа «Доставка»"
       ],
       "bdd_steps": [
-        {"keyword": "Given", "action": "Выбран способ «Курьер» и заполнены поля «Адрес» = 'Москва, ул. Ленина, 10' и «Дата доставки» = '2026-11-20'", "expected_result": "Поля заполнены валидными значениями"},
-        {"keyword": "When", "action": "Пользователь переключает способ доставки на «Самовывоз»", "expected_result": "Активным становится «Самовывоз», состав полей меняется"},
-        {"keyword": "Then", "action": "Поля «Адрес» и «Дата доставки» скрыты, отображается dropdown «Пункт выдачи»", "expected_result": "Ранее введённые адрес и дата не отображаются"},
-        {"keyword": "And", "action": "Пользователь переключает способ обратно на «Курьер»", "expected_result": "Поля «Адрес» и «Дата доставки» пустые (данные очищены), dropdown «Пункт выдачи» скрыт"}
+        {
+          "keyword": "Given",
+          "action": "Выбран способ «Курьер» и заполнены поля «Адрес» = 'Москва, ул. Ленина, 10' и «Дата доставки» = '2026-11-20'",
+          "expected_result": "Поля заполнены валидными значениями"
+        },
+        {
+          "keyword": "When",
+          "action": "Пользователь переключает способ доставки на «Самовывоз»",
+          "expected_result": "Активным становится «Самовывоз», состав полей меняется"
+        },
+        {
+          "keyword": "Then",
+          "action": "Поля «Адрес» и «Дата доставки» скрыты, отображается dropdown «Пункт выдачи»",
+          "expected_result": "Ранее введённые адрес и дата не отображаются"
+        },
+        {
+          "keyword": "And",
+          "action": "Пользователь переключает способ обратно на «Курьер»",
+          "expected_result": "Поля «Адрес» и «Дата доставки» пустые (данные очищены), dropdown «Пункт выдачи» скрыт"
+        }
       ],
       "postconditions": [
         "Форма содержит только поля, соответствующие активному способу доставки, без сохранённых значений"
@@ -347,7 +652,14 @@
       },
       "linked_jira_key": "KAN-17",
       "linked_requirement_id": "REQ-CHECKOUT-003",
-      "tags": ["checkout", "delivery", "business-logic", "boundary", "testit", "p0"]
+      "tags": [
+        "checkout",
+        "delivery",
+        "business-logic",
+        "boundary",
+        "testit",
+        "p0"
+      ]
     },
     {
       "id": "TC-SHOP-012",
@@ -363,10 +675,26 @@
         "Выбран способ доставки «Курьер»"
       ],
       "bdd_steps": [
-        {"keyword": "Given", "action": "Выбран способ доставки «Курьер», форма отображает поля «Адрес» и «Дата доставки»", "expected_result": "Поля доступны для ввода"},
-        {"keyword": "When", "action": "Пользователь заполняет «Адрес» = 'Москва, ул. Ленина, 10' и «Дата доставки» = '2026-11-20'", "expected_result": "Все обязательные поля заполнены валидными значениями"},
-        {"keyword": "Then", "action": "Кнопка «Оформить заказ» становится активной", "expected_result": "Кнопка кликабельна (не disabled)"},
-        {"keyword": "And", "action": "Кнопка остаётся активной при повторном изменении значений на валидные", "expected_result": "Состояние кнопки корректно пересчитывается"}
+        {
+          "keyword": "Given",
+          "action": "Выбран способ доставки «Курьер», форма отображает поля «Адрес» и «Дата доставки»",
+          "expected_result": "Поля доступны для ввода"
+        },
+        {
+          "keyword": "When",
+          "action": "Пользователь заполняет «Адрес» = 'Москва, ул. Ленина, 10' и «Дата доставки» = '2026-11-20'",
+          "expected_result": "Все обязательные поля заполнены валидными значениями"
+        },
+        {
+          "keyword": "Then",
+          "action": "Кнопка «Оформить заказ» становится активной",
+          "expected_result": "Кнопка кликабельна (не disabled)"
+        },
+        {
+          "keyword": "And",
+          "action": "Кнопка остаётся активной при повторном изменении значений на валидные",
+          "expected_result": "Состояние кнопки корректно пересчитывается"
+        }
       ],
       "postconditions": [
         "Форма готова к оформлению заказа"
@@ -379,7 +707,15 @@
       },
       "linked_jira_key": "KAN-17",
       "linked_requirement_id": "REQ-CHECKOUT-003",
-      "tags": ["checkout", "delivery", "ui", "positive", "smoke", "testit", "p0"]
+      "tags": [
+        "checkout",
+        "delivery",
+        "ui",
+        "positive",
+        "smoke",
+        "testit",
+        "p0"
+      ]
     },
     {
       "id": "TC-SHOP-013",
@@ -395,10 +731,26 @@
         "Выбран способ доставки «Курьер»"
       ],
       "bdd_steps": [
-        {"keyword": "Given", "action": "Выбран способ «Курьер», все поля пустые", "expected_result": "Кнопка «Оформить заказ» неактивна"},
-        {"keyword": "When", "action": "Пользователь заполняет только «Адрес», оставляя «Дата доставки» пустой", "expected_result": "Часть обязательных полей заполнена"},
-        {"keyword": "Then", "action": "Кнопка «Оформить заказ» остаётся неактивной", "expected_result": "Кнопка disabled"},
-        {"keyword": "And", "action": "Пользователь очищает «Адрес» (или заполняет только «Дату доставки»)", "expected_result": "Во всех случаях неполного заполнения кнопка остаётся неактивной"}
+        {
+          "keyword": "Given",
+          "action": "Выбран способ «Курьер», все поля пустые",
+          "expected_result": "Кнопка «Оформить заказ» неактивна"
+        },
+        {
+          "keyword": "When",
+          "action": "Пользователь заполняет только «Адрес», оставляя «Дата доставки» пустой",
+          "expected_result": "Часть обязательных полей заполнена"
+        },
+        {
+          "keyword": "Then",
+          "action": "Кнопка «Оформить заказ» остаётся неактивной",
+          "expected_result": "Кнопка disabled"
+        },
+        {
+          "keyword": "And",
+          "action": "Пользователь очищает «Адрес» (или заполняет только «Дату доставки»)",
+          "expected_result": "Во всех случаях неполного заполнения кнопка остаётся неактивной"
+        }
       ],
       "postconditions": [
         "Заказ не оформлен, форма остаётся открытой"
@@ -406,15 +758,31 @@
       "test_data": {
         "delivery_method": "courier",
         "scenarios": [
-          {"address": "", "delivery_date": ""},
-          {"address": "Москва, ул. Ленина, 10", "delivery_date": ""},
-          {"address": "", "delivery_date": "2026-11-20"}
+          {
+            "address": "",
+            "delivery_date": ""
+          },
+          {
+            "address": "Москва, ул. Ленина, 10",
+            "delivery_date": ""
+          },
+          {
+            "address": "",
+            "delivery_date": "2026-11-20"
+          }
         ],
         "expected_button_state": "disabled"
       },
       "linked_jira_key": "KAN-17",
       "linked_requirement_id": "REQ-CHECKOUT-003",
-      "tags": ["checkout", "delivery", "ui", "negative", "testit", "p0"]
+      "tags": [
+        "checkout",
+        "delivery",
+        "ui",
+        "negative",
+        "testit",
+        "p0"
+      ]
     },
     {
       "id": "TC-SHOP-014",
@@ -431,10 +799,26 @@
         "Заполнены все обязательные поля"
       ],
       "bdd_steps": [
-        {"keyword": "Given", "action": "Пользователь авторизован, в корзине есть товар, выбран «Курьер», заполнены «Адрес» и «Дата доставки»", "expected_result": "Кнопка «Оформить заказ» активна"},
-        {"keyword": "When", "action": "Пользователь нажимает кнопку «Оформить заказ»", "expected_result": "Запрос на создание заказа отправлен"},
-        {"keyword": "Then", "action": "Заказ успешно создан, отображается страница подтверждения с номером заказа", "expected_result": "HTTP 200/201, номер заказа присвоен"},
-        {"keyword": "And", "action": "Корзина очищена, заказ отображается в «Моих заказах» со статусом «В обработке»", "expected_result": "Корзина пуста, заказ доступен в списке заказов"}
+        {
+          "keyword": "Given",
+          "action": "Пользователь авторизован, в корзине есть товар, выбран «Курьер», заполнены «Адрес» и «Дата доставки»",
+          "expected_result": "Кнопка «Оформить заказ» активна"
+        },
+        {
+          "keyword": "When",
+          "action": "Пользователь нажимает кнопку «Оформить заказ»",
+          "expected_result": "Запрос на создание заказа отправлен"
+        },
+        {
+          "keyword": "Then",
+          "action": "Заказ успешно создан, отображается страница подтверждения с номером заказа",
+          "expected_result": "HTTP 200/201, номер заказа присвоен"
+        },
+        {
+          "keyword": "And",
+          "action": "Корзина очищена, заказ отображается в «Моих заказах» со статусом «В обработке»",
+          "expected_result": "Корзина пуста, заказ доступен в списке заказов"
+        }
       ],
       "postconditions": [
         "Заказ создан",
@@ -444,12 +828,27 @@
         "delivery_method": "courier",
         "address": "Москва, ул. Ленина, 10",
         "delivery_date": "2026-11-20",
-        "product": {"sku": "SKU-001", "title": "Товар А", "qty": 1},
-        "expected_http_status": [200, 201]
+        "product": {
+          "sku": "SKU-001",
+          "title": "Товар А",
+          "qty": 1
+        },
+        "expected_http_status": [
+          200,
+          201
+        ]
       },
       "linked_jira_key": "KAN-17",
       "linked_requirement_id": "REQ-CHECKOUT-003",
-      "tags": ["checkout", "delivery", "positive", "smoke", "e2e", "testit", "p0"]
+      "tags": [
+        "checkout",
+        "delivery",
+        "positive",
+        "smoke",
+        "e2e",
+        "testit",
+        "p0"
+      ]
     },
     {
       "id": "TC-SHOP-015",
@@ -465,10 +864,26 @@
         "Выбран способ доставки «Самовывоз»"
       ],
       "bdd_steps": [
-        {"keyword": "Given", "action": "Выбран способ «Самовывоз», отображается dropdown «Пункт выдачи»", "expected_result": "Пункт выдачи не выбран по умолчанию"},
-        {"keyword": "When", "action": "Пользователь не выбирает пункт выдачи", "expected_result": "Кнопка «Оформить заказ» неактивна"},
-        {"keyword": "And", "action": "Пользователь выбирает пункт выдачи 'ПВЗ-001: Москва, ул. Тверская, 1'", "expected_result": "Пункт выдачи выбран"},
-        {"keyword": "Then", "action": "Кнопка «Оформить заказ» становится активной", "expected_result": "Кнопка кликабельна (не disabled)"}
+        {
+          "keyword": "Given",
+          "action": "Выбран способ «Самовывоз», отображается dropdown «Пункт выдачи»",
+          "expected_result": "Пункт выдачи не выбран по умолчанию"
+        },
+        {
+          "keyword": "When",
+          "action": "Пользователь не выбирает пункт выдачи",
+          "expected_result": "Кнопка «Оформить заказ» неактивна"
+        },
+        {
+          "keyword": "And",
+          "action": "Пользователь выбирает пункт выдачи 'ПВЗ-001: Москва, ул. Тверская, 1'",
+          "expected_result": "Пункт выдачи выбран"
+        },
+        {
+          "keyword": "Then",
+          "action": "Кнопка «Оформить заказ» становится активной",
+          "expected_result": "Кнопка кликабельна (не disabled)"
+        }
       ],
       "postconditions": [
         "Форма «Самовывоз» готова к оформлению заказа"
@@ -481,7 +896,15 @@
       },
       "linked_jira_key": "KAN-17",
       "linked_requirement_id": "REQ-CHECKOUT-003",
-      "tags": ["checkout", "delivery", "ui", "positive", "negative", "testit", "p0"]
+      "tags": [
+        "checkout",
+        "delivery",
+        "ui",
+        "positive",
+        "negative",
+        "testit",
+        "p0"
+      ]
     },
     {
       "id": "TC-SHOP-016",
@@ -496,10 +919,26 @@
         "Пользователь НЕ авторизован"
       ],
       "bdd_steps": [
-        {"keyword": "Given", "action": "В корзине есть товар, пользователь не авторизован", "expected_result": "Активной сессии нет"},
-        {"keyword": "When", "action": "Пользователь пытается открыть страницу оформления заказа /checkout", "expected_result": "Прямой доступ к оформлению заблокирован"},
-        {"keyword": "Then", "action": "Выполняется редирект на страницу /login", "expected_result": "URL содержит /login, отображается форма авторизации"},
-        {"keyword": "And", "action": "Форма оформления заказа не отображается, данные заказа недоступны", "expected_result": "Нет доступа к полям доставки и кнопке «Оформить заказ»"}
+        {
+          "keyword": "Given",
+          "action": "В корзине есть товар, пользователь не авторизован",
+          "expected_result": "Активной сессии нет"
+        },
+        {
+          "keyword": "When",
+          "action": "Пользователь пытается открыть страницу оформления заказа /checkout",
+          "expected_result": "Прямой доступ к оформлению заблокирован"
+        },
+        {
+          "keyword": "Then",
+          "action": "Выполняется редирект на страницу /login",
+          "expected_result": "URL содержит /login, отображается форма авторизации"
+        },
+        {
+          "keyword": "And",
+          "action": "Форма оформления заказа не отображается, данные заказа недоступны",
+          "expected_result": "Нет доступа к полям доставки и кнопке «Оформить заказ»"
+        }
       ],
       "postconditions": [
         "Пользователь находится на /login, заказ не создан"
@@ -508,11 +947,21 @@
         "user_state": "unauthorized",
         "target_url": "/checkout",
         "expected_redirect": "/login",
-        "product": {"sku": "SKU-001", "qty": 1}
+        "product": {
+          "sku": "SKU-001",
+          "qty": 1
+        }
       },
       "linked_jira_key": "KAN-17",
       "linked_requirement_id": "REQ-CHECKOUT-003",
-      "tags": ["checkout", "security", "access-control", "negative", "testit", "p0"]
+      "tags": [
+        "checkout",
+        "security",
+        "access-control",
+        "negative",
+        "testit",
+        "p0"
+      ]
     }
   ]
 }

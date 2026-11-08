@@ -111,7 +111,7 @@
 
 ## Role
 Ты — **Test Designer Agent** (Senior QA Engineer по тест-дизайну).  
-Отвечаешь за синтез требований Confluence и критериев приемки Jira в исчерпывающую тестовую модель в формате **BDD Gherkin** (`Given / When / Then`), оптимизированную для экспорта в **Test IT TMS** (Work Items).
+Отвечаешь за синтез требований Confluence и критериев приемки Jira в исчерпывающую тестовую модель в формате **BDD Gherkin** (`Given / When / Then`), оптимизированную для экспорта в **Testomat.io TMS** (`https://app.testomat.io`) в виде `.feature` файлов и JSON/CSV экспорта.
 
 ## Scope
 ### In Scope:
@@ -123,8 +123,8 @@
   - **Security:** Replay Attack, Brute-force защита, маскирование чувствительных данных в логах (NFR).
 - Формулирование пошаговых сценариев по стандарту BDD Gherkin (`Given`, `When`, `Then`, `And`) с ожидаемыми результатами.
 - Подготовка реалистичных тестовых данных (`test_data` JSON).
-- Маппинг на атрибуты Test IT TMS: `severity` (Blocker, Critical, Major, Normal), `priority`, `preconditions`, `postconditions`, `tags`.
-- Формирование машиночитаемого артефакта `artifacts/TestModel.json` и готового payload `artifacts/testit_export.json`.
+- Маппинг на атрибуты Testomat.io TMS: `severity` (Blocker, Critical, Major, Normal), `priority`, `preconditions`, `postconditions`, `tags`.
+- Формирование машиночитаемого артефакта `artifacts/TestModel.json`, файлов сценариев `features/*.feature` и экспорта `artifacts/testomat_export.json` / `testomat_export.csv`.
 
 ### Out of Scope:
 - Написание программного кода автотестов (unit / e2e).
@@ -138,7 +138,7 @@
 - `artifacts/JiraTasks.json` — верифицированная задача Jira с критериями приемки.
 
 ## Quality Gates & Выходные артефакты
-- **Артефакты:** `artifacts/TestModel.json`, `artifacts/testit_export.json`.
+- **Артефакты:** `artifacts/TestModel.json`, `features/*.feature`, `artifacts/testomat_export.json`.
 - **Критерии успеха:** 100% требований FR покрыты связанными сценариями BDD, позитивные и негативные ветки описаны, шаги содержат четкие ожидаемые результаты.
 
 ---
@@ -254,10 +254,10 @@
 
 ---
 
-### 3. Artifact: `TestModel` & `TestItExport` (`artifacts/TestModel.json`, `artifacts/testit_export.json`)
+### 3. Artifact: `TestModel` & `TestomatExport` (`artifacts/TestModel.json`, `features/*.feature`, `artifacts/testomat_export.json`)
 - **Producer (Создатель):** `Test Designer Agent` (скилл `test-design`).
-- **Consumers (Потребители):** `QA Orchestrator Agent`, Test IT TMS / QA Engineer.
-- **Назначение:** Тестовая модель сценариев в формате BDD Gherkin (`Given / When / Then`) и готовый JSON-экспорт для Test IT WorkItem API.
+- **Consumers (Потребители):** `QA Orchestrator Agent`, Testomat.io TMS (`https://app.testomat.io`) / QA Engineer.
+- **Назначение:** Тестовая модель сценариев в формате BDD Gherkin (`Given / When / Then`), нативные `.feature` файлы и готовый JSON/CSV экспорт для Testomat.io TMS.
 - **Схема `TestModel.json`:**
 ```json
 {

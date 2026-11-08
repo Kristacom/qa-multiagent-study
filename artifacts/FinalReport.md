@@ -6,7 +6,7 @@
 **Спецификация:** `CONF-SHOP-CHECKOUT-24` (v2.4, Status: Approved)  
 **Статус Quality Gate:** ✅ **PASSED** (Оценка: **84/100**, критических блокеров: 0, предупреждений: 6)  
 **Интеграция Jira:** ✅ Создан Story-родитель [KAN-17](https://kristapro.atlassian.net/browse/KAN-17), QA-подзадача [KAN-18](https://kristapro.atlassian.net/browse/KAN-18), а также **6 задач типа Задача/Question на уточнение требований (KAN-19 — KAN-24)**, связанных с KAN-17; опубликован комментарий верификации (id 10014)  
-**Целевая TMS:** Test IT TMS (проект `SHOP-QA`, тип `Manual`, язык `ru`)
+**Целевая TMS:** [Testomat.io TMS](https://app.testomat.io) (проект `SHOP-QA`, BDD Gherkin `.feature` файлы, тип `Manual / BDD`, язык `ru`)
 
 ---
 
@@ -33,10 +33,11 @@
    - Артефакты: `artifacts/JiraTasks.json`, `artifacts/JiraUploadResult.json`.
 
 3. **Test Designer Agent (Фаза 3):**
-   - Сформирована тестовая модель: **16 тест-кейсов** в нотации BDD Gherkin.
+   - Сформирована тестовая модель: **16 тест-кейсов** в нотации BDD Gherkin со 100% покрытием критериев приёмки.
    - Разбивка по классам: Happy Path — 8, Negative — 4, Boundary — 2, Security/UI-state — 2.
-   - Покрытие требований — **100%** (все критерии приёмки).
-   - Артефакты: `artifacts/TestModel.json`, `artifacts/testit_export.json` (payload `entityTypeName="TestCases"`, `projectKey="SHOP-QA"`).
+   - Сгенерированы нативные файлы спецификаций: `features/auth.feature`, `features/registration.feature`, `features/checkout.feature`.
+   - Подготовлен экспорт для Testomat.io TMS: `artifacts/testomat_export.json` (API) и `artifacts/testomat_export.csv` (Web UI Import).
+   - Артефакты: `artifacts/TestModel.json`, `features/*.feature`, `artifacts/testomat_export.json`, `artifacts/testomat_export.csv`.
 
 4. **QA Orchestrator Agent (Фаза 4):**
    - Проведён контроль Quality Gate, верификация схем артефактов по контрактам `AGENTS.md` (Раздел 5).
@@ -46,7 +47,7 @@
 
 ## 📋 Матрица трассируемости (Traceability Matrix)
 
-| Требование Confluence | Задача Jira (Story) | QA-подзадача Jira | Тест-кейсы Test IT | Покрытие AC | Статус |
+| Требование Confluence | Задача Jira (Story) | QA-подзадача Jira | Тест-кейсы Testomat.io | Покрытие AC | Статус |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | [REQ-AUTH-001](https://kristapro.atlassian.net/wiki/spaces/MFS/pages/2031617) — кнопка «Войти» | `KAN-17` | [KAN-18](https://kristapro.atlassian.net/browse/KAN-18) | `TC-SHOP-001`, `TC-SHOP-002`, `TC-SHOP-003` | 2/2 | ✅ Full |
 | [REQ-REG-002](https://kristapro.atlassian.net/wiki/spaces/MFS/pages/2031617) — валидация email | `KAN-17` | [KAN-18](https://kristapro.atlassian.net/browse/KAN-18) | `TC-SHOP-004`, `TC-SHOP-005`, `TC-SHOP-006`, `TC-SHOP-007`, `TC-SHOP-008` | 3/3 | ✅ Full |
@@ -85,5 +86,5 @@
 2. В Jira автоматически созданы:
    - Родительская задача `KAN-17` и QA-подзадача `KAN-18`.
    - **6 задач типа Question/Task (`KAN-19` — `KAN-24`)** на уточнение выявленных предупреждений требований, привязанные к `KAN-17`.
-3. Сформированы **16 BDD тест-кейсов** с 100% покрытием критериев приемки для TMS Test IT.
-4. Готовность к демонстрации на защите проекта: **100%**.
+3. Сформированы **16 BDD тест-кейсов** с 100% покрытием критериев приемки в формате нативных `.feature` файлов и экспорта для TMS **Testomat.io**.
+4. Готовность к демонстрации на защите проекта в живых системах (Jira + Confluence + Testomat.io): **100%**.
