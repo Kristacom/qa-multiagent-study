@@ -42,7 +42,7 @@
     }
   },
 
-  // Подключение MCP серверов (Jira, Confluence, Gemini)
+  // Подключение MCP серверов (Jira, Confluence, Testomat.io, Gemini)
   "mcp": {
     "jira": {
       "type": "local",
@@ -62,6 +62,23 @@
         "ATLASSIAN_SITE_NAME": "kristapro",
         "ATLASSIAN_USER_EMAIL": "krista.pro@yandex.ru",
         "ATLASSIAN_API_TOKEN": "{env:ATLASSIAN_API_TOKEN}"
+      }
+    },
+    "testomat": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@testomatio/mcp",
+        "--token",
+        "{env:TESTOMATIO}",
+        "--project",
+        "shop-qa"
+      ],
+      "enabled": true,
+      "environment": {
+        "TESTOMATIO": "{env:TESTOMATIO}",
+        "TESTOMATIO_PROJECT_ID": "shop-qa"
       }
     },
     "gemini": {

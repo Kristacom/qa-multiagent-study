@@ -42,12 +42,13 @@ description: Создание тестовой модели в формате BD
 3. Сформировать `artifacts/testomat_export.csv` (для прямого импорта через Web UI Testomat.io).
 4. Сохранить общую модель в `artifacts/TestModel.json`.
 
-### Шаг 5: Автоматическая синхронизация с Testomat.io TMS (Auto-Sync)
-1. Выполнить команду в окружении:
-   ```bash
-   python sync_testomat.py
-   ```
-2. Скрипт автоматически считывает токен из `.env`, выгружает сценарии в облачный проект `SHOP-QA` в [Testomat.io](https://app.testomat.io) через официальный CLI `check-cucumber`, размечает файлы `@T...` идентификаторами и сохраняет статус в `artifacts/testomat_sync_result.json`.
+### Шаг 5: Синхронизация с Testomat.io TMS через официальный MCP-сервер (и CLI)
+1. **Основной способ — MCP Server (@testomatio/mcp):**
+   - В `opencode.jsonc` подключен официальный MCP-сервер `@testomatio/mcp`.
+   - Агент использует MCP-инструменты `testomat.tests` (команда `bulk_upsert` для загрузки BDD-тестов, `list`, `create`) и `testomat.suites` для управления структурой сьютов.
+2. **Скриптовый авто-синхронизатор (CLI fallback):**
+   - Команда `python sync_testomat.py` или `npx check-cucumber features/*.feature --create -U --sync` считывает токен из `.env` и выгружает сценарии в облачный проект `shop-qa` в [Testomat.io](https://app.testomat.io).
+   - Сценарии автоматически размечаются `@T...` и `@S...` идентификаторами, а статус фиксируется в `artifacts/testomat_sync_result.json`.
 
 ---
 

@@ -87,12 +87,15 @@ tools:
 2. Сформировать `artifacts/testomat_export.json` для выгрузки через Testomat Load API (`POST https://app.testomat.io/api/load?api_key=...`).
 3. Сформировать `artifacts/testomat_export.csv` для мгновенного Drag-and-Drop импорта в интерфейсе Testomat.io.
 
-### Шаг 5: Автоматическая отправка тест-кейсов в Testomat.io TMS
-1. Используя инструмент `bash`, выполни команду синхронизации:
-   ```bash
-   python sync_testomat.py
-   ```
-2. Скрипт отправит все 16 сценариев в реальный проект в `https://app.testomat.io`, синхронизирует BDD шаги, обновит `@T...` теги в `.feature` файлах и сохранит подтверждение в `artifacts/testomat_sync_result.json`.
+### Шаг 5: Отправка тест-кейсов в Testomat.io TMS через MCP-сервер (@testomatio/mcp)
+1. **Через Testomat.io MCP Server:**
+   - Используй доступные инструменты MCP-сервера `testomat` (`testomat.tests` с операцией `bulk_upsert`, `testomat.suites`) для прямой публикации сформированных сценариев в облачный проект `shop-qa`.
+2. **Через скрипт авто-синхронизации (CLI):**
+   - Либо выполни через инструмент `bash` команду:
+     ```bash
+     python sync_testomat.py
+     ```
+   - Скрипт отправит все 16 сценариев в реальный проект в `https://app.testomat.io`, синхронизирует BDD шаги, обновит `@T...` теги в `.feature` файлах и сохранит подтверждение в `artifacts/testomat_sync_result.json`.
 
 ---
 

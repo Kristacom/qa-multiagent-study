@@ -156,16 +156,39 @@ opencode
 
 ---
 
-## 🚀 Синхронизация с Testomat.io TMS
+## 🚀 Синхронизация с Testomat.io TMS (MCP Server & CLI)
 
-Синхронизация происходит **полностью автоматически** при работе агента `test-designer` через скрипт `sync_testomat.py`.
+Интеграция с Testomat.io реализована по двухуровневой схеме:
 
-### 1. Автоматический режим (по умолчанию при `/qa-flow`):
-Агент самостоятельно выполняет команду:
+### 1. Официальный MCP-сервер (@testomatio/mcp):
+В файле `opencode.jsonc` подключен официальный Model Context Protocol сервер Testomat.io:
+```jsonc
+"testomat": {
+  "type": "local",
+  "command": [
+    "npx",
+    "-y",
+    "@testomatio/mcp",
+    "--token",
+    "{env:TESTOMATIO}",
+    "--project",
+    "shop-qa"
+  ],
+  "enabled": true,
+  "environment": {
+    "TESTOMATIO": "{env:TESTOMATIO}",
+    "TESTOMATIO_PROJECT_ID": "shop-qa"
+  }
+}
+```
+Агенты OpenCode вызывают нативные MCP-инструменты `testomat.tests` (операция `bulk_upsert`, `create`, `list`) и `testomat.suites` для прямого взаимодействия с облачной TMS.
+
+### 2. Скриптовая авто-синхронизация (CLI Runner):
+Агент также может вызвать команду:
 ```bash
 python sync_testomat.py
 ```
-Скрипт подтягивает токен из файла `.env` (`TESTOMATIO=tstmt_...`), отправляет 16 BDD-сценариев в облачный проект `SHOP-QA` в [app.testomat.io](https://app.testomat.io), размечает feature-файлы уникальными ID (`@T...`, `@S...`) и сохраняет артефакт `artifacts/testomat_sync_result.json`.
+Скрипт считывает токен из файла `.env` (`TESTOMATIO=tstmt_...`), отправляет 16 BDD-сценариев в облачный проект `shop-qa` в [app.testomat.io](https://app.testomat.io) через официальный CLI `check-cucumber`, размечает feature-файлы уникальными ID (`@T...`, `@S...`) и сохраняет артефакт `artifacts/testomat_sync_result.json`.
 
 ### 2. Ручной запуск синхронизации (при необходимости):
 Если вы хотите пересинхронизировать тесты вручную из терминала:
