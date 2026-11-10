@@ -1,5 +1,5 @@
 ---
-description: Test Designer Agent — разработка BDD сценариев, матрица покрытия и экспорт для Test IT TMS
+description: Test Designer Agent — разработка BDD сценариев, матрица покрытия и экспорт для Testomat.io TMS
 mode: subagent
 tools:
   read: true
@@ -143,7 +143,7 @@ Feature: Авторизация — отображение кнопки «Вой
 }
 ```
 
-### `artifacts/testit_export.json`
+### `artifacts/testomat_export.json`
 ```json
 {
   "projectKey": "SHOP-QA",

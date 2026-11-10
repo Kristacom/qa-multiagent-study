@@ -3,7 +3,7 @@
 **Система:** OpenCode Multi-Agent QA System (`qa-multiagent-study`)  
 **Статус Quality Gate:** ✅ PASSED (Оценка: 98/100)  
 **Интеграция Jira:** ✅ Выполнена загрузка подзадачи [KAN-16](https://kristapro.atlassian.net/browse/KAN-16) и комментариев через Jira MCP  
-**Целевая TMS:** Test IT TMS  
+**Целевая TMS:** Testomat.io TMS  
 
 ---
 ## 👥 Результаты работы специализированных агентов
@@ -23,7 +23,7 @@
    - Сформирована исчерпывающая тестовая модель: **20 тест-кейсов** в нотации BDD Gherkin.
    - Разбивка по классам проверок: Happy Path (5), Negative (6), Boundary (6), Security (3).
    - Статус: **0 assumptions, 0 blocked dependencies** — все ожидаемые коды HTTP подтверждены спецификацией v4.0.
-   - Сформирован payload для экспорта в Test IT WorkItem API (`artifacts/testit_export.json`).
+   - Сформирован payload для экспорта в Testomat.io WorkItem API (`artifacts/testomat_export.json`).
 
 4. **QA Orchestrator Agent:**
    - Проведена сверка всех схем данных согласно AGENTS.md (Раздел 5: Outputs & Artifacts Management).
@@ -31,7 +31,7 @@
 
 ---
 ## 📋 Матрица трассируемости (Traceability Matrix)
-| Требование Confluence | Задача Jira | QA Подзадача Jira | Тест-кейсы Test IT | Статус покрытия |
+| Требование Confluence | Задача Jira | QA Подзадача Jira | Тест-кейсы Testomat.io | Статус покрытия |
 | :--- | :--- | :--- | :--- | :--- |
 | [FR-01 Create Booking](https://kristapro.atlassian.net/wiki/spaces/MFS/pages/393217/CONF-SPEC-BOOK-01+Restful-Booker+API) | `KAN-14` | `[KAN-16](https://kristapro.atlassian.net/browse/KAN-16)` | `TC-BOOK-001`, `TC-BOOK-006`, `TC-BOOK-007`, `TC-BOOK-012`, `TC-BOOK-013`, `TC-BOOK-014`, `TC-BOOK-015`, `TC-BOOK-016` | ✅ Full (100%) |
 | [FR-02 Get Booking by ID](https://kristapro.atlassian.net/wiki/spaces/MFS/pages/393217/CONF-SPEC-BOOK-01+Restful-Booker+API) | `KAN-14` | `[KAN-16](https://kristapro.atlassian.net/browse/KAN-16)` | `TC-BOOK-002`, `TC-BOOK-008` | ✅ Full (100%) |
@@ -45,8 +45,8 @@
 ## 🔌 Подключенные MCP-серверы (Model Context Protocol)
 - **`jira`:** `mcp-jira-cloud` — создание тикетов (`jira_create_issue`), отправка комментариев DoD (`jira_add_comment`).
 - **`confluence`:** `@aashari/mcp-server-atlassian-confluence` — чтение и синхронизация спецификаций Confluence (`get`, `post`, `cql_search`).
-- **`testit`:** `testit-api` — экспорт и синхронизация тест-кейсов с Test IT TMS WorkItem API.
+- **`testomat`:** `testomat-api` — экспорт и синхронизация тест-кейсов с Testomat.io TMS WorkItem API.
 
 ---
 ## ✅ Вывод
-Мультиагентный конвейер успешно выполнил все задачи. Спецификация актуализирована до v4.0, все 10 расхождений устранены, Quality Gate пройден с оценкой 98/100. Живая синхронизация с Jira и Confluence завершена без ошибок, сгенерированы 20 проверенных тест-кейсов для Test IT TMS.
+Мультиагентный конвейер успешно выполнил все задачи. Спецификация актуализирована до v4.0, все 10 расхождений устранены, Quality Gate пройден с оценкой 98/100. Живая синхронизация с Jira и Confluence завершена без ошибок, сгенерированы 20 проверенных тест-кейсов для Testomat.io TMS.

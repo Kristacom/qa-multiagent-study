@@ -63,12 +63,12 @@
 
 ## 5. 📦 Traceability Matrix
 
-| Confluence REQ | Jira Story | QA Subtask | Test IT Cases | AC Coverage |
+| Confluence REQ | Jira Story | QA Subtask | Testomat.io Cases | AC Coverage |
 | :--- | :--- | :--- | :--- | :--- |
 | REQ-DEL-005 / FR-01 | — (заблокировано) | — | — | 0% (blocked) |
 | REQ-DEL-005 / FR-02 | — (заблокировано) | — | — | 0% (blocked) |
 
-> Фаза 2 (задачи Jira) и Фаза 3 (тест-модель Test IT) не запускались: тестируемые требования отсутствуют. Эскалация зафиксирована в KAN-25.
+> Фаза 2 (задачи Jira) и Фаза 3 (тест-модель Testomat.io) не запускались: тестируемые требования отсутствуют. Эскалация зафиксирована в KAN-25.
 
 ---
 

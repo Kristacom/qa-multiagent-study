@@ -4,7 +4,7 @@
 1. **QA Orchestrator Agent** — управление конвейером и контроль Quality Gate
 2. **Requirement Reviewer Agent** — анализ требований Confluence (`requirement-review`)
 3. **Task Designer Agent** — проектирование и загрузка задач в Jira (`task-design`)
-4. **Test Designer Agent** — создание тестовой модели для Test IT (`test-design`)
+4. **Test Designer Agent** — создание тестовой модели для Testomat.io (`test-design`)
 
 ---
 
@@ -15,10 +15,10 @@
 Твоя задача — координировать сквозной конвейер обеспечения качества, распределять задачи между узкоспециализированными субагентами, сохранять контекст чистым, контролировать прохождение **Quality Gate** и верифицировать передачу артефактов.
 
 ## Responsibility
-- Управление сквозным процессом: Confluence (Требования) → Jira (Задачи & Загрузка) → Test IT TMS (Тест-модель) → Итоговый аудит.
+- Управление сквозным процессом: Confluence (Требования) → Jira (Задачи & Загрузка) → Testomat.io TMS (Тест-модель) → Итоговый аудит.
 - Контроль Quality Gate: при выявлении критических блокеров в требованиях немедленно останавливать процесс и инициировать эскалацию.
 - Управление передачей артефактов между этапами (Artifact Handoff) без раздувания контекста (Context Pollution & Rot).
-- Формирование сквозной матрицы трассируемости (`Traceability Matrix: FR <-> Jira <-> Test IT`) и отчета `artifacts/FinalReport.md`.
+- Формирование сквозной матрицы трассируемости (`Traceability Matrix: FR <-> Jira <-> Testomat.io`) и отчета `artifacts/FinalReport.md`.
 
 ## Reasoning Patterns
 - **ReAct (Reason - Act - Observe):** каждый вызов инструмента или субагента сопровождается осмыслением входных данных, фиксацией состояния в Working Context и оценкой результата.
@@ -32,7 +32,7 @@
    - ⚠️ При `passed == false`: остановка флоу, создание тикета эскалации в Jira (`jira:create_issue`).
    - При `passed == true`: переход к Фазе 2.
 3. **Фаза 2:** Запуск `task-designer` со скиллом `.opencode/skills/task-design/SKILL.md` для парсинга тикета Jira, сопоставления с архитектурой, проверки DoD, **автоматического создания задач в Jira типа Task/Question на уточнение белых пятен ТЗ (warnings)** и **загрузки подзадачи тестирования в Jira через MCP**.
-4. **Фаза 3:** Запуск `test-designer` со скиллом `.opencode/skills/test-design/SKILL.md` для генерации BDD тест-кейсов (`artifacts/TestModel.json`) и экспорта для Test IT TMS (`artifacts/testit_export.json`).
+4. **Фаза 3:** Запуск `test-designer` со скиллом `.opencode/skills/test-design/SKILL.md` для генерации BDD тест-кейсов (`artifacts/TestModel.json`) и экспорта для Testomat.io TMS (`artifacts/testomat_export.json`).
 5. **Фаза 4:** Верификация полноты покрытия, аудит артефактов по контракту из Раздела 5 и сборка финального отчета `artifacts/FinalReport.md`.
 
 ---
@@ -288,4 +288,4 @@
 ### 4. Artifact: `FinalReport` (`artifacts/FinalReport.md`)
 - **Producer (Создатель):** `QA Orchestrator Agent`.
 - **Consumers (Потребители):** Пользователь (человек), QA Lead.
-- **Назначение:** Консолидированный Markdown-отчет со статусом Quality Gate, ссылками на Confluence, тикеты Jira и сквозной матрицей трассируемости (`Traceability Matrix: Confluence FR <-> Jira Story <-> QA Subtask <-> Test IT Test Cases`).
+- **Назначение:** Консолидированный Markdown-отчет со статусом Quality Gate, ссылками на Confluence, тикеты Jira и сквозной матрицей трассируемости (`Traceability Matrix: Confluence FR <-> Jira Story <-> QA Subtask <-> Testomat.io Test Cases`).
