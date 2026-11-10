@@ -1,4 +1,4 @@
-@REQ-REG-002 @KAN-26 @registration @email @S6afbc1f1
+@REQ-REG-002 @KAN-34 @registration @email @S6afbc1f1
 Feature: Регистрация — валидация поля Email
   Как новый пользователь интернет-магазина
     Я хочу зарегистрироваться в системе с корректным email

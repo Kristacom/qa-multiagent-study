@@ -1,74 +1,89 @@
 {
   "task": {
-    "key": "KAN-26",
+    "key": "KAN-34",
     "project_key": "KAN",
+    "project_key_requested_by_spec": "SHOP",
     "issue_type": "Задача",
+    "issue_type_requested_by_spec": "Story",
     "summary": "Реализация модуля оформления заказа (Checkout) — релиз 2.4",
     "status": "Idea",
     "labels": ["qa-parent", "mcp-synced", "checkout", "conf-page-2031617"],
     "source_requirements": ["REQ-AUTH-001", "REQ-REG-002", "REQ-CHECKOUT-003"]
   },
   "verification": {
-    "task_key": "KAN-26",
+    "task_key": "KAN-34",
     "is_ready_for_testing": true,
     "matched_requirements": ["REQ-AUTH-001", "REQ-REG-002", "REQ-CHECKOUT-003"],
     "missing_requirements": [],
     "dod_passed": true,
     "discrepancies": [
-      "Метаданные спецификации Confluence page 2031617 указывают Jira project key = SHOP и issue type = Story, однако проект SHOP в инстансе отсутствует, а тип Story недоступен. Все задачи созданы в проекте KAN типом «Задача» (id 10004)."
+      "Метаданные спецификации Confluence page 2031617 указывают Jira project key = SHOP и issue type = Story, однако проекта SHOP в инстансе нет, а тип Story недоступен. Все задачи созданы в проекте KAN типом «Задача» (id 10004)."
     ],
+    "idempotency_check": {
+      "jql": "project = KAN AND labels = \"conf-page-2031617\"",
+      "existing_before_run": 0,
+      "action": "CREATED"
+    },
     "quality_gate": {
       "passed": true,
       "score": 84,
       "warnings_count": 6
     }
   },
+  "qa_subtask": {
+    "key": "KAN-35",
+    "issue_type": "Subtask",
+    "summary": "[QA] Test Execution: Реализация модуля оформления заказа (Checkout) — релиз 2.4",
+    "parent": "KAN-34",
+    "labels": ["qa-test-execution", "mcp-synced", "testomat", "checkout"],
+    "status": "Idea"
+  },
   "clarification_tasks": [
     {
-      "key": "KAN-28",
+      "key": "KAN-36",
       "issue_type": "Задача",
       "summary": "[QUESTION][REQ-CHECKOUT-003] Отсутствуют нефункциональные требования (производительность, безопасность, доступность, аудит) для шага оформления заказа",
-      "linked_story": "KAN-26",
+      "linked_story": "KAN-34",
       "link_type": "Relates",
       "status": "Idea"
     },
     {
-      "key": "KAN-29",
+      "key": "KAN-37",
       "issue_type": "Задача",
       "summary": "[QUESTION][REQ-CHECKOUT-003] Не определены API-контракты и события шага оформления заказа (эндпоинты, форматы, коды ошибок)",
-      "linked_story": "KAN-26",
+      "linked_story": "KAN-34",
       "link_type": "Relates",
       "status": "Idea"
     },
     {
-      "key": "KAN-30",
+      "key": "KAN-38",
       "issue_type": "Задача",
       "summary": "[QUESTION][REQ-AUTH-001] Не описано поведение уже авторизованного пользователя и защита маршрутов (глубокие ссылки)",
-      "linked_story": "KAN-26",
+      "linked_story": "KAN-34",
       "link_type": "Relates",
       "status": "Idea"
     },
     {
-      "key": "KAN-31",
+      "key": "KAN-39",
       "issue_type": "Задача",
       "summary": "[QUESTION][REQ-REG-002] Не задан точный формат email-валидации (regex/стандарт) и полный набор негативных кейсов",
-      "linked_story": "KAN-26",
+      "linked_story": "KAN-34",
       "link_type": "Relates",
       "status": "Idea"
     },
     {
-      "key": "KAN-32",
+      "key": "KAN-40",
       "issue_type": "Задача",
       "summary": "[QUESTION][REQ-CHECKOUT-003] Не формализованы обязательные поля по способам доставки и правила очистки/сохранения данных",
-      "linked_story": "KAN-26",
+      "linked_story": "KAN-34",
       "link_type": "Relates",
       "status": "Idea"
     },
     {
-      "key": "KAN-33",
+      "key": "KAN-41",
       "issue_type": "Задача",
       "summary": "[QUESTION][REQ-CHECKOUT-003] Не описан источник данных выпадающего списка «Пункт выдачи» и поведение при его недоступности",
-      "linked_story": "KAN-26",
+      "linked_story": "KAN-34",
       "link_type": "Relates",
       "status": "Idea"
     }

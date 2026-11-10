@@ -21,6 +21,12 @@ import re
 from pathlib import Path
 from typing import Tuple, Dict, Any
 
+# Настройка UTF-8 для консоли Windows
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 
 # 1. Секреты и токены
 SECRET_PATTERN = re.compile(

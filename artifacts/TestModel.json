@@ -4,8 +4,9 @@
   "version": "2.4",
   "title": "Тестирование модуля оформления заказа (Checkout), релиз 2.4",
   "description": "BDD Gherkin тест-модель для модуля оформления заказа интернет-магазина (release 2.4). Покрывает требования REQ-AUTH-001 (кнопка «Войти» и защита маршрута), REQ-REG-002 (валидация email при регистрации) и REQ-CHECKOUT-003 (оформление заказа с выбором способа доставки). Классы проверок: Happy Path, Negative, Boundary, Security/UI-state. Целевая TMS: Testomat.io, проект SHOP-QA, тип Manual, язык ru. Источник требований: Confluence page 2031617 (CONF-PAGE-2031617).",
-  "jira_task_key": "KAN-26",
-  "qa_subtask_key": "KAN-27",
+  "jira_task_key": "KAN-34",
+  "qa_subtask_key": "KAN-35",
+  "jira_sync_status": "synced",
   "total_cases": 16,
   "coverage_percentage": 100,
   "source_requirements": [
@@ -75,7 +76,7 @@
         "expected_element": "login_button",
         "expected_url": "/login"
       },
-      "linked_jira_key": "KAN-26",
+      "linked_jira_key": "KAN-34",
       "linked_requirement_id": "REQ-AUTH-001",
       "tags": ["ui", "auth", "login", "navigation", "positive", "smoke", "p0"]
     },
@@ -123,7 +124,7 @@
         "product": {"sku": "SKU-001", "qty": 1}
       },
       "note": "Ambiguity из ReviewReport: «REQ-AUTH-001: не уточнено поведение для глубоких ссылок — что видит неавторизованный пользователь при прямом открытии защищённых страниц (требуется ли редирект на авторизацию)». Кейс фиксирует ожидаемый редирект на /login и требует подтверждения PO.",
-      "linked_jira_key": "KAN-26",
+      "linked_jira_key": "KAN-34",
       "linked_requirement_id": "REQ-AUTH-001",
       "tags": ["auth", "security", "access-control", "deep-link", "negative", "p0"]
     },
@@ -169,7 +170,7 @@
         "expected_error": null,
         "expected_button_state": "enabled"
       },
-      "linked_jira_key": "KAN-26",
+      "linked_jira_key": "KAN-34",
       "linked_requirement_id": "REQ-REG-002",
       "tags": ["ui", "registration", "email", "validation", "positive", "smoke", "p1"]
     },
@@ -220,7 +221,7 @@
         "expected_button_state": "disabled"
       },
       "note": "Ambiguity из ReviewReport: «REQ-REG-002: не определено поведение кнопки «Зарегистрироваться» при невалидном email (disabled или активна с показом ошибки)». Кейс фиксирует ожидаемое состояние disabled и требует уточнения PO.",
-      "linked_jira_key": "KAN-26",
+      "linked_jira_key": "KAN-34",
       "linked_requirement_id": "REQ-REG-002",
       "tags": ["ui", "registration", "email", "validation", "negative", "p1"]
     },
@@ -275,7 +276,7 @@
         "expected_error": "Некорректный email",
         "expected_button_state": "disabled"
       },
-      "linked_jira_key": "KAN-26",
+      "linked_jira_key": "KAN-34",
       "linked_requirement_id": "REQ-REG-002",
       "tags": ["ui", "registration", "email", "validation", "negative", "p1"]
     },
@@ -322,7 +323,7 @@
         "expected_button_state": "disabled"
       },
       "note": "Ambiguity из ReviewReport: «REQ-REG-002: не определён точный формат валидации email; прочие невалидные кейсы (пустое значение, длина) не описаны». Кейс фиксирует ожидаемое поведение для пустого значения и требует уточнения текста ошибки PO.",
-      "linked_jira_key": "KAN-26",
+      "linked_jira_key": "KAN-34",
       "linked_requirement_id": "REQ-REG-002",
       "tags": ["ui", "registration", "email", "validation", "boundary", "negative", "p1"]
     },
@@ -374,7 +375,7 @@
         "expected_button_state": "disabled"
       },
       "note": "Ambiguity из ReviewReport: «REQ-REG-002: не определён точный формат (стандарт/регулярное выражение) валидации email; критерии покрывают только «без @» и «с пробелами», прочие невалидные кейсы (двойной @, пустой домен, длина, национальные символы) не описаны». Кейс покрывает расширенный набор негативных форматов и требует подтверждения regex PO.",
-      "linked_jira_key": "KAN-26",
+      "linked_jira_key": "KAN-34",
       "linked_requirement_id": "REQ-REG-002",
       "tags": ["ui", "registration", "email", "validation", "boundary", "negative", "p1"]
     },
@@ -422,7 +423,7 @@
         "cart_total": 1500,
         "expected_fields": ["address", "delivery_date"]
       },
-      "linked_jira_key": "KAN-26",
+      "linked_jira_key": "KAN-34",
       "linked_requirement_id": "REQ-CHECKOUT-003",
       "tags": ["checkout", "delivery", "ui", "positive", "smoke", "p0"]
     },
@@ -474,7 +475,7 @@
         "hidden_fields": ["address", "delivery_date"]
       },
       "note": "Ambiguity из ReviewReport: «REQ-CHECKOUT-003: не описан источник данных и поведение при пустом/недоступном списке «Пункт выдачи»». Значения в test_data приведены как референсные и требуют подтверждения PO.",
-      "linked_jira_key": "KAN-26",
+      "linked_jira_key": "KAN-34",
       "linked_requirement_id": "REQ-CHECKOUT-003",
       "tags": ["checkout", "delivery", "ui", "positive", "smoke", "p0"]
     },
@@ -523,7 +524,7 @@
         "switched_method": "pickup"
       },
       "note": "Ambiguity из ReviewReport: «REQ-CHECKOUT-003: не сказано, сохраняются ли данные при возврате на предыдущий шаг оформления» и «не формализованы правила очистки/сохранения данных». Кейс фиксирует ожидаемую очистку и требует подтверждения PO.",
-      "linked_jira_key": "KAN-26",
+      "linked_jira_key": "KAN-34",
       "linked_requirement_id": "REQ-CHECKOUT-003",
       "tags": ["checkout", "delivery", "business-logic", "boundary", "p0"]
     },
@@ -571,7 +572,7 @@
         "delivery_date": "2026-11-20",
         "expected_button_state": "enabled"
       },
-      "linked_jira_key": "KAN-26",
+      "linked_jira_key": "KAN-34",
       "linked_requirement_id": "REQ-CHECKOUT-003",
       "tags": ["checkout", "delivery", "ui", "positive", "smoke", "p0"]
     },
@@ -622,7 +623,7 @@
         ],
         "expected_button_state": "disabled"
       },
-      "linked_jira_key": "KAN-26",
+      "linked_jira_key": "KAN-34",
       "linked_requirement_id": "REQ-CHECKOUT-003",
       "tags": ["checkout", "delivery", "ui", "negative", "p0"]
     },
@@ -669,7 +670,7 @@
         "pickup_point": "ПВЗ-001: Москва, ул. Тверская, 1",
         "expected_button_state": "enabled"
       },
-      "linked_jira_key": "KAN-26",
+      "linked_jira_key": "KAN-34",
       "linked_requirement_id": "REQ-CHECKOUT-003",
       "tags": ["checkout", "delivery", "ui", "positive", "p0"]
     },
@@ -720,7 +721,7 @@
         "product": {"sku": "SKU-001", "title": "Товар А", "qty": 1},
         "expected_http_status": [200, 201]
       },
-      "linked_jira_key": "KAN-26",
+      "linked_jira_key": "KAN-34",
       "linked_requirement_id": "REQ-CHECKOUT-003",
       "tags": ["checkout", "delivery", "positive", "smoke", "e2e", "p0"]
     },
@@ -767,7 +768,7 @@
         "pickup_point": "",
         "expected_button_state": "disabled"
       },
-      "linked_jira_key": "KAN-26",
+      "linked_jira_key": "KAN-34",
       "linked_requirement_id": "REQ-CHECKOUT-003",
       "tags": ["checkout", "delivery", "ui", "negative", "p0"]
     },
@@ -817,7 +818,7 @@
         "expected_button_state": "disabled"
       },
       "note": "Ambiguity из ReviewReport: «REQ-CHECKOUT-003: не описан источник данных и поведение при пустом/недоступном списке «Пункт выдачи»». Кейс фиксирует ожидаемое деградированное поведение и требует подтверждения PO.",
-      "linked_jira_key": "KAN-26",
+      "linked_jira_key": "KAN-34",
       "linked_requirement_id": "REQ-CHECKOUT-003",
       "tags": ["checkout", "delivery", "boundary", "negative", "p0"]
     }

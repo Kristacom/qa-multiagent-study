@@ -8,7 +8,8 @@
     "page_id": "2031617",
     "page_title": "Требования к модулю оформления заказа — релиз 2.4 для интернет-магазина",
     "url": "https://kristapro.atlassian.net/wiki/spaces/MFS/pages/2031617",
-    "status": "synchronized"
+    "status": "local_sync_fallback",
+    "note": "Live-выгрузка через Confluence REST API вернула 403 (Current user not permitted to use Confluence). Использована синхронизированная локальная копия requirements/CONF-PAGE-2031617.md (version 2.4, дата 2026-11-08)."
   },
   "metadata": {
     "status": "Approved",
@@ -122,6 +123,8 @@
   "quality_gate": {
     "passed": true,
     "score": 84,
+    "blocking_issues_count": 0,
+    "warnings_count": 6,
     "critical_issues": [],
     "warnings": [
       "Отсутствуют нефункциональные требования (производительность, безопасность, доступность, аудит).",

@@ -4,7 +4,7 @@
   "sync": true,
   "project": "SHOP-QA",
   "version": "2.4",
-  "jira_task_key": "KAN-26",
+  "jira_task_key": "KAN-34",
   "total_tests": 16,
   "tests": [
     {
@@ -16,7 +16,7 @@
       "priority": "Critical",
       "severity": "Blocker",
       "preconditions": ["Пользователь не авторизован (отсутствует активная сессия)", "Открыта главная страница интернет-магазина"],
-      "tags": ["ui", "auth", "login", "navigation", "positive", "smoke", "p0", "TC-SHOP-001", "REQ-AUTH-001", "KAN-26"],
+      "tags": ["ui", "auth", "login", "navigation", "positive", "smoke", "p0", "TC-SHOP-001", "REQ-AUTH-001", "KAN-34"],
       "steps": {
         "given": "Пользователь не авторизован и открывает главную страницу магазина -> Главная страница загружена, шапка сайта отображается",
         "when": "Пользователь проверяет наличие кнопки «Войти» в шапке страницы -> Кнопка «Войти» видима (не скрыта, не disabled)",
@@ -32,7 +32,7 @@
       "priority": "High",
       "severity": "Critical",
       "preconditions": ["Пользователь не авторизован (отсутствует активная сессия)", "В корзине есть хотя бы один товар"],
-      "tags": ["auth", "security", "access-control", "deep-link", "negative", "p0", "TC-SHOP-002", "REQ-AUTH-001", "KAN-26"],
+      "tags": ["auth", "security", "access-control", "deep-link", "negative", "p0", "TC-SHOP-002", "REQ-AUTH-001", "KAN-34"],
       "note": "Ambiguity REQ-AUTH-001: поведение при глубоких ссылках не описано — требуется подтверждение PO.",
       "steps": {
         "given": "Пользователь не авторизован и имеет товар в корзине -> Активной сессии нет",
@@ -49,7 +49,7 @@
       "priority": "High",
       "severity": "Critical",
       "preconditions": ["Открыта форма регистрации", "Поле Email доступно для ввода"],
-      "tags": ["ui", "registration", "email", "validation", "positive", "smoke", "p1", "TC-SHOP-003", "REQ-REG-002", "KAN-26"],
+      "tags": ["ui", "registration", "email", "validation", "positive", "smoke", "p1", "TC-SHOP-003", "REQ-REG-002", "KAN-34"],
       "steps": {
         "given": "Открыта форма регистрации -> Поля формы активны",
         "when": "Пользователь вводит в поле email значение 'user@example.com' -> Значение принято, поле не подсвечено ошибкой",
@@ -65,7 +65,7 @@
       "priority": "High",
       "severity": "Major",
       "preconditions": ["Открыта форма регистрации"],
-      "tags": ["ui", "registration", "email", "validation", "negative", "p1", "TC-SHOP-004", "REQ-REG-002", "KAN-26"],
+      "tags": ["ui", "registration", "email", "validation", "negative", "p1", "TC-SHOP-004", "REQ-REG-002", "KAN-34"],
       "note": "Ambiguity REQ-REG-002: поведение кнопки при невалидном email не описано — ожидается disabled.",
       "steps": {
         "given": "Открыта форма регистрации -> Поле email активно",
@@ -82,7 +82,7 @@
       "priority": "High",
       "severity": "Major",
       "preconditions": ["Открыта форма регистрации"],
-      "tags": ["ui", "registration", "email", "validation", "negative", "p1", "TC-SHOP-005", "REQ-REG-002", "KAN-26"],
+      "tags": ["ui", "registration", "email", "validation", "negative", "p1", "TC-SHOP-005", "REQ-REG-002", "KAN-34"],
       "steps": {
         "given": "Открыта форма регистрации -> Поле email активно",
         "when": "Пользователь вводит email 'user @example.com' и уводит фокус с поля -> Срабатывает триггер валидации",
@@ -98,7 +98,7 @@
       "priority": "Medium",
       "severity": "Major",
       "preconditions": ["Открыта форма регистрации", "Поле email пустое"],
-      "tags": ["ui", "registration", "email", "validation", "boundary", "negative", "p1", "TC-SHOP-006", "REQ-REG-002", "KAN-26"],
+      "tags": ["ui", "registration", "email", "validation", "boundary", "negative", "p1", "TC-SHOP-006", "REQ-REG-002", "KAN-34"],
       "note": "Ambiguity REQ-REG-002: поведение при пустом значении не описано — требуется уточнение PO.",
       "steps": {
         "given": "Открыта форма регистрации, поле email пустое -> Поле в состоянии по умолчанию",
@@ -115,7 +115,7 @@
       "priority": "Medium",
       "severity": "Major",
       "preconditions": ["Открыта форма регистрации"],
-      "tags": ["ui", "registration", "email", "validation", "boundary", "negative", "p1", "TC-SHOP-007", "REQ-REG-002", "KAN-26"],
+      "tags": ["ui", "registration", "email", "validation", "boundary", "negative", "p1", "TC-SHOP-007", "REQ-REG-002", "KAN-34"],
       "note": "Ambiguity REQ-REG-002: точный формат (regex) валидации email не задан — требуется подтверждение PO.",
       "steps": {
         "given": "Открыта форма регистрации -> Поле email активно",
@@ -132,7 +132,7 @@
       "priority": "Critical",
       "severity": "Blocker",
       "preconditions": ["В корзине есть хотя бы один товар", "Пользователь авторизован", "Открыт шаг оформления заказа «Доставка»"],
-      "tags": ["checkout", "delivery", "ui", "positive", "smoke", "p0", "TC-SHOP-008", "REQ-CHECKOUT-003", "KAN-26"],
+      "tags": ["checkout", "delivery", "ui", "positive", "smoke", "p0", "TC-SHOP-008", "REQ-CHECKOUT-003", "KAN-34"],
       "steps": {
         "given": "В корзине есть товар, пользователь авторизован и находится на шаге «Доставка» -> Шаг «Доставка» отображается",
         "when": "Пользователь выбирает способ доставки «Курьер» -> Способ «Курьер» отмечен (активен)",
@@ -148,7 +148,7 @@
       "priority": "Critical",
       "severity": "Blocker",
       "preconditions": ["В корзине есть хотя бы один товар", "Пользователь авторизован", "Открыт шаг оформления заказа «Доставка»"],
-      "tags": ["checkout", "delivery", "ui", "positive", "smoke", "p0", "TC-SHOP-009", "REQ-CHECKOUT-003", "KAN-26"],
+      "tags": ["checkout", "delivery", "ui", "positive", "smoke", "p0", "TC-SHOP-009", "REQ-CHECKOUT-003", "KAN-34"],
       "note": "Ambiguity REQ-CHECKOUT-003: источник данных «Пункт выдачи» не описан — значения референсные.",
       "steps": {
         "given": "В корзине есть товар, пользователь авторизован и находится на шаге «Доставка» -> Шаг «Доставка» отображается",
@@ -165,7 +165,7 @@
       "priority": "High",
       "severity": "Major",
       "preconditions": ["В корзине есть хотя бы один товар", "Пользователь авторизован", "Открыт шаг оформления заказа «Доставка»"],
-      "tags": ["checkout", "delivery", "business-logic", "boundary", "p0", "TC-SHOP-010", "REQ-CHECKOUT-003", "KAN-26"],
+      "tags": ["checkout", "delivery", "business-logic", "boundary", "p0", "TC-SHOP-010", "REQ-CHECKOUT-003", "KAN-34"],
       "note": "Ambiguity REQ-CHECKOUT-003: правила очистки/сохранения данных и возврат на предыдущий шаг не формализованы.",
       "steps": {
         "given": "Выбран «Курьер», заполнены «Адрес» = 'Москва, ул. Ленина, 10' и «Дата доставки» = '2026-11-20' -> Поля заполнены валидными значениями",
@@ -182,7 +182,7 @@
       "priority": "Critical",
       "severity": "Blocker",
       "preconditions": ["В корзине есть хотя бы один товар", "Пользователь авторизован", "Выбран способ доставки «Курьер»"],
-      "tags": ["checkout", "delivery", "ui", "positive", "smoke", "p0", "TC-SHOP-011", "REQ-CHECKOUT-003", "KAN-26"],
+      "tags": ["checkout", "delivery", "ui", "positive", "smoke", "p0", "TC-SHOP-011", "REQ-CHECKOUT-003", "KAN-34"],
       "steps": {
         "given": "Выбран способ «Курьер», форма отображает поля «Адрес» и «Дата доставки» -> Поля доступны для ввода",
         "when": "Пользователь заполняет «Адрес» = 'Москва, ул. Ленина, 10' и «Дата доставки» = '2026-11-20' -> Все обязательные поля заполнены",
@@ -198,7 +198,7 @@
       "priority": "High",
       "severity": "Major",
       "preconditions": ["В корзине есть хотя бы один товар", "Пользователь авторизован", "Выбран способ доставки «Курьер»"],
-      "tags": ["checkout", "delivery", "ui", "negative", "p0", "TC-SHOP-012", "REQ-CHECKOUT-003", "KAN-26"],
+      "tags": ["checkout", "delivery", "ui", "negative", "p0", "TC-SHOP-012", "REQ-CHECKOUT-003", "KAN-34"],
       "steps": {
         "given": "Выбран способ «Курьер», все обязательные поля пустые -> Кнопка «Оформить заказ» неактивна",
         "when": "Пользователь заполняет только «Адрес», оставляя «Дата доставки» пустой -> Часть обязательных полей заполнена",
@@ -214,7 +214,7 @@
       "priority": "High",
       "severity": "Critical",
       "preconditions": ["В корзине есть хотя бы один товар", "Пользователь авторизован", "Выбран способ доставки «Самовывоз»"],
-      "tags": ["checkout", "delivery", "ui", "positive", "p0", "TC-SHOP-013", "REQ-CHECKOUT-003", "KAN-26"],
+      "tags": ["checkout", "delivery", "ui", "positive", "p0", "TC-SHOP-013", "REQ-CHECKOUT-003", "KAN-34"],
       "steps": {
         "given": "Выбран способ «Самовывоз», отображается dropdown «Пункт выдачи» -> Пункт выдачи не выбран по умолчанию",
         "when": "Пользователь выбирает пункт выдачи 'ПВЗ-001: Москва, ул. Тверская, 1' -> Пункт выдачи выбран",
@@ -230,7 +230,7 @@
       "priority": "Critical",
       "severity": "Blocker",
       "preconditions": ["В корзине есть хотя бы один товар", "Пользователь авторизован", "Выбран способ доставки «Курьер»", "Заполнены все обязательные поля"],
-      "tags": ["checkout", "delivery", "positive", "smoke", "e2e", "p0", "TC-SHOP-014", "REQ-CHECKOUT-003", "KAN-26"],
+      "tags": ["checkout", "delivery", "positive", "smoke", "e2e", "p0", "TC-SHOP-014", "REQ-CHECKOUT-003", "KAN-34"],
       "steps": {
         "given": "Пользователь авторизован, в корзине товар, выбран «Курьер», заполнены «Адрес» и «Дата доставки» -> Кнопка «Оформить заказ» активна",
         "when": "Пользователь нажимает кнопку «Оформить заказ» -> Запрос на создание заказа отправлен",
@@ -246,7 +246,7 @@
       "priority": "High",
       "severity": "Major",
       "preconditions": ["В корзине есть хотя бы один товар", "Пользователь авторизован", "Выбран способ доставки «Самовывоз»"],
-      "tags": ["checkout", "delivery", "ui", "negative", "p0", "TC-SHOP-015", "REQ-CHECKOUT-003", "KAN-26"],
+      "tags": ["checkout", "delivery", "ui", "negative", "p0", "TC-SHOP-015", "REQ-CHECKOUT-003", "KAN-34"],
       "steps": {
         "given": "Выбран способ «Самовывоз», dropdown «Пункт выдачи» отображается -> Пункт выдачи не выбран по умолчанию",
         "when": "Пользователь не выбирает пункт выдачи -> Обязательное поле осталось незаполненным",
@@ -262,7 +262,7 @@
       "priority": "Medium",
       "severity": "Major",
       "preconditions": ["В корзине есть хотя бы один товар", "Пользователь авторизован", "Выбран способ доставки «Самовывоз»", "Источник списка пунктов выдачи пуст/недоступен"],
-      "tags": ["checkout", "delivery", "boundary", "negative", "p0", "TC-SHOP-016", "REQ-CHECKOUT-003", "KAN-26"],
+      "tags": ["checkout", "delivery", "boundary", "negative", "p0", "TC-SHOP-016", "REQ-CHECKOUT-003", "KAN-34"],
       "note": "Ambiguity REQ-CHECKOUT-003: поведение при пустом/недоступном списке «Пункт выдачи» не описано.",
       "steps": {
         "given": "Выбран способ «Самовывоз», источник данных пунктов выдачи недоступен или список пуст -> Dropdown не содержит опций",
