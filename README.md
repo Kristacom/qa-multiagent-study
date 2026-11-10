@@ -168,16 +168,13 @@ opencode
   "command": [
     "npx",
     "-y",
-    "@testomatio/mcp",
-    "--token",
-    "{env:TESTOMATIO}",
-    "--project",
-    "shop-qa"
+    "@testomatio/mcp"
   ],
   "enabled": true,
   "environment": {
-    "TESTOMATIO": "{env:TESTOMATIO}",
-    "TESTOMATIO_PROJECT_ID": "shop-qa"
+    "TESTOMATIO_PROJECT_TOKEN": "{env:TESTOMATIO}",
+    "TESTOMATIO_API_TOKEN": "{env:TESTOMATIO}",
+    "TESTOMATIO_PROJECT_ID": "{env:TESTOMATIO_PROJECT_ID}"
   }
 }
 ```
