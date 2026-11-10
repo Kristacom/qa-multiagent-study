@@ -40,7 +40,7 @@ tools:
 ## 3. Входные данные (Inputs)
 1. **Отчет анализа требований:** `artifacts/ReviewReport.json` (список FR, AC, бизнес-правила).
 2. **Артефакт задач Jira:** `artifacts/JiraTasks.json` (ключ родительской Story и QA-подзадачи).
-3. **Целевая TMS:** Testomat.io TMS (`https://app.testomat.io`), проект `SHOP-QA`, тип `Manual / BDD`, язык `ru`.
+3. **Целевая TMS:** Testomat.io TMS (`https://app.testomat.io`), проект считывается динамически из `ReviewReport.json` (`constraints.tms_project`, в текущем ТЗ: `SHOP-QA`) либо из переменной окружения `TESTOMATIO_PROJECT_ID`.
 4. **Скилл:** `.opencode/skills/test-design/SKILL.md`.
 
 ---
@@ -87,15 +87,31 @@ tools:
 2. Сформировать `artifacts/testomat_export.json` для выгрузки через Testomat Load API (`POST https://app.testomat.io/api/load?api_key=...`).
 3. Сформировать `artifacts/testomat_export.csv` для мгновенного Drag-and-Drop импорта в интерфейсе Testomat.io.
 
-### Шаг 5: Отправка тест-кейсов в Testomat.io TMS через MCP-сервер (@testomatio/mcp)
-1. **Через Testomat.io MCP Server:**
-   - Используй доступные инструменты MCP-сервера `testomat` (`testomat.tests` с операцией `bulk_upsert`, `testomat.suites`) для прямой публикации сформированных сценариев в облачный проект `shop-qa`.
-2. **Через скрипт авто-синхронизации (CLI):**
-   - Либо выполни через инструмент `bash` команду:
-     ```bash
-     python sync_testomat.py
+### Шаг 5: Публикация тест-кейсов в Testomat.io TMS через нативный MCP-сервер (@testomatio/mcp)
+1. Используй подключенный в `opencode.jsonc` MCP-сервер `testomat`:
+   - В зависимости от среды OpenCode инструменты доступны как `testomat.tests` / `testomat_tests` и `testomat.suites` / `testomat_suites`.
+   - **Способ А (Массовый импорт BDD через `bulk_upsert` — рекомендуемый):**
+     Вызови `testomat.tests` (или `testomat_tests`) с командой `bulk_upsert`:
+     ```json
+     {
+       "command": "bulk_upsert",
+       "create_missing_suites": true,
+       "markdown": "<!-- suite: Авторизация -->\n<!-- test: TC-SHOP-001 -->\n# [TC-SHOP-001] Отображение кнопки «Войти»\nGiven Пользователь не авторизован и открывает главную страницу магазина\nWhen Пользователь просматривает шапку страницы\nThen В шапке отображается кнопка «Войти»"
+     }
      ```
-   - Скрипт отправит все 16 сценариев в реальный проект в `https://app.testomat.io`, синхронизирует BDD шаги, обновит `@T...` теги в `.feature` файлах и сохранит подтверждение в `artifacts/testomat_sync_result.json`.
+   - **Способ Б (Поштучное создание через `create`):**
+     1. Создай сьют через `testomat.suites` (`command: "create"`, `title: "Авторизация"`).
+     2. Создай тест через `testomat.tests` (`command: "create"`, `title: "[TC-SHOP-001] Отображение кнопки «Войти»"`, `suite_id: "<suite_id>"`, `priority: "high"`, `description: "Given ... When ... Then ..."`).
+   - **Связывание с Jira:**
+     Вызови `testomat.tests` с операцией `issues_link`:
+     ```json
+     {
+       "command": "issues_link",
+       "test_id": "<test_id>",
+       "jira_id": "<JIRA_KEY_FROM_JIRATASKS_JSON>"
+     }
+     ```
+2. Сохрани отчет о выгрузке в `artifacts/testomat_sync_result.json`.
 
 ---
 
@@ -170,5 +186,18 @@ Feature: Авторизация — отображение кнопки «Вой
       "tags": ["ui", "auth", "p0"]
     }
   ]
+}
+```
+
+### `artifacts/testomat_sync_result.json`
+```json
+{
+  "tms": "Testomat.io",
+  "status": "SUCCESS",
+  "synced_at": "2026-11-10T17:02:16",
+  "project": "SHOP-QA",
+  "features_count": 3,
+  "scenarios_count": 16,
+  "details": "Data sent to Testomat.io via @testomatio/mcp"
 }
 ```

@@ -11,7 +11,7 @@ description: Создание тестовой модели в формате BD
 ## 1. Входные данные (Inputs)
 - `artifacts/ReviewReport.json` — структурированные требования Confluence.
 - `artifacts/JiraTasks.json` — разобранная задача Jira с критериями приемки.
-- Параметры проекта Testomat.io: `SHOP-QA`, тип `Manual / BDD`, язык `ru`.
+- Целевой проект Testomat.io: считывается динамически из `ReviewReport.json` (`constraints.tms_project`, например `SHOP-QA`) или переменной окружения `TESTOMATIO_PROJECT_ID`.
 
 ---
 
@@ -42,13 +42,12 @@ description: Создание тестовой модели в формате BD
 3. Сформировать `artifacts/testomat_export.csv` (для прямого импорта через Web UI Testomat.io).
 4. Сохранить общую модель в `artifacts/TestModel.json`.
 
-### Шаг 5: Синхронизация с Testomat.io TMS через официальный MCP-сервер (и CLI)
-1. **Основной способ — MCP Server (@testomatio/mcp):**
-   - В `opencode.jsonc` подключен официальный MCP-сервер `@testomatio/mcp`.
-   - Агент использует MCP-инструменты `testomat.tests` (команда `bulk_upsert` для загрузки BDD-тестов, `list`, `create`) и `testomat.suites` для управления структурой сьютов.
-2. **Скриптовый авто-синхронизатор (CLI fallback):**
-   - Команда `python sync_testomat.py` или `npx check-cucumber features/*.feature --create -U --sync` считывает токен из `.env` и выгружает сценарии в облачный проект `shop-qa` в [Testomat.io](https://app.testomat.io).
-   - Сценарии автоматически размечаются `@T...` и `@S...` идентификаторами, а статус фиксируется в `artifacts/testomat_sync_result.json`.
+### Шаг 5: Нативная публикация в Testomat.io TMS через официальный MCP-сервер (@testomatio/mcp)
+1. **Нативная интеграция через MCP:**
+   - В `opencode.jsonc` подключен официальный Model Context Protocol сервер Testomat.io (`@testomatio/mcp`).
+   - Агент вызывает MCP-инструменты `testomat.tests` (команда `bulk_upsert` для загрузки BDD-сценариев, `list`, `create`, `issues_link`) и `testomat.suites` для создания и синхронизации структуры сьютов (`Auth`, `Registration`, `Checkout`).
+2. **Фиксация статуса выгрузки:**
+   - По завершении выгрузки через MCP формируется отчет `artifacts/testomat_sync_result.json` с фиксацией 100% покрытия требований тестами в облачной TMS.
 
 ---
 

@@ -130,10 +130,8 @@
 
 ## 8. Инструкции для Testomat.io TMS
 
-**Вариант 1 — CLI (выполнен автоматически):**
-```bash
-python sync_testomat.py
-```
+**Вариант 1 — Нативный MCP-сервер (выполнен автоматически):**
+Интеграция выполнена через `@testomatio/mcp` (`testomat.tests` с операцией `bulk_upsert`), результат зафиксирован в `artifacts/testomat_sync_result.json`.
 
 **Вариант 2 — Drag&Drop (CSV):** login в [app.testomat.io](https://app.testomat.io) → Tests → **Import from CSV** → файл `artifacts/testomat_export.csv` (16 кейсов).
 

@@ -38,16 +38,16 @@ description: Запуск сквозного мультиагентного ко
 
 ---
 
-### Фаза 3: Проектирование BDD тест-модели и авто-синхронизация с Testomat.io TMS
+### Фаза 3: Проектирование BDD тест-модели и публикация в Testomat.io через MCP
 1. Вызови субагента **`test-designer`** со скиллом `.opencode/skills/test-design/SKILL.md`.
 2. Субагент динамически разрабатывает BDD тест-кейсы:
    - 100% покрытие критериев приемки (AC).
    - Позитивные (Happy Path), негативные, граничные значения и проверки UI/Security.
    - Дедупликация: сохранение стабильных идентификаторов `TC-SHOP-xxx`.
 3. Сохранить артефакты `features/*.feature`, `artifacts/testomat_export.csv` и `artifacts/TestModel.json`.
-4. **Автоматическая выгрузка в Testomat.io TMS:**
-   - Выполнить команду `python sync_testomat.py`.
-   - Проверить статус выгрузки всех 16 сценариев в облачный проект `https://app.testomat.io` и зафиксировать артефакт `artifacts/testomat_sync_result.json`.
+4. **Нативная публикация в Testomat.io TMS:**
+   - Вызвать инструменты официального MCP-сервера `testomat` (`testomat.tests` с операцией `bulk_upsert`).
+   - Зафиксировать подтверждение выгрузки в `artifacts/testomat_sync_result.json`.
 
 ---
 

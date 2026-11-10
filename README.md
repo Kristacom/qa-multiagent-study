@@ -151,7 +151,7 @@ opencode
 2. **Task Designer:** Проверит Jira на наличие существующих задач:
    - Обнаружит существующую Story `KAN-17` и QA-подзадачу `KAN-18` (не создавая дубликатов).
    - Обнаружит связанные тикеты вопросов `[QUESTION]` (`KAN-19` — `KAN-24`) и зафиксирует их связь.
-3. **Test Designer:** Сформирует 16 BDD тест-кейсов со 100% покрытием критериев приемки в виде файлов `features/*.feature`, `artifacts/testomat_export.csv`, `artifacts/testomat_export.json` и **автоматически выгрузит их в Testomat.io TMS** через модуль `sync_testomat.py` (с созданием отчета `artifacts/testomat_sync_result.json`).
+3. **Test Designer:** Сформирует 16 BDD тест-кейсов со 100% покрытием критериев приемки в виде файлов `features/*.feature`, `artifacts/testomat_export.csv`, `artifacts/testomat_export.json` и **автоматически выгрузит их в Testomat.io TMS** через официальный MCP-сервер `@testomatio/mcp` (с созданием отчета `artifacts/testomat_sync_result.json`).
 4. **QA Orchestrator:** Соберет сквозную матрицу трассируемости и опубликует `FinalReport.md`.
 
 ---
@@ -180,19 +180,13 @@ opencode
 ```
 Агенты OpenCode вызывают нативные MCP-инструменты `testomat.tests` (операция `bulk_upsert`, `create`, `list`) и `testomat.suites` для прямого взаимодействия с облачной TMS.
 
-### 2. Скриптовая авто-синхронизация (CLI Runner):
-Агент также может вызвать команду:
-```bash
-python sync_testomat.py
-```
-Скрипт считывает токен из файла `.env` (`TESTOMATIO=tstmt_...`), отправляет 16 BDD-сценариев в облачный проект `shop-qa` в [app.testomat.io](https://app.testomat.io) через официальный CLI `check-cucumber`, размечает feature-файлы уникальными ID (`@T...`, `@S...`) и сохраняет артефакт `artifacts/testomat_sync_result.json`.
+### 2. Создание и синхронизация тестов через MCP:
+Агенты OpenCode вызывают нативные инструменты сервера `testomat`:
+* `testomat.tests` (с командой `bulk_upsert`) передает BDD-структуру напрямую в проект Testomat.io.
+* `testomat.tests` (с командой `issues_link`) привязывает созданные тесты к задачам Jira.
 
-### 2. Ручной запуск синхронизации (при необходимости):
-Если вы хотите пересинхронизировать тесты вручную из терминала:
-```bash
-python sync_testomat.py
-```
-Или через Drag & Drop в веб-интерфейсе:
+### 3. Резервный импорт через Web UI:
+Если требуется ручной импорт в веб-интерфейсе:
 * В [app.testomat.io](https://app.testomat.io) во вкладке **Tests** нажать меню **«...»** $\rightarrow$ **«Import from CSV»** $\rightarrow$ выбрать [`artifacts/testomat_export.csv`](file:///C:/Users/Kosmos/qa-multiagent-study/artifacts/testomat_export.csv).
 
 ---

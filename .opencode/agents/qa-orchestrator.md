@@ -89,7 +89,7 @@ tools:
 2. Передай перечень функциональных требований (FR) и критериев приемки (AC).
 3. Дождись формирования артефактов `artifacts/TestModel.json`, `features/*.feature`, `artifacts/testomat_export.csv`.
 4. Проверь полноту тестовой модели: покрытие всех критериев приёмки (AC), наличие позитивных, негативных и граничных проверок.
-5. Убедись, что выполнена автоматическая синхронизация с Testomat.io через `python sync_testomat.py` и создан артефакт `artifacts/testomat_sync_result.json`.
+5. Убедись, что выполнена интеграция с Testomat.io через MCP-сервер `@testomatio/mcp` и создан артефакт `artifacts/testomat_sync_result.json`.
 
 ### Шаг 5: Фаза 4 — Финальный аудит и формирование FinalReport.md
 1. Проверь наличие обязательных артефактов:
